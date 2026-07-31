@@ -621,6 +621,13 @@ built and running.
 
 ## 8.5a The whole chain, and the one place it splits
 
+**Note before this pipeline, since §8.3 changed underneath it:** what follows is
+the pipeline for *one* coherent group. It now runs **twice, once for the
+uplink group and once for the downlink group** — the hardware split between them
+happens right after stage 5 below, at the Wilkinson divider. Everything from
+stage 1 to stage 5 is genuinely shared between the two groups; stage 6 onward is
+duplicated.
+
 Three identical paths run from three antennas to two different answers. Being
 able to walk this end to end is the difference between describing the product and
 understanding it.
@@ -633,9 +640,11 @@ understanding it.
 3. **Filter** — the band-defining part; keeps strong out-of-band signals from
    deafening us
 4. **Dock** — the three RF paths cross here
-5. **Amplifier** — all three on one board, so they warm up and drift *together*
-6. **Mixer** — all three share one oscillator, which is what keeps them
-   comparable
+5. **Amplifier** — all three on one board, so they warm up and drift *together*.
+   **Immediately after this, each element's signal splits** to feed both
+   coherent groups (§8.3)
+6. **Mixer** — the three chains in a group are phase-aligned to one another by
+   on-chip synchronisation (MCS), which is what keeps them comparable
 
 **Then digital:**
 
@@ -790,10 +799,13 @@ they want to know whether you understand the design or have memorised it.
   digital data over *pairs* of wires carrying opposite voltages. The receiver
   reads only the difference between them, so any noise picked up equally by both
   cancels out. That is how it survives more than a gigabit per second on a
-  circuit board. **JESD204B/C**, which the ADRV9026 uses instead, applies the
-  same differential idea over a smaller number of much faster serial lanes, and
-  adds a shared timing reference so the receiving end knows exactly which sample
-  belongs to which chain.
+  circuit board. This is the interface the ADRV9002 uses (as **CMOS SSI**, a
+  close relative). **JESD204B/C** is a different, faster interface built on the
+  same differential idea over a smaller number of much faster serial lanes, with
+  a shared timing reference added so the receiving end knows exactly which
+  sample belongs to which chain — it is what the ADRV9026 we briefly used before
+  this needed, and moving away from it is what made the FPGA stage cheaper
+  (§8.3a).
 - **FPGA — Field-Programmable Gate Array.** A chip whose internal logic **and
   internal wiring** are configured after manufacture. It is not a processor
   executing instructions — it is a fabric of logic blocks, hardware multipliers
@@ -805,11 +817,13 @@ they want to know whether you understand the design or have memorised it.
 Up to the converters there really are three separate metal paths. After them
 there is **one data bus, not three.**
 
-The transceiver has a single data port, and **every receive chain's samples are
+Each transceiver has a single data port, and **every receive chain's samples are
 interleaved onto it** in a fixed repeating pattern. On the AD9361 that port was
-roughly six LVDS pairs plus a frame marker and a clock running near 245 MHz; on
-the ADRV9026 it is a set of JESD204B/C serial lanes. The format differs; the
-point below does not.
+roughly six LVDS pairs plus a frame marker and a clock running near 245 MHz; the
+ADRV9002 uses LVDS or CMOS SSI in the same spirit. (The ADRV9026 we briefly used
+in between needed a set of JESD204B/C serial lanes instead — a real difference,
+which is why moving away from it mattered; see §8.3a.) The format differs
+between parts; the point below does not.
 
 So the meaning of "three chains" inverts here. Before: three pieces of metal.
 After: **three timeslots on a shared bus.** Which chain a sample came from is now
@@ -880,12 +894,19 @@ the version to carry in your head.
 
 ### Decided — do not call these open
 
-**The transceiver.** We selected the **ADRV9026**: four coherent receivers on
-one chip, so a three-antenna array needs one chip rather than two synchronised
-ones. Two AD9361s remain the fallback. The reason to give is a *failure mode*,
-not effort — synchronising two chips can half-succeed, and a half-succeeded sync
-produces a **wrong bearing rather than a missing one**, which is the exact class
-of error this whole design works to eliminate.
+**The transceiver.** We selected **four Analog Devices ADRV9002 chips**,
+arranged as two coherent groups of three chains each (an uplink group and a
+downlink group — §8.3), rather than one chip with four chains on one die. The
+reasoning went through two changes of mind in one day, and both are worth
+knowing: we first moved away from synchronising two separate chips because a
+synchronisation that half-succeeds produces a **wrong bearing rather than a
+missing one** — the exact class of error this whole design works to eliminate.
+The single four-chain chip we picked next turned out to have a narrower tuning
+range that broke VHF and UHF coverage, and separately, its one wide capture
+would have pointed the array at the downlink only. Four ADRV9002s in two groups
+answers both problems at once, and restores the "on-chip sync is required
+regardless of chip count" argument that made adding chips acceptable in the
+first place.
 
 **The magnetometers.** Two dedicated ones at the outboard lid corners, tilt
 sensor with the inboard antenna at the centre hinge. Storm-case modules only; the
@@ -919,9 +940,9 @@ two sensors can *correct* a disturbed heading rather than merely *flag* it is
 unresolved. Say "selected, not validated" — it is more accurate than either
 "decided" or "open."
 
-**Likewise the transceiver.** The part is chosen; its power at *our* bandwidth
-is not measured, only at the datasheet's, which is eighty times wider than we
-need.
+**Likewise the transceiver.** The part is chosen; its power at *our* bandwidth —
+about 2 MHz per coherent group — is not measured, only at the datasheet's
+40 MHz maximum, which is twenty times wider than we need.
 
 ### Genuinely open, and ours — the one that matters most
 
@@ -966,11 +987,28 @@ compete. That is the honest answer, and it is a better one than apologising.
 
 #### What we actually know about the part we picked
 
-Analog Devices does not publish an ADC bit count for the ADRV9026, and that is
+Analog Devices does not publish an ADC bit count for these parts, and that is
 reasonable — in an integrated transceiver the converter sits behind an analog
-chain that matters as much, so they specify the whole receiver instead:
-**81 dBc spurious-free dynamic range, IIP2 of 58–65 dBm, IIP3 of 15–18 dBm.**
-Base-station-grade figures, and better than a bare 12-bit converter's 74 dB.
+chain that matters as much, so they specify the whole receiver instead.
+
+An earlier draft of this module quoted dynamic-range and intercept figures here
+that belonged to the **ADRV9026** — a part we considered and did not choose. They
+have been removed rather than caveated, because a number attributed to the wrong
+component is worse than no number at all.
+
+What the selected part actually specifies: **150 dBc/Hz of dynamic range, held
+across the receiver's whole gain-control range.** That second half matters more
+than the headline, because it means turning the gain down to cope with a loud
+signal does not spend the dynamic range you were relying on. Around 20 dB of
+maximum gain with 34 dB of control range, and a clean trade in which **every 1 dB
+of gain you give up buys 1 dB of third-order intercept.** [Confirmed]
+
+**One choice worth making deliberately.** The receiver contains two converters —
+a low-power one and a high-power one — and **the high-power one is about 5 dB
+more linear.** [Confirmed] We have a few hundred watts available from a vehicle,
+so we should be specifying the high-power converter: five decibels of linearity
+bought with power we demonstrably have, working against the one distortion
+mechanism that channelising does *not* clean up.
 
 But it is **three mechanisms, not one**, and only the first gets any help from
 narrowing down to a single channel afterwards:
@@ -1039,57 +1077,88 @@ committed to. Flagging this yourself is much stronger than being corrected on it
 **8.1** Draw the signal chain from memory. For each stage, say what it does in
 one sentence of plain English.
 
-**8.2** An engineer asks why you chose the ADRV9026 rather than a cheaper
-single-channel receiver. Answer in 30 seconds.
+**8.2** An engineer asks why you chose four ADRV9002 chips rather than a cheaper
+single-chip receiver. Answer in 30 seconds.
 
 <details>
 <summary>Model answer</summary>
 
-Three reasons, and I want to be careful about one of them because it is easy to
-get wrong. It has four phase-coherent receive chains on one die, and a
-three-element direction-finding array needs three of them sampled against a
-common phase reference. It has transmit chains we do not use today, which means
-the licensed tier is the same board plus a power amplifier rather than a
-different product. And its 200 megahertz of bandwidth means a downlink and its
-uplink 45 megahertz away fit in one capture comfortably rather than marginally.
+Two things happen at once here and I want to keep them separate. We need three
+receive chains, phase-aligned, to sample a three-element array — that is settled
+regardless of chip count, because a synchronisation between separate chips that
+half-succeeds gives you a wrong bearing rather than a missing one, and we don't
+want that failure mode available at all. The part that decided *how many chips*
+was a different finding: handsets transmit on the uplink, 45 megahertz from the
+downlink we used to listen to, and that gap is 45.34 megahertz wide — wider than
+one ADRV9002 group's 40 megahertz capture. So we need two separate co-tuned
+groups, one per direction, which is four chips arranged as two groups of three
+plus a calibration reference each.
 
-What I would *not* claim is that the four chains are how we monitor the trunk and
-the talkaround channel at once — they share an oscillator, so they cannot be
-tuned separately. That is done by capturing a couple of megahertz in one go and
-separating the channels digitally, which needs only one chain.
+What I would *not* claim is that eight chains let us watch eight frequencies —
+within a group the chains are co-tuned, so they observe the same window. That
+window is then separated into individual channels digitally, and that only
+needs one chain's worth of capture per window.
 </details>
 
-**8.2a** A reviewer notices the ADRV9026 tunes down to 650 MHz and asks how you
-sell a VHF unit. Answer.
+**8.2a** A reviewer points out that an earlier transceiver choice this year
+briefly broke VHF and UHF coverage. Explain what happened and why it no longer
+does.
 
 <details>
 <summary>Model answer</summary>
 
-You have found a real defect and I will not talk around it. We selected that part
-for phase coherence, correctly, and nobody re-checked its tuning range against
-our own product line — so a claim that one processing body covers every band
-survived the change when it had stopped being true. VHF at 136 to 174 megahertz
-and UHF at 380 to 520 are both below the part's floor.
+You have found something real, and I will not talk around it. For one day this
+year we had selected a single chip with four receive chains on one die, chosen
+for phase coherence. Its tuning range started at 650 megahertz, which put VHF
+(136–174 MHz) and UHF (380–520 MHz) below its floor, and nobody re-checked that
+against our own product line when the part changed.
 
-The fix is a mixer in those two band modules that shifts the band up into the
-transceiver's range. It is standard practice with catalogue parts, and it belongs
-in the band module because that is where every other band-specific component
-already lives — arguably it makes the architecture cleaner, since the module's
-contract becomes "hand the body something between 650 megahertz and 6 gigahertz."
+It closed on its own, as a side effect of a bigger finding rather than because
+anyone chased the tuning range directly. We discovered the array had been
+listening to the downlink only, which meant every bearing we could compute would
+have been a bearing to the tower. Fixing that forced a move to four separate
+ADRV9002 chips in two groups, and that part tunes 30 megahertz to 6 gigahertz —
+lower than even our original chip. VHF and UHF are both back in range, with no
+mixer needed anywhere. None of this touched the 800 megahertz system I am
+demonstrating, which was in range throughout.
+</details>
 
-I am calling it proposed rather than solved, because the mixer generates spurious
-signals that land on the one genuinely open question we have, which is the
-dynamic-range budget. The two have to be worked together. None of this touches
-the 800 megahertz system I am demonstrating, which is comfortably in range.
+**8.2b** A reviewer says: "Your array is pointed at the tower. What use is
+that?" Answer.
+
+<details>
+<summary>Model answer</summary>
+
+You are right, and it was the single most consequential finding in this design.
+The array used to capture only the downlink — what the tower transmits — so
+every bearing the system could ever have computed would have been a bearing to
+the tower, and a surveyed radio mast's position is never in question. Handsets
+transmit on the uplink and on talkaround, and neither was in the captured slice.
+So the array had to move: we added a second coherent group tuned to the uplink,
+and that is the one whose bearings actually matter operationally, because it is
+the one aimed at handsets.
+
+But the downlink group did not become useless once the uplink group took over
+the operational job — we repurposed it. A tower is a transmitter at a surveyed,
+known position, radiating continuously, so the downlink group is now a
+permanent calibration beacon: it is always measuring a bearing whose correct
+answer we already know. That gives a continuous, free, end-to-end check on the
+array manifold, the feed phase, the connectors, the splitters, the chip
+synchronisation and the compass heading — and it is specifically what turns a
+half-succeeded synchronisation from a silent wrong answer into a fault we can
+detect. It cannot validate a bearing to a handset, whose multipath is its own
+problem, and it only validates the uplink group through what the two groups
+share. But "pointed at the tower" went from being the defect to being the
+instrument that watches our own work.
 </details>
 
 **8.3** Explain why the front-end filter matters *specifically* at a mass
 casualty scene, rather than as generic good practice.
 
-**8.3a** A reviewer says: "You have four receive chains, so you can watch four
+**8.3a** A reviewer says: "You have eight receive chains, so you can watch eight
 frequencies." Explain why that is wrong and what actually happens instead. This
 is a real correction a reviewer made to our own document, when the part had two
-chains rather than four — the error does not depend on the number.
+chains rather than eight — the error does not depend on the number.
 
 **8.4** Someone asks what the GPU is for. Give the honest answer.
 
@@ -1107,22 +1176,27 @@ A three-element array needs three receive paths sampled against one phase
 reference, and the part we originally chose had two on its die — it was built for
 2×2 MIMO, which is what the small-cell market wanted. There is no mode that
 creates a third, so the options were to synchronise two chips, to time-share two
-with an RF switch, or to move to a part with four.
+with an RF switch, or to move to a part with more chains.
 
-We moved to the part with four, and the deciding argument was a failure mode
-rather than effort. Synchronising two chips is established practice, but it can
-half-succeed — and a half-succeeded synchronisation gives you a **wrong bearing
-rather than a missing one**. This design spends a lot of effort eliminating
-errors that arrive looking confident, so removing a whole mechanism capable of
-producing one was worth more than the engineering time it saved.
+We moved to a part with more chains, and the deciding argument was a failure
+mode rather than effort. Synchronising two chips is established practice, but it
+can half-succeed — and a half-succeeded synchronisation gives you a **wrong
+bearing rather than a missing one**. This design spends a lot of effort
+eliminating errors that arrive looking confident, so removing a whole mechanism
+capable of producing one was worth more than the engineering time it saved.
 
-Three receivers are used by the array. The fourth is spare, and I would record it
-as headroom rather than pretend it has a plan: it could measure the calibration
-tone source directly, or drive a fourth element. We have not chosen.
+Three receivers are used by the array, and the fourth is not spare any more —
+it is a direct tap on the calibration tone source itself, which is what lets us
+tell the tone drifting from the chain drifting. That used to be recorded as
+unassigned headroom; it is assigned now.
 
-What it cost us is a harder digital interface — a serial link instead of parallel
-— which pushes the FPGA upmarket. And it narrowed our tuning range, which is
-exercise 8.2a.
+What actually decided we needed *two* groups of these, rather than one, was a
+second finding: the array had been listening to the downlink only, so every
+bearing it could compute would have been a bearing to the tower. Handsets
+transmit on the uplink, 45.34 megahertz away, which is wider than one group's
+capture — so we ended up with four chips in two groups rather than one chip
+with four chains. That also turned out to restore a tuning-range regression the
+single four-chain chip had quietly introduced, which is exercise 8.2a.
 </details>
 
 **8.6** Someone says "channel" in a technical conversation. List the six things
@@ -1134,13 +1208,17 @@ they might mean, and say which one caused a false claim in our own document.
 <summary>Model answer</summary>
 
 Through an FPGA, and an earlier version of my block diagram had that stage
-missing. The transceiver puts I/Q out over a high-speed serial interface called
-JESD204B/C, and no Jetson has an input for that — Jetson ingest is CSI, USB and
-PCIe. So there is a Zynq-class FPGA, one with gigabit serial transceivers,
-terminating that link and feeding the Jetson over PCIe. Analog Devices publish the interface core, so it is integration work
+missing. The transceivers put I/Q out over LVDS or CMOS SSI, and no Jetson has
+an input for that — Jetson ingest is CSI, USB and PCIe. So there is an ordinary
+Zynq-class FPGA terminating that link from all four chips and feeding the
+Jetson over PCIe. It needs no gigabit serial transceivers, because LVDS/CMOS SSI
+is a source-synchronous parallel interface rather than a high-speed serial one —
+that's actually cheaper than the part we briefly considered in between, which
+needed a serial interface called JESD204B/C and would have pushed the FPGA
+upmarket. Analog Devices publish the interface core, so it is integration work
 rather than novel development. It also turned out to be where the channeliser
-belongs, which means the link to the Jetson carries a few 12.5 kHz streams
-instead of the raw wideband capture.
+belongs, which means the link to the Jetson carries a few 12.5 kHz streams per
+group instead of the raw wideband capture.
 </details>
 
 **8.8** A commander asks: "if my officer's radio couldn't reach the tower, could
@@ -1149,22 +1227,23 @@ your box still hear him?" Answer honestly, including what is and is not built.
 <details>
 <summary>Model answer</summary>
 
-The physics is on our side and the current hardware is not, and I will take those
-in order. His call failed because it was too weak at the tower, and the tower may
-be ten kilometres away while we are a hundred metres from him — worth something
-like forty to sixty decibels, so the signal at us could be tens of thousands of
-times stronger. If we heard it we would decode it fully: who he is, what
-talkgroup he wanted, whether he declared an emergency. And a radio that gets no
-answer keeps retrying, so the failure case actually gives us more to work with
-than the success case.
+The physics is on our side, and the hardware now is too — the software is what
+is not built yet, and I will take those in order. His call failed because it was
+too weak at the tower, and the tower may be ten kilometres away while we are a
+hundred metres from him — worth something like forty to sixty decibels, so the
+signal at us could be tens of thousands of times stronger. If we heard it we
+would decode it fully: who he is, what talkgroup he wanted, whether he declared
+an emergency. And a radio that gets no answer keeps retrying, so the failure
+case actually gives us more to work with than the success case.
 
-What we do not have built today is coverage of the frequency he transmits on. We
-listen to what the tower sends; he transmits 45 megahertz away. The chip we have
-since selected has 200 megahertz of bandwidth, so covering both is comfortable
-rather than marginal — but that is a decision on paper, not a box I can show you,
-and one measurement is still outstanding: how well we hear a weak handheld while
-a patrol car transmits nearby. So it is on the roadmap with a clear route, and I
-am not going to tell you it works now.
+We used to have a real hardware gap here: we only listened to what the tower
+sends, and he transmits 45 megahertz away, on the uplink. That is closed now —
+we added a second coherent group tuned to exactly that band, for direction-
+finding reasons as much as this one. So the receiver can hear him today. What is
+still missing is the software wired up to decode and report on that group, and
+one measurement that has not been done: how well we hear a weak handheld while a
+patrol car transmits nearby. So the hardware answer is yes, the product answer
+is not yet, and I am not going to blur those two together.
 </details>
 
 ---
@@ -1173,11 +1252,25 @@ am not going to tell you it works now.
 
 - The disclaimer, and why leading with it is a strength.
 - Each stage of the signal chain and what it does in plain English.
-- Why the ADRV9026 is the right chip, with three independent reasons — and the
-  one claim it broke, which you should raise before anyone else does.
-- Why the receive chains do **not** give you one frequency each, and how
-  wideband capture with digital channelisation actually meets the requirement.
-- The one deployment case where the shared oscillator genuinely blocks you.
+- **Why four ADRV9002 chips in two coherent groups is the right architecture**,
+  and the two reversals of mind that got there in one day — a failure mode
+  argument, a tuning-range regression, and a discovery that the array had been
+  listening to the wrong band entirely.
+- **The biggest finding: the array was pointed at the tower**, why every
+  bearing it could compute was therefore a bearing nobody needed, and why the
+  fix was to add a second coherent group tuned to the uplink.
+- **Why two narrow groups rather than one wide capture**: the 45.34 MHz gap
+  between uplink and downlink barely fits one group and produces one shared
+  gain control — which would let a nearby patrol car desensitise the control
+  channel the whole product depends on.
+- **The tower as a permanent calibration reference**: why a surveyed, known-
+  position transmitter that we are already listening to gives a continuous,
+  free check on the whole direction-finding chain, what four specific failures
+  it catches, and its two honest limits.
+- Why the receive chains within a group do **not** give you one frequency each,
+  and how wideband capture with digital channelisation actually meets the
+  requirement.
+- The one deployment case where a shared tuning window genuinely blocks you.
 - Why one compute module does both jobs, and what the GPU is really for.
 - Why receive-only is genuinely lean rather than a compromise.
 - Where the engineering effort actually concentrates.
@@ -1192,8 +1285,8 @@ am not going to tell you it works now.
   from the first diagram, and why it improves the architecture rather than
   burdening it.
 - Why the Orb can hear transmissions the network missed — the closer-not-better
-  argument — and why Case A needs hardware we do not have while Case B needs
-  none.
+  argument — and why Case A now has the hardware it needs and is waiting on
+  software, while Case B needed neither.
 - Why direction finding works below the decode threshold.
 - **The dynamic-range tension**: wideband capture trades weak-signal sensitivity
   for channel count, and no budget exists for it yet.
@@ -1211,12 +1304,19 @@ am not going to tell you it works now.
   co-phased combining does instead.
 - Why the array is load-bearing for *reception*, not just for bearings — the
   strongest argument for dropping the single-element module.
-- **What JESD204B/C, LVDS and FPGA actually mean**, and why the three chains stop
-  being three wires at the converter.
+- **What LVDS/CMOS SSI, JESD204B/C and FPGA actually mean**, why we use the
+  former and not the latter, and why the three chains in a group stop being
+  three wires at the converter.
 - Why thirty channel-streams needs nowhere near thirty channel separators.
-- **Why a third antenna needs a second chip** — a property of the part, not a
-  defect — what synchronising two costs, and what the quad-channel alternative
-  would trade away.
+- **Why a third array element needs a third coherent chain, and why that now
+  costs four chips rather than one or two** — the failure-mode argument for not
+  synchronising separate chips by hand, and why on-chip synchronisation is
+  required even within a single chip, which is what made adding more chips
+  acceptable.
+- **The Wilkinson split after the LNA**, why it costs 0.04 dB instead of 3.2 dB,
+  and why it changes only the processing body and not the band modules.
+- **Why there are two calibration tones, not one**, and what the fourth,
+  antenna-bypassing chain in each group is for.
 
 Full acronym list: [`docs/hardware-design.md`](../docs/hardware-design.md)
 Appendix A.

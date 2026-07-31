@@ -24,6 +24,45 @@ The right framing when presenting:
 
 ---
 
+## 9.1a Which band the array actually listens to — and why it changed
+
+**This is worth knowing before anything else in this module, because it is the
+finding that reshaped the hardware underneath direction finding.** The array
+used to capture only the *downlink* — what the tower transmits. Every bearing
+the system could ever have computed from that capture would therefore have been
+a bearing **to the tower**, and a surveyed radio mast's position is never in
+question. Handsets transmit on the **uplink** and on talkaround, neither of
+which was in the captured slice. Direction finding on handsets — the entire
+point of this module — cannot work on a downlink-only capture, no matter how
+good the solver in `df/` is.
+
+**The fix was to add a second coherent group tuned to the uplink.** The array
+is now sampled by **two coherent groups** of three chains each (four ADRV9002
+chips, §8.3): an uplink group at ~806–808 MHz, which hears handset requests and
+granted voice — the bearings that actually matter — and a downlink group at
+~851–853 MHz, which hears the tower and `8TAC95D` talkaround.
+
+**The downlink group was not discarded once the uplink group took the
+operational job — it was repurposed.** A tower is a transmitter at a surveyed,
+known position, radiating more or less continuously. So the downlink group is
+now a **permanent calibration reference**: it is always measuring a bearing
+whose correct answer is already known, which gives a continuous, free,
+end-to-end check on the array manifold, feed phase, connectors, splitters,
+chip synchronisation and magnetometer heading — see §9.6b.
+
+**Two narrow groups rather than one wide one, and it is worth knowing why.**
+Handset emissions span 806.2125 MHz to 851.5500 MHz — **45.34 MHz**, set by the
+800 MHz duplex split. One coherent group covering all of that needs at least
+45 MHz; the current transceiver's groups reach 40 MHz each, so one group cannot
+do it regardless. But even if it could, a single wide capture has **one gain
+control for everything in it** — a patrol car keying up on the uplink thirty
+metres away would drag down the gain for the downlink control channel too, and
+the control channel is where every alarm this product raises comes from. Two
+groups keep two independent gain controls, so a strong uplink signal
+desensitises the uplink group only.
+
+---
+
 ## 9.2 Why one *antenna* cannot do it
 
 **Bearing versus fix — get this distinction right before anything else.** One
@@ -45,9 +84,14 @@ and useless for a transmission lasting two seconds.
 antennas. It reaches one fractionally before another, and that tiny difference
 gives the angle. No moving parts, fast enough for a short transmission.
 
-We take the second. It is why the ADRV9026's four coherent receive chains matter
-— they share an oscillator, which is exactly the common phase reference an
-interferometer needs.
+We take the second. It works because the array's receive chains are
+phase-aligned against each other by on-chip synchronisation (MCS) — exactly the
+common phase reference an interferometer needs. The array is sampled by two
+**coherent groups** of three chains each, four ADRV9002 chips in total (§8.3):
+one tuned to the uplink, where handsets actually transmit, and one tuned to the
+downlink, where the tower does. The uplink group is the one whose bearings
+matter operationally. The downlink group does something else entirely — see
+below.
 
 ### Two problems the array creates
 
@@ -80,12 +124,20 @@ needs a third *coherent* receive **chain** (§8.1a — say chain, not channel, o
 will walk into the error the hardware document already made). The AD9361 we
 started with has two, which left the third-element disambiguation unavailable.
 
-**Resolved by changing the part.** The ADRV9026 carries four coherent receivers
-on one die with synchronisation built in, so the third chain exists and the
-front-back ambiguity is resolvable. The deciding argument was a failure mode:
-synchronising two separate chips can half-succeed, and a half-succeeded
-synchronisation produces a **wrong bearing rather than a missing one**. Two
-AD9361s remain the documented fallback.
+**Resolved, in two steps.** We first moved to a single chip carrying four
+coherent receive chains on one die, with synchronisation built in, so the third
+chain existed and the front-back ambiguity became resolvable. The deciding
+argument was a failure mode: synchronising two separate chips can half-succeed,
+and a half-succeeded synchronisation produces a **wrong bearing rather than a
+missing one**.
+
+That single-chip choice then had to change again, for a reason unrelated to
+disambiguation — the array turned out to be listening to the wrong band
+entirely, covered in §9.1a below. **The final architecture is four ADRV9002
+chips, arranged as two coherent groups of three chains each.** Each group on its
+own resolves the front-back ambiguity exactly as the single four-chain chip
+would have — there are simply two groups now, doing different jobs. Two
+synchronised AD9361s remain the documented fallback if neither is available.
 
 The other options considered and not taken are set out in
 [`docs/hardware-design.md`](../docs/hardware-design.md) §5.5: stay at two elements
@@ -114,9 +166,12 @@ The real risks are calibration drift and multipath fading changing between
 intervals — not transmission length. **But be able to say why, because "our
 transmissions are long" is not the reason.**
 
-If you are asked about the third chain, the honest answer is: *"That is an open
-hardware question, here are the four options, and nobody has measured which one
-wins."* Do not claim a three-element array works on the current part.
+If you are asked about the third chain today, the honest answer has changed: the
+current part gives every module three coherent chains plus a calibration
+reference, in each of two groups, so the front-back ambiguity is resolved on the
+part actually selected. What is still open is validation — nobody has measured
+MCS's real-world phase alignment in this exact configuration, which is a
+different and smaller claim than "the chain does not exist."
 
 **The bearing is relative to the antenna, not the world.** The array measures an
 angle in its own frame. Converting that to a bearing relative to true north needs
@@ -200,17 +255,18 @@ running on the ordinary processor, using roughly **a tenth of a percent of one
 CPU core**. Not the GPU either — that is there for the local AI fallback.
 
 What direction finding actually requires is a particular *antenna arrangement*
-and a *receiver that samples all elements against one shared clock*. Both of
-those are in the design for other reasons as well — the array also buys us
-sensitivity, and the shared clock is a property of the transceiver we chose for
-its tuning range.
+and a *receiver that samples all elements against one shared phase reference*.
+Both of those are in the design for other reasons as well — the array also buys
+us sensitivity, and the shared reference is what a **coherent group** *is*
+(§8.3, §9.1a): three chains, phase-aligned by on-chip synchronisation.
 
-**The phrase to avoid.** The three receive paths are **coherently sampled but
-phase-offset**. Never say they are "unsynchronised versions" of the signal. The
-synchronisation is the precondition and the phase offset is the measurement — if
-they really were unsynchronised, their relative phase would be their own
-oscillators drifting, which would swamp the half-nanosecond of arrival difference
-completely and there would be no bearing at all.
+**The phrase to avoid.** The three receive paths within a coherent group are
+**coherently sampled but phase-offset**. Never say they are "unsynchronised
+versions" of the signal. The synchronisation is the precondition and the phase
+offset is the measurement — if they really were unsynchronised, their relative
+phase would be their own oscillators drifting, which would swamp the
+half-nanosecond of arrival difference completely and there would be no bearing
+at all.
 
 ### And a bearing is not produced in one step
 
@@ -441,6 +497,44 @@ Full budget, including the cross-range table (5° at 300 m is 26 m; at 1 km it i
 Candidate fixes for the magnetometer half are in §5.8 — **marked pending, with
 nothing chosen.** Present it that way.
 
+## 9.6b The tower as a permanent calibration reference
+
+Everything in §9.6a describes errors we can only estimate or bound. This
+section is different: it is a mechanism that is actually *watching itself*
+while the unit runs, because of the band-split forced in §9.1a.
+
+**The downlink coherent group is tuned to the tower — a transmitter at a
+surveyed, known position, radiating more or less continuously.** So it is
+always measuring a bearing whose correct answer is already known. That is a
+continuous, free, end-to-end check on the array manifold, feed phase, dock
+connectors, splitters, chip synchronisation and magnetometer heading, all at
+once — nothing else in this design validates all of those together.
+
+**Four specific failures it catches:**
+
+| Failure | How it shows up |
+|---|---|
+| A synchronisation that half-succeeded | The reference bearing steps at the moment of a retune |
+| Magnetometer heading error | The reference bearing is offset by a constant amount |
+| Multipath | The reference bearing wanders while the unit and the tower are both stationary |
+| Manifold or connector drift | The reference bearing creeps slowly across a deployment |
+
+**This is the sentence that defuses the objection which drove the whole
+decision.** We moved away from synchronising separate chips by hand because a
+half-succeeded synchronisation gives you a wrong bearing rather than a missing
+one — a silent, confident error. With a known-position transmitter permanently
+in view, **that failure is no longer silent.** It becomes a detected fault the
+moment the reference bearing moves.
+
+**Two honest limits, worth having ready because they are the natural follow-up
+questions.** First, this validates everything *shared* between the two groups —
+the tower bearing cannot fix a bearing to a *handset*, because that path's
+multipath is its own problem and the tower's reflections are not necessarily
+the same ones. Second, it validates the uplink group only *inasmuch as the two
+groups share hardware* — the array, the LNAs, the manifold — since the uplink
+group has its own synthesiser, its own gain control and its own splitter legs.
+Neither limit is a reason not to do it; both are reasons not to oversell it.
+
 ---
 
 ## 9.7 What this artifact is not
@@ -505,12 +599,13 @@ receive-only unit is intended to be all-band, so congestion detection and
 blocked-attempt reporting are meant to work on a VHF system exactly as
 demonstrated. It is only the locating feature that is band-limited by physics.
 
-**One correction to carry with that claim, because it is currently overstated.**
-The transceiver we selected tunes down to 650 MHz, not to 70 MHz as the previous
-part did — so VHF and UHF need a mixer in the band module to shift them up into
-range. That is a proposed fix rather than a built one (`docs/hardware-design.md`
-§3.3, open item J). Until it is settled, say the all-band claim as an intent with
-a known gap, not as a capability.
+**One piece of history worth knowing, because it briefly made that claim
+false.** For one day this year the transceiver under consideration tuned down
+to 650 MHz only, which would have put VHF and UHF below its floor and needed a
+mixer to fix. The transceiver we actually selected — four ADRV9002 chips —
+tunes 30 MHz to 6 GHz, lower than the original part, so the gap never shipped
+and no mixer is needed. Good to know the history happened, so you are not
+caught out if someone read an earlier draft of the design document.
 </details>
 
 **9.5c** A reviewer says: "Once you've calibrated the array, bearing error should
@@ -550,6 +645,16 @@ gunshot localisation is selling a different product with different sensors.
 ## You can now explain
 
 - Why this is a roadmap artifact and not part of the demo.
+- **Which band the array actually listens to, and why it changed**: the array
+  used to capture the downlink only, which meant every bearing it computed
+  would have pointed at the tower; the fix was a second **coherent group**
+  tuned to the uplink, where handsets transmit.
+- **Why two narrow coherent groups rather than one wide one** — the 45.34 MHz
+  uplink/downlink gap, and the shared-gain-control problem a single wide
+  capture would have created for the control channel.
+- **The tower as a permanent calibration reference**: why the repurposed
+  downlink group gives a continuous, free check on the whole DF chain, the four
+  failures it catches, and its two honest limits.
 - **Bearing versus fix**: one unit gives a direction, two give a location. Why
   a single *element* cannot do either, and what an array adds.
 - **Share the conclusion, not the evidence** — why units exchange hundred-byte
@@ -564,9 +669,10 @@ gunshot localisation is selling a different product with different sensors.
   the cos(φ) = cos(−φ) argument for why a vertical array cannot work at all.
 - Why the flat-lid design degrades gracefully where the vertical one failed
   outright.
-- Why a third array element needs a third coherent receive chain that the
-  current transceiver does not have, the four options, and why the switching
-  option deserves more credit than it usually gets.
+- Why a third array element needs a third coherent receive chain, why the
+  current transceiver has one in each of two coherent groups, the options that
+  were considered along the way, and why the switching option deserves more
+  credit than it usually gets.
 - **Why calibration only removes the small errors**, and why multipath and
   magnetometer bias — the two largest terms — survive it.
 - Why a multipath bearing arrives looking *more* trustworthy than the real one,

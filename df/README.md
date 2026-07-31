@@ -47,10 +47,21 @@ two things:
   before another, and that difference gives the angle. No moving parts, and fast
   enough for a short transmission.
 
-The second is the right choice, and it drives the hardware: the ADRV9026
-transceiver provides **four coherent receive chains on one die**, locked to a
-common local oscillator. That shared oscillator is precisely what interferometry
-needs — the elements must be sampled against a common phase reference.
+The second is the right choice, and it drives the hardware: **four Analog
+Devices ADRV9002 transceivers, arranged as two "coherent groups" of three
+receive chains each**, plus a calibration reference chain per group. A
+coherent group is three chains phase-aligned against each other by on-chip
+synchronisation (MCS) — exactly the common phase reference an interferometer
+needs.
+
+**There are two groups because the array listens on two different windows at
+once.** An uplink group (~806–808 MHz) hears handset requests and granted
+voice — the bearings that actually matter for locating an officer. A downlink
+group (~851–853 MHz) hears the tower and `8TAC95D` talkaround, and doubles as a
+known-position calibration reference (see below). Each element's signal is
+split after its low-noise amplifier and fed to both groups, so the same three
+antennas support two independent bearings at once. Full detail in
+[`docs/hardware-design.md`](../docs/hardware-design.md) §3.3.
 
 ### Two problems the array creates
 
@@ -79,23 +90,26 @@ be about half a wavelength, so the array's physical size is set by the band. At
 17.6 cm it stays unambiguous across 800 and 700 MHz and degrades gracefully at
 UHF, but it is **unusable at VHF**, where half a wavelength is 97 cm.
 **Direction finding is a 700/800 MHz capability**, limited by physics rather than
-by the design. (The base receive-only unit is intended to be all-band, but the
-selected transceiver's 650 MHz floor leaves VHF and UHF needing an up-converter —
-`docs/hardware-design.md` §3.3, open item J.)
+by the design. (The base receive-only unit is intended to be all-band, and the
+selected transceiver's 30 MHz–6 GHz tuning range covers VHF and UHF with no
+up-converter needed — an earlier part briefly under consideration would have
+needed one, but that was resolved before it shipped.)
 
-**A third element needs a third coherent receive chain, and that was an open
-question until the transceiver changed.** The AD9361 originally selected has only
-two. Resolved by moving to the ADRV9026, which carries four with synchronisation
-built in; the deciding argument was that synchronising two separate chips can
-half-succeed, and a half-succeeded synchronisation yields a **wrong bearing
-rather than a missing one**. Two synchronised AD9361s remain the documented
-fallback. The options considered and rejected are in
+**A third element needs a third coherent receive chain, and this is now
+resolved.** The AD9361 originally selected has only two per chip. The current
+architecture — four ADRV9002 chips in two coherent groups of three chains each,
+plus a reference — gives every group its own third chain, with synchronisation
+handled by MCS rather than by hand. The deciding argument along the way was
+that synchronising two separate chips by hand can half-succeed, and a
+half-succeeded synchronisation yields a **wrong bearing rather than a missing
+one**. Two synchronised AD9361s remain the documented fallback. The options
+considered and rejected are in
 [`docs/hardware-design.md`](../docs/hardware-design.md) §5.5.
 
-The solver in this folder is unaffected by that choice — it consumes bearings
-and does not care how they were obtained. But be precise when presenting: the
-two-station geometry it demonstrates is achievable on today's part, and the
-front-back disambiguation that a third element would provide is not.
+The solver in this folder is unaffected by any of this — it consumes bearings
+and does not care how they were obtained. The front-back disambiguation a third
+element provides is achievable on the part actually selected; what has not been
+measured is MCS's real phase alignment in this specific configuration.
 
 **The bearing is relative to the antenna, not to the world.** The array measures
 the angle in its own reference frame. Turning that into a bearing relative to
@@ -333,6 +347,40 @@ independent of signal strength, or outside knowledge. The full error budget —
 why multipath is the dominant term, why it arrives looking *more* trustworthy
 than the direct path, and what can be done about it — is in
 [`docs/hardware-design.md`](../docs/hardware-design.md) §5.7.
+
+---
+
+## A hardware check the solver never sees: the tower as a calibration reference
+
+Everything above is the solver reasoning about bearings it is handed, with no
+way to know whether the unit that produced one is trustworthy. There is one
+additional check, upstream of this code entirely, worth knowing about because
+it directly answers "how would you know if a station's own hardware were
+lying to it?"
+
+**The downlink coherent group is tuned to the tower — a transmitter at a
+surveyed, known position, transmitting more or less continuously.** So a unit
+is always able to compute a bearing whose correct answer is already known,
+independent of anything a handset ever does. That is a continuous, free,
+end-to-end check on the array manifold, feed phase, dock connectors,
+splitters, chip synchronisation and magnetometer heading, running in the
+background of every deployment.
+
+**It catches exactly the kind of failure this solver cannot see from the
+outside:** a chip synchronisation that half-succeeded (the reference bearing
+steps at a retune), a magnetometer heading error (the reference bearing sits
+at a constant offset), multipath at the unit's own site (the reference bearing
+wanders while nothing is moving), and slow manifold or connector drift (the
+reference bearing creeps over a deployment). A unit that fails this check is
+one whose *handset* bearings should be trusted less, even though the solver
+above has no way to compute that from the bearing report alone.
+
+**Two honest limits.** It validates what the uplink group shares with the
+downlink group — the antenna, the LNAs, the manifold — not the uplink group's
+own PLL or gain stage, which it does not touch. And it cannot fix a bearing to
+a *handset*: that path's multipath is its own problem, unrelated to whatever
+the tower's signal happened to do. Full treatment in
+[`docs/hardware-design.md`](../docs/hardware-design.md) §3.3.
 
 ---
 

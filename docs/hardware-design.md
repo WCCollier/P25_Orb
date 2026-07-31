@@ -914,23 +914,40 @@ sits behind an analog chain whose nonlinearity and noise matter as much, so the
 meaningful specification is end-to-end. [Confirmed — searched; a support-forum
 thread asks exactly this and the figure is not in the published material.]
 
-| Specification | Value |
-|---|---|
-| **SFDR** | **81 dBc**, continuous wave, anywhere in band |
-| **IIP2** | 58–65 dBm across 800 MHz–5.7 GHz |
-| **IIP3 (wideband)** | 15–18 dBm |
+**Corrected 2026-07-31.** An earlier revision of this table carried **ADRV9026**
+figures — 81 dBc SFDR, IIP2 58–65 dBm, IIP3 15–18 dBm — and left them in place
+after the part changed. They are the wrong part's numbers and have been removed
+rather than re-tagged, because a specification attributed to the component you
+did not select is worse than no specification at all.
 
-[Confirmed — Analog Devices published specifications.]
+| Specification | Value | Note |
+|---|---|---|
+| **Dynamic range** | **150 dBc/Hz** | And **maintained across the receiver's gain-control range**, which matters more than the headline — AGC backoff does not spend it |
+| **Max receiver gain** | ~20 dB | |
+| **Gain control range** | 34 dB | |
+| **Gain / linearity trade** | **1 dB of gain reduction buys 1 dB of IIP3 *and* 1 dB of IIP2** | A directly usable design lever, not a fixed property |
+| **Image rejection, narrowband IF mode** | ~90 dBc | Against DMR's 70 dBc spurious-response requirement, so there is stated margin |
 
-**These are cellular base-station-grade figures, and that pedigree is the right
-one.** A base station's job is receiving weak handsets while adjacent carriers
-transmit at high power — structurally our problem. 81 dBc also compares
-favourably against the ~74 dB a bare 12-bit converter would give.
+[Confirmed — Analog Devices technical material.]
 
-**But the problem has not shrunk so much as become better understood.** The
-figures are quoted at conditions that are not ours, two of the three mechanisms
-get no help from processing gain, and **nothing has been measured.** No
-dynamic-range budget exists for this design. [Assumption]
+**One configurable choice is worth taking deliberately.** The receiver carries
+both a high-power and a low-power ADC, and **the HPADC gives roughly 5 dB better
+IIP3 at the cost of more power.** [Confirmed] Item G resolved our supply envelope
+to a few hundred watts, so **we should be specifying the HPADC** — 5 dB of
+third-order intercept is bought with power we demonstrably have, and
+intermodulation is the mechanism processing gain cannot fix. This is the one
+place in the design where the generous power budget converts directly into
+sensitivity.
+
+**The pedigree is right this time.** The previous part's figures were
+base-station-grade, which was defensible by analogy. These are from a part
+designed for **handheld land mobile radio operating next to strong blockers** —
+the same problem, at the same scale, in the same market.
+
+**What has still not happened is a budget.** No numbers exist for our windows,
+our filters, or our environment, and the third-order behaviour with several
+strong uplink emitters inside one ~2 MHz window is exactly what needs computing.
+[Assumption]
 
 ##### The requirement that follows regardless of how the measurements come out
 
