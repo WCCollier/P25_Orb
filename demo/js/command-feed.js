@@ -78,7 +78,27 @@
     return 'One signal, uncorroborated';
   }
 
+  /*
+   * The RF tab drives a CLOCK tick on essentially every animation frame while
+   * playing, and each one schedules a render. Rebuilding the alert cards from
+   * scratch every time would retrigger their CSS entrance animation before it
+   * ever finishes, so the panel would never show more than a flicker. This
+   * signature lets renderAlarms skip the rebuild when nothing on screen would
+   * actually change.
+   */
+  let lastAlarmsSignature = null;
+  function alarmsSignature(alerts) {
+    return alerts.map((a) =>
+      [a.unit, a.tier, a.acknowledged, a.updatedAt, a.blockedAttemptsSince,
+       a.subjectHeardFrom, a.relatedTraffic.length, a.signals.length].join(':')
+    ).join('|');
+  }
+
   function renderAlarms(state) {
+    const signature = alarmsSignature(state.alerts);
+    if (signature === lastAlarmsSignature) return;
+    lastAlarmsSignature = signature;
+
     const container = el('alarms');
     if (state.alerts.length === 0) {
       container.innerHTML = '<div class="empty">No alarms. Routine traffic only.</div>';
