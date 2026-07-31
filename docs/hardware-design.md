@@ -2567,6 +2567,35 @@ sensitivity that §3.3.2's subscriber-side capability depends on — the second 
 of the product's own headline claim. **It is the only open item that constrains a
 capability the product is actually sold on.**
 
+##### It is present in the current design, not waiting on uplink coverage
+
+**Noted 2026-07-31. Previously implied that this problem arrives with the
+subscriber-side work; it does not.**
+
+`8TAC95D` is **simplex** — no repeater, no uplink/downlink pair. It sits at
+851.5500 MHz, **337.5 kHz above the control channel**, inside the same captured
+slice and therefore **under the same shared gain setting** (§3.3.1).
+
+The consequence: a handheld or vehicle radio keying up on talkaround **thirty
+metres from the unit** is, at our antenna, far stronger than a tower ten
+kilometres away. That transmission pulls the gain down for the *entire* slice —
+including the control channel that congestion detection and blocked-attempt
+reporting depend on. **The blocking scenario is reachable today, at 800 MHz, with
+the module exactly as specified.**
+
+This is also the sharpest instance of a pattern worth naming: **talkaround is the
+one thing in our slice transmitted by something that might be standing next to
+us.** Everything else we receive comes from a tower at a known distance and a
+steady level. So the fallback channel is simultaneously the place we hear
+subscribers directly (§3.3.2) and the place our worst in-slice interferer
+arrives — the same duality that makes the uplink band both the prize and the
+poison.
+
+**Design consequence:** a transceiver's blocking and dynamic-range performance is
+a *current* selection criterion, not a future one, and the instrument-health
+requirements of `docs/software-prd.md` §1.5 are exercised by the demonstrated
+configuration rather than only by a roadmap one.
+
 **And it is the one open item with a requirement attached that does not wait for
 it.** However the measurements come out, a vehicle can always park closer, so the
 unit must detect and announce its own desensitisation (§3.3.1, and
