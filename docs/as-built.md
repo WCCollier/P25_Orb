@@ -416,13 +416,11 @@ amplifier is unpowered. It is the lean configuration, not a stripped-down one.
   size scales with wavelength, so 700/800 fits a case lid, UHF needs a larger
   case, and VHF needs a mast or vehicle mount. Receive-only monitoring works on
   every band with an ordinary whip. `hardware-design.md` §5.1.
-- **The captured slice covers downlinks only.** The module as specified hears
-  what the tower transmits, not what subscriber radios transmit — those are 45
-  MHz away in the 800 MHz band. Everything the demonstrated product reasons about
-  is either repeated onto a downlink or is simplex direct traffic, so this is
-  correct for what was built. It does mean the module cannot hear a transmission
-  the infrastructure never repeated. `hardware-design.md` §3.3.1 limitation 3,
-  and §3.3.2 for what closing it would cost.
+- **The capture used to cover downlinks only, and that is now fixed.** The module
+  as originally specified heard only what the tower transmits, so it could not
+  hear a subscriber transmission the network never repeated — **and every bearing
+  it could compute was a bearing to the tower.** Closed by the two-coherent-group
+  architecture; the uplink is what the array points at. `hardware-design.md` §3.3.
 - **"Hearing what the network missed" (`hardware-design.md` §3.3.2) is analysis,
   not code.** The detection engine consumes an event stream and knows nothing
   about signal strength. It is documented because it is the strongest capability

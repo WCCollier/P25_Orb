@@ -960,19 +960,30 @@ configuration, because the Texas plan designates a talkaround channel **per
 band**, so an agency's trunk and its fallback are in the same band by
 construction.
 
-##### Limitation 3: the slice covers downlinks only
+##### Limitation 3 — RESOLVED: the capture used to cover downlinks only
 
-**This is a real gap in the current specification, not a detail.** The 2.5 MHz
-figure above spans the *downlink* — what the tower transmits. Subscriber radios
-transmit on **uplink** frequencies 45 MHz below in the 800 MHz band. They are
-not in the captured slice, and nothing in the design as specified hears them.
+**This was the most serious gap in the specification, and it is now closed.**
 
-For the demonstrated product this is correct and sufficient: everything the Orb
-reasons about is either repeated by the infrastructure onto a downlink, or is
-simplex direct traffic like 8TAC95D that appears on its own single frequency.
-But it means **the module as specified cannot hear a subscriber transmission
-that the infrastructure never repeated** — which is exactly the failure case
-§3.3.2 is about. See there for what it would take.
+An earlier revision captured a single ~2.5 MHz *downlink* slice — what the tower
+transmits. Subscriber radios transmit on **uplink** frequencies 45 MHz below, so
+nothing in the design heard them directly. Two consequences followed, and the
+second went unnoticed for longer than the first:
+
+- **The Orb could not hear a subscriber transmission the infrastructure never
+  repeated** — the exact failure case §3.3.2 exists to address.
+- **Every bearing the direction-finding array could compute was a bearing to the
+  tower**, because the tower was the only thing in the captured slice apart from
+  simplex talkaround. A bearing to a transmitter at a known, surveyed position is
+  operationally worthless.
+
+**Closed by the two-group architecture of §3.3.** The uplink window is not an
+add-on: it is what the direction-finding array is pointed at. Handset requests
+and granted handset voice are now both captured and located, and the downlink
+window is served by its own coherent group.
+
+**What remains true** is that a *single* group still sees one window. The 45 MHz
+duplex split is wider than any one ADRV9002 group can span, which is precisely
+why there are two.
 
 ##### Expandability — what is a software change and what is not
 
