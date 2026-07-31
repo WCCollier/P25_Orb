@@ -1,0 +1,641 @@
+<title>P25 Orb — Technical Plates 2–4</title>
+
+<style>
+  :root {
+    --paper:    #F2F4F1;
+    --surface:  #FBFCFA;
+    --ink:      #14201C;
+    --rule:     #C3CCC5;
+    --muted:    #6B7A73;
+    --uplink:   #B4571A;
+    --downlink: #16746B;
+    --grid:     rgba(20, 32, 28, .055);
+
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0D1412; --surface: #131C19; --ink: #DFE7E2; --rule: #2A3833;
+      --muted: #8B9A93; --uplink: #E8934A; --downlink: #4FBFAF;
+      --grid: rgba(223, 231, 226, .05);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0D1412; --surface: #131C19; --ink: #DFE7E2; --rule: #2A3833;
+    --muted: #8B9A93; --uplink: #E8934A; --downlink: #4FBFAF;
+    --grid: rgba(223, 231, 226, .05);
+  }
+  :root[data-theme="light"] {
+    --paper: #F2F4F1; --surface: #FBFCFA; --ink: #14201C; --rule: #C3CCC5;
+    --muted: #6B7A73; --uplink: #B4571A; --downlink: #16746B;
+    --grid: rgba(20, 32, 28, .055);
+  }
+
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--serif); font-size: 17px; line-height: 1.62;
+    margin: 0; padding: 0 24px 96px;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .prose { max-width: 65ch; }
+
+  header.masthead {
+    padding: 72px 0 40px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 48px;
+  }
+
+  .eyebrow {
+    font-family: var(--sans); font-size: 11px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 18px;
+  }
+
+  h1 {
+    font-family: var(--sans); font-size: clamp(30px, 4.4vw, 46px);
+    font-weight: 640; letter-spacing: -.02em; line-height: 1.08;
+    text-wrap: balance; margin: 0 0 20px;
+  }
+
+  .standfirst { font-size: 19px; color: var(--muted); margin: 0; max-width: 62ch; }
+
+  h2 {
+    font-family: var(--sans); font-size: 22px; font-weight: 620;
+    letter-spacing: -.01em; text-wrap: balance; margin: 0 0 6px;
+  }
+
+  p { margin: 0 0 18px; }
+  p:last-child { margin-bottom: 0; }
+  section { margin-bottom: 64px; }
+
+  .section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .section-head p { margin: 0; color: var(--muted); font-size: 16px; max-width: 62ch; }
+
+  strong { font-weight: 600; }
+  code { font-family: var(--mono); font-size: .88em; }
+
+  .plate {
+    background: var(--surface);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--rule);
+    padding: 18px;
+    overflow-x: auto;
+  }
+
+  .plate svg { display: block; width: 100%; min-width: 720px; height: auto; }
+
+  /* ---- shared svg drawing language, same as Plate 1 ---- */
+
+  .frame  { fill: none; stroke: var(--rule); stroke-width: 1.3; }
+  .bx     { fill: var(--surface); stroke: var(--ink); stroke-width: 1.3; }
+  .bx-ul  { fill: none; stroke: var(--uplink); stroke-width: 1.6; }
+  .bx-dl  { fill: none; stroke: var(--downlink); stroke-width: 1.6; }
+  .bx-q   { fill: var(--surface); stroke: var(--muted); stroke-width: 1.2; }
+
+  .sig     { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+  .sig-ul  { fill: none; stroke: var(--uplink); stroke-width: 2.2; }
+  .sig-dl  { fill: none; stroke: var(--downlink); stroke-width: 2.2; }
+  .sig-cal { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 3.5; }
+
+  .a-ink { fill: var(--ink); }
+  .a-ul  { fill: var(--uplink); }
+  .a-dl  { fill: var(--downlink); }
+  .a-mut { fill: var(--muted); }
+
+  text { font-family: var(--mono); fill: var(--ink); }
+  .t-box   { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
+  .t-head  { font-size: 12px;   font-weight: 700; letter-spacing: .09em; }
+  .t-note  { font-size: 10px;   fill: var(--muted); }
+  .t-port  { font-size: 11px; }
+  .t-tiny  { font-size: 9px;    fill: var(--muted); letter-spacing: .06em; }
+  .t-ul    { fill: var(--uplink); }
+  .t-dl    { fill: var(--downlink); }
+  .t-ink   { fill: var(--ink); }
+
+  .dim     { fill: none; stroke: var(--muted); stroke-width: 1; }
+  .tick    { fill: none; stroke: var(--ink); stroke-width: 1; }
+  .fill-ul { fill: var(--uplink); opacity: .15; }
+  .fill-dl { fill: var(--downlink); opacity: .15; }
+  .fill-q  { fill: var(--muted); opacity: .08; }
+  .lead    { fill: none; stroke: var(--muted); stroke-width: .9; stroke-dasharray: 4 3; }
+  .stamp   { fill: none; stroke: var(--uplink); stroke-width: 1.8; }
+  .t-stamp { font-size: 12px; font-weight: 700; letter-spacing: .14em; fill: var(--uplink); }
+  .elem    { fill: var(--ink); }
+
+  /* ---- keyed notes ---- */
+
+  .notes { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid var(--rule); }
+
+  .note {
+    display: grid; grid-template-columns: 116px 1fr; gap: 24px;
+    padding: 18px 0; border-bottom: 1px solid var(--rule); align-items: start;
+  }
+
+  .note dt {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .04em; color: var(--muted); padding-top: 3px;
+  }
+
+  .note dd { margin: 0; font-size: 16px; }
+
+  @media (max-width: 620px) { .note { grid-template-columns: 1fr; gap: 6px; } }
+
+  .verdict { border-left: 3px solid var(--uplink); padding: 2px 0 2px 22px; margin: 0 0 18px; }
+  .verdict:last-child { margin-bottom: 0; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">ARC Edge · P25 Orb · Drawing set, plates 2–4</p>
+    <h1>The three drawings that carry the questions</h1>
+    <p class="standfirst">
+      Each of these answers a question the hardware document argues in prose and
+      has never shown: where in the band the two windows sit, why the antennas
+      are arranged the way they are, and why a 3.2 dB loss costs almost nothing.
+    </p>
+  </header>
+
+  <!-- ===================== PLATE 2 ===================== -->
+  <section>
+    <div class="section-head">
+      <h2>Plate 2 — The 800 MHz duplex band and the two captured windows</h2>
+      <p>
+        Drawn at true scale, with the two windows magnified below. This is the
+        drawing that makes the two-group architecture obvious rather than
+        arguable — and it is the one that was got wrong twice.
+      </p>
+    </div>
+
+    <div class="plate">
+      <svg viewBox="0 0 1040 690" role="img" aria-label="The 800 MHz band drawn to scale, showing the uplink block from 806 to 824 megahertz, the downlink block from 851 to 869, the 45 megahertz duplex split, and detail views of the two roughly 2 megahertz windows the receiver actually captures.">
+
+        <defs>
+          <marker id="p2-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+          </marker>
+          <marker id="p2-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+          </marker>
+        </defs>
+
+        <text class="t-head" x="30" y="34">THE BAND AT TRUE SCALE — 804 to 871 MHz</text>
+
+        <!-- band blocks. x(f) = 80 + (f - 804) * 13.433 -->
+        <rect class="fill-ul" x="107" y="62" width="242" height="42"></rect>
+        <rect class="bx-ul"   x="107" y="62" width="242" height="42"></rect>
+        <rect class="fill-q"  x="349" y="62" width="362" height="42"></rect>
+        <rect class="fill-dl" x="711" y="62" width="242" height="42"></rect>
+        <rect class="bx-dl"   x="711" y="62" width="242" height="42"></rect>
+
+        <text class="t-box t-ul" x="228" y="80" text-anchor="middle">UPLINK — 806–824</text>
+        <text class="t-note"     x="228" y="95" text-anchor="middle">handsets transmit</text>
+        <text class="t-note"     x="530" y="80" text-anchor="middle">824 – 851 MHz</text>
+        <text class="t-note"     x="530" y="95" text-anchor="middle">other allocations</text>
+        <text class="t-box t-dl" x="832" y="80" text-anchor="middle">DOWNLINK — 851–869</text>
+        <text class="t-note"     x="832" y="95" text-anchor="middle">the tower transmits</text>
+
+        <!-- the two captured windows, marked in place at true width -->
+        <rect class="sig-ul" x="110" y="58" width="27" height="50" fill="none"></rect>
+        <rect class="sig-dl" x="714" y="58" width="34" height="50" fill="none"></rect>
+
+        <!-- axis ticks -->
+        <path class="tick" d="M107 104 L107 114 M349 104 L349 114 M711 104 L711 114 M953 104 L953 114"></path>
+        <text class="t-tiny" x="107" y="126" text-anchor="middle">806</text>
+        <text class="t-tiny" x="349" y="126" text-anchor="middle">824</text>
+        <text class="t-tiny" x="711" y="126" text-anchor="middle">851</text>
+        <text class="t-tiny" x="953" y="126" text-anchor="middle">869</text>
+
+        <!-- detail-view fan leaders -->
+        <path class="lead" d="M110 108 L60 212"></path>
+        <path class="lead" d="M137 108 L500 212"></path>
+        <path class="lead" d="M714 108 L540 212"></path>
+        <path class="lead" d="M748 108 L980 212"></path>
+
+        <text class="t-tiny" x="150" y="172">DETAIL A · ×13</text>
+        <text class="t-tiny" x="880" y="172" text-anchor="end">DETAIL B · ×11</text>
+
+        <!-- ---------- DETAIL A: the uplink window ---------- -->
+        <rect class="bx-ul" x="60" y="212" width="440" height="182"></rect>
+        <text class="t-head t-ul" x="280" y="236" text-anchor="middle">DETAIL A — UPLINK WINDOW</text>
+        <text class="t-note" x="280" y="252" text-anchor="middle">~806.2 – 808.2 MHz · about 2 MHz · uplink coherent group</text>
+
+        <!-- axis: 806.15 to 808.35 mapped onto x 90..470 -->
+        <path class="tick" d="M90 330 L470 330"></path>
+        <path class="tick" d="M150 330 L150 336 M237 330 L237 336 M323 330 L323 336 M409 330 L409 336"></path>
+        <text class="t-tiny" x="150" y="348" text-anchor="middle">806.5</text>
+        <text class="t-tiny" x="237" y="348" text-anchor="middle">807.0</text>
+        <text class="t-tiny" x="323" y="348" text-anchor="middle">807.5</text>
+        <text class="t-tiny" x="409" y="348" text-anchor="middle">808.0</text>
+
+        <!-- the uplink control channel -->
+        <path class="sig-ul" d="M101 330 L101 276"></path>
+        <text class="t-box t-ul" x="101" y="272">806.2125 — UPLINK CONTROL</text>
+        <text class="t-note" x="101" y="286">handset → tower · every channel request</text>
+
+        <!-- granted voice, uplink side -->
+        <path class="sig-ul" d="M185 330 L185 306 M271 330 L271 306 M392 330 L392 306"></path>
+        <text class="t-note" x="280" y="302" text-anchor="middle">granted voice, uplink side</text>
+
+        <text class="t-note t-ul" x="280" y="378" text-anchor="middle">EVERYTHING A HANDSET TRANSMITS ON THE TRUNK</text>
+
+        <!-- ---------- DETAIL B: the downlink window ---------- -->
+        <rect class="bx-dl" x="540" y="212" width="440" height="182"></rect>
+        <text class="t-head t-dl" x="760" y="236" text-anchor="middle">DETAIL B — DOWNLINK WINDOW</text>
+        <text class="t-note" x="760" y="252" text-anchor="middle">~851.2 – 853.7 MHz · about 2.5 MHz · downlink coherent group</text>
+
+        <!-- axis: 851.15 to 853.75 mapped onto x 570..950 -->
+        <path class="tick" d="M570 330 L950 330"></path>
+        <path class="tick" d="M694 330 L694 336 M767 330 L767 336 M840 330 L840 336 M913 330 L913 336"></path>
+        <text class="t-tiny" x="694" y="348" text-anchor="middle">852.0</text>
+        <text class="t-tiny" x="767" y="348" text-anchor="middle">852.5</text>
+        <text class="t-tiny" x="840" y="348" text-anchor="middle">853.0</text>
+        <text class="t-tiny" x="913" y="348" text-anchor="middle">853.5</text>
+
+        <!-- the control channel -->
+        <path class="sig-dl" d="M579 330 L579 272"></path>
+        <text class="t-box t-dl" x="572" y="268">851.2125 — CONTROL CHANNEL</text>
+        <text class="t-note" x="572" y="280">tower → handset · the entire event stream</text>
+
+        <!-- 8TAC95D, drawn in the UPLINK colour because handsets transmit on it -->
+        <path class="sig-ul" d="M629 330 L629 300 L716 300"></path>
+        <text class="t-box t-ul" x="722" y="296">851.5500 — 8TAC95D</text>
+        <text class="t-note t-ul" x="722" y="310">SIMPLEX · handsets transmit HERE</text>
+
+        <!-- the 337.5 kHz separation -->
+        <path class="dim" d="M579 344 L629 344" marker-start="url(#p2-dim)" marker-end="url(#p2-dim)"></path>
+        <text class="t-tiny" x="604" y="362" text-anchor="middle">337.5 kHz</text>
+
+        <path class="sig-dl" d="M761 330 L761 318 M855 330 L855 318"></path>
+        <text class="t-note" x="950" y="364" text-anchor="end">repeated voice, as the tower relays it</text>
+
+        <text class="t-note" x="760" y="378" text-anchor="middle">a geographic accident, not a design choice — and it is why</text>
+        <text class="t-note t-ul" x="760" y="390" text-anchor="middle">TALKAROUND HANDSETS ARE LOCATABLE BY THE DOWNLINK GROUP</text>
+
+        <!-- ---------- the arithmetic that forces two groups ---------- -->
+        <path class="frame" d="M30 424 L1010 424"></path>
+        <text class="t-head" x="30" y="450">WHY NOT ONE WIDE GROUP INSTEAD OF TWO NARROW ONES</text>
+
+        <!-- duplex split -->
+        <path class="dim" d="M110 480 L714 480" marker-start="url(#p2-dim)" marker-end="url(#p2-dim)"></path>
+        <text class="t-note" x="412" y="474" text-anchor="middle">45.000 MHz — the duplex split. Every trunk channel is a PAIR.</text>
+
+        <!-- total handset span -->
+        <path class="dim" d="M110 510 L629 510" marker-start="url(#p2-dim)" marker-end="url(#p2-dim)"></path>
+        <text class="t-note" x="370" y="504" text-anchor="middle">45.34 MHz — uplink control to talkaround: the full handset span</text>
+
+        <!-- what each candidate device reaches -->
+        <text class="t-tiny" x="30" y="540">ONE COHERENT GROUP WOULD HAVE TO COVER THAT SPAN:</text>
+
+        <path class="sig" d="M110 560 L862 560" marker-end="url(#p2-ink)"></path>
+        <path class="tick" d="M110 554 L110 566 M862 554 L862 566"></path>
+        <text class="t-note" x="872" y="564">AD9361 · 56 MHz — reaches it (the §5.5 fallback)</text>
+
+        <path class="sig" d="M110 590 L647 590"></path>
+        <path class="tick" d="M110 584 L110 596 M647 584 L647 596"></path>
+        <path class="sig-cal" d="M647 590 L629 590"></path>
+        <text class="t-note t-ul" x="657" y="586">ADRV9002 · 40 MHz — falls 5.34 MHz short.</text>
+        <text class="t-note t-ul" x="657" y="600">No allocation trick closes it: a group’s three</text>
+
+        <text class="t-note t-ul" x="657" y="614">elements must be CO-TUNED to be coherent.</text>
+
+        <!-- title block -->
+        <g>
+          <rect class="frame" x="30" y="620" width="440" height="46"></rect>
+          <path class="frame" d="M170 620 L170 666 M310 620 L310 666 M30 643 L470 643"></path>
+          <text class="t-tiny" x="40" y="634">PLATE</text>
+          <text class="t-port" x="40" y="660">2</text>
+          <text class="t-tiny" x="180" y="634">SOURCE</text>
+          <text class="t-port" x="180" y="660">§3.3, §3.3.1</text>
+          <text class="t-tiny" x="320" y="634">REVISED</text>
+          <text class="t-port" x="320" y="660">2026-07-31</text>
+        </g>
+      </svg>
+    </div>
+
+    <dl class="notes">
+      <div class="note">
+        <dt>§3.3</dt>
+        <dd>
+          The two outlined notches on the true-scale bar are the entire capture. Everything
+          else in the 800 MHz band is invisible to the receiver at any given moment. Seeing
+          how narrow they are is what makes the intermodulation argument land: each group sees
+          a handful of signals rather than a whole duplex band.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>8TAC95D</dt>
+        <dd>
+          Drawn in the uplink colour inside the downlink window, because that is exactly what
+          it is — a handset transmission sitting 337.5 kHz from the control channel. It is
+          simplex, so it has no repeater pair and no uplink counterpart. This is the single
+          detail most likely to be probed, and the honest answer is that the Texas plan sited
+          it there; the design merely benefits.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>45.34 MHz</dt>
+        <dd>
+          The forcing number. A handset's emissions run from 806.2125 to 851.5500, so one
+          coherent group covering all of them needs at least that much instantaneous
+          bandwidth. The ADRV9002's 40 MHz cannot reach it, which is what turns a preference
+          into arithmetic.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ===================== PLATE 3 ===================== -->
+  <section>
+    <div class="section-head">
+      <h2>Plate 3 — Array geometry, and the arrangement that fails</h2>
+      <p>
+        Three views: the triangle that works, how it sits on the opened lid, and
+        the vertical-plane arrangement an earlier revision specified — drawn
+        alongside so the failure is visible rather than described.
+      </p>
+    </div>
+
+    <div class="plate">
+      <svg viewBox="0 0 1040 634" role="img" aria-label="Three views of the antenna array: a plan view of the horizontal triangle with an arriving wavefront, an elevation showing three dipoles on the flat-opened lid, and the rejected vertical-plane arrangement which cannot distinguish mirrored azimuths.">
+
+        <defs>
+          <marker id="p3-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+          </marker>
+          <marker id="p3-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+          </marker>
+          <marker id="p3-ul" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ul"></path>
+          </marker>
+        </defs>
+
+        <!-- ---------- VIEW A: plan ---------- -->
+        <rect class="frame" x="20" y="46" width="410" height="420"></rect>
+        <text class="t-head" x="34" y="70">VIEW A — PLAN, LOOKING DOWN</text>
+        <text class="t-note" x="34" y="86">the three elements as the incoming wave sees them</text>
+
+        <!-- arriving wavefronts, perpendicular to the arrival direction -->
+        <path class="sig-cal" d="M141 116 L49 194"></path>
+        <path class="sig-cal" d="M165 145 L73 223"></path>
+        <path class="sig-cal" d="M190 174 L98 252"></path>
+        <path class="sig" d="M168 106 L200 144" marker-end="url(#p3-ink)"></path>
+        <text class="t-box" x="206" y="140">θ</text>
+        <text class="t-note" x="206" y="154">arriving wavefront</text>
+
+        <!-- the triangle -->
+        <path class="sig" d="M130 350 L330 350 L230 177 Z"></path>
+        <circle class="elem" cx="130" cy="350" r="5.5"></circle>
+        <circle class="elem" cx="330" cy="350" r="5.5"></circle>
+        <circle class="elem" cx="230" cy="177" r="5.5"></circle>
+        <text class="t-port" x="110" y="368" text-anchor="end">EL 1</text>
+        <text class="t-port" x="350" y="368">EL 2</text>
+        <text class="t-port" x="230" y="167" text-anchor="middle">EL 3</text>
+
+        <!-- baseline dimension -->
+        <path class="dim" d="M130 386 L330 386" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)"></path>
+        <text class="t-note" x="230" y="404" text-anchor="middle">d ≈ λ/2 = 17.6 cm at 851 MHz</text>
+
+        <text class="t-box" x="34" y="432">Δ = d · sin θ        φ = 2π Δ / λ</text>
+        <text class="t-note" x="34" y="450">three elements → three baselines → one over-determined azimuth</text>
+
+        <!-- north arrow -->
+        <path class="sig" d="M392 160 L392 110" marker-end="url(#p3-ink)"></path>
+        <text class="t-tiny" x="392" y="176" text-anchor="middle">N</text>
+
+        <!-- ---------- VIEW B: elevation ---------- -->
+        <rect class="frame" x="450" y="46" width="320" height="420"></rect>
+        <text class="t-head" x="464" y="70">VIEW B — ELEVATION</text>
+        <text class="t-note" x="464" y="86">lid opened to 180°, flat · half-wave sleeve dipoles</text>
+
+        <!-- three upright dipoles -->
+        <path class="sig" d="M540 330 L540 190 M596 330 L596 190 M652 330 L652 190"></path>
+        <path class="sig" d="M534 260 L546 260 M590 260 L602 260 M646 260 L652 260"></path>
+        <circle class="elem" cx="540" cy="260" r="3"></circle>
+        <circle class="elem" cx="596" cy="260" r="3"></circle>
+        <circle class="elem" cx="652" cy="260" r="3"></circle>
+
+        <!-- the lid, flat, and the case body -->
+        <rect class="bx" x="500" y="330" width="220" height="14"></rect>
+        <text class="t-tiny" x="610" y="341" text-anchor="middle">LID, INNER FACE</text>
+        <rect class="bx" x="464" y="344" width="150" height="76"></rect>
+        <text class="t-box" x="539" y="378" text-anchor="middle">CASE BODY</text>
+        <text class="t-note" x="539" y="394" text-anchor="middle">processing body</text>
+
+        <!-- dimensions -->
+        <path class="dim" d="M700 190 L700 330" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)"></path>
+        <text class="t-note" x="708" y="262">16.6 cm</text>
+        <path class="sig-cal" d="M528 260 L536 260"></path>
+        <path class="dim" d="M528 260 L528 330" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)"></path>
+        <text class="t-tiny" x="522" y="292" text-anchor="end">8.5 cm</text>
+        <text class="t-tiny" x="522" y="304" text-anchor="end">phase centre</text>
+
+        <text class="t-note" x="464" y="434">Vertical elements match P25's vertical polarisation.</text>
+        <text class="t-note" x="464" y="448">A sleeve dipole needs no ground plane: its lower</text>
+        <text class="t-note" x="464" y="462">arm is the standoff — no counterpoise per element.</text>
+
+        <!-- ---------- VIEW C: the rejected arrangement ---------- -->
+        <rect class="frame" x="790" y="46" width="230" height="420"></rect>
+        <text class="t-head t-ul" x="802" y="70">VIEW C — REJECTED</text>
+        <text class="t-note" x="802" y="86">all three in ONE VERTICAL PLANE</text>
+
+        <!-- the offending plane, drawn edge-on in perspective -->
+        <path class="fill-ul" d="M822 180 L992 150 L992 320 L822 350 Z"></path>
+        <path class="stamp" d="M822 180 L992 150 L992 320 L822 350 Z"></path>
+        <circle class="elem" cx="862" cy="240" r="5"></circle>
+        <circle class="elem" cx="912" cy="255" r="5"></circle>
+        <circle class="elem" cx="957" cy="222" r="5"></circle>
+
+        <!-- two mirrored azimuths arriving -->
+        <path class="sig-ul" d="M812 130 L890 232" marker-end="url(#p3-ul)"></path>
+        <path class="sig-ul" d="M812 380 L890 268" marker-end="url(#p3-ul)"></path>
+        <text class="t-tiny t-ul" x="796" y="124">+φ</text>
+        <text class="t-tiny t-ul" x="796" y="396">−φ</text>
+
+        <text class="t-box t-ul" x="802" y="418">cos φ = cos(−φ)</text>
+        <text class="t-note" x="802" y="434">Mirrored azimuths give IDENTICAL</text>
+        <text class="t-note" x="802" y="448">phase on every baseline. A fourth or</text>
+        <text class="t-note" x="802" y="462">tenth element changes nothing.</text>
+
+        <!-- ---------- per-band feasibility strip ---------- -->
+        <path class="frame" d="M20 492 L1020 492"></path>
+        <text class="t-head" x="20" y="516">THE ARRAY IS THE ONLY PART WHOSE SIZE IS SET BY THE BAND</text>
+
+        <rect class="bx" x="20" y="528" width="240" height="52"></rect>
+        <rect class="bx" x="272" y="528" width="240" height="52"></rect>
+        <rect class="bx" x="524" y="528" width="240" height="52"></rect>
+        <rect class="bx-ul" x="776" y="528" width="244" height="52"></rect>
+
+        <text class="t-box" x="140" y="548" text-anchor="middle">800 MHz — 17.6 cm</text>
+        <text class="t-note" x="140" y="564" text-anchor="middle">18 × 15 cm · 1500-class lid</text>
+        <text class="t-box" x="392" y="548" text-anchor="middle">700 MHz — 19.5 cm</text>
+        <text class="t-note" x="392" y="564" text-anchor="middle">20 × 17 cm · same case</text>
+        <text class="t-box" x="644" y="548" text-anchor="middle">UHF 450 — 33.3 cm</text>
+        <text class="t-note" x="644" y="564" text-anchor="middle">33 × 29 cm · 1600-class, ≈0.27λ</text>
+        <text class="t-box t-ul" x="898" y="548" text-anchor="middle">VHF 155 — 96.7 cm</text>
+        <text class="t-note t-ul" x="898" y="564" text-anchor="middle">NO CASE. Mast or vehicle.</text>
+
+        <text class="t-note" x="20" y="600">The receive-only base unit is genuinely all-band. DF is a 700/800 MHz capability, and that distinction must not be blurred.</text>
+
+        <text class="t-tiny" x="1020" y="622" text-anchor="end">PLATE 3 · SOURCE §5.1 · REVISED 2026-07-31</text>
+      </svg>
+    </div>
+
+    <dl class="notes">
+      <div class="note">
+        <dt>§5.1</dt>
+        <dd>
+          Views A and C are the same three elements. The only difference is whether the
+          plane they occupy is horizontal or vertical, and that difference is the whole
+          capability. Keeping the rejected arrangement on the plate is deliberate: an
+          earlier revision of the document specified it, and being able to show why it
+          fails is stronger than never having considered it.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>λ/2</dt>
+        <dd>
+          Spacing above half a wavelength makes the phase measurement ambiguous. Spacing
+          below it does not — it only costs accuracy, and predictably, with bearing error
+          scaling roughly as λ/d. That is why UHF at 0.27λ is degraded rather than broken,
+          and why VHF fails on element size rather than on ambiguity.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ===================== PLATE 4 ===================== -->
+  <section>
+    <div class="section-head">
+      <h2>Plate 4 — Why a 3.2 dB splitter costs 0.04 dB</h2>
+      <p>
+        The smallest drawing here and the one most likely to be challenged
+        directly, because the claim sounds wrong until you see where the gain sits.
+      </p>
+    </div>
+
+    <div class="plate">
+      <svg viewBox="0 0 1040 440" role="img" aria-label="Two receive chains compared. As designed, the amplifier precedes the splitter and system noise figure is 1.04 decibels. Reversed, the splitter precedes the amplifier and noise figure rises to 4.20 decibels.">
+
+        <defs>
+          <marker id="p4-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+          </marker>
+          <marker id="p4-ul" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ul"></path>
+          </marker>
+          <marker id="p4-dl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-dl"></path>
+          </marker>
+        </defs>
+
+        <!-- ---------- as designed ---------- -->
+        <rect class="frame" x="20" y="40" width="480" height="250"></rect>
+        <text class="t-head" x="34" y="66">AS DESIGNED — SPLIT AFTER THE LNA</text>
+
+        <path class="sig" d="M60 150 L60 122 M50 122 L60 108 L70 122"></path>
+        <text class="t-tiny" x="60" y="166" text-anchor="middle">EL</text>
+
+        <path class="sig" d="M60 150 L110 150" marker-end="url(#p4-ink)"></path>
+        <rect class="bx" x="110" y="126" width="110" height="48"></rect>
+        <text class="t-box" x="165" y="146" text-anchor="middle">LNA</text>
+        <text class="t-note" x="165" y="162" text-anchor="middle">NF 1.0 · G 20 dB</text>
+
+        <path class="sig" d="M220 150 L270 150" marker-end="url(#p4-ink)"></path>
+        <rect class="bx" x="270" y="126" width="110" height="48"></rect>
+        <text class="t-box" x="325" y="146" text-anchor="middle">SPLIT</text>
+        <text class="t-note" x="325" y="162" text-anchor="middle">−3.2 dB</text>
+
+        <path class="sig-ul" d="M380 138 L460 122" marker-end="url(#p4-ul)"></path>
+        <path class="sig-dl" d="M380 162 L460 178" marker-end="url(#p4-dl)"></path>
+        <text class="t-tiny t-ul" x="466" y="120">uplink group</text>
+        <text class="t-tiny t-dl" x="466" y="182">downlink group</text>
+
+        <text class="t-note" x="34" y="216">F = 1.259 + (2.089 − 1) ÷ 100  =  1.270</text>
+        <text class="t-box"  x="34" y="242">SYSTEM NOISE FIGURE  1.04 dB</text>
+        <text class="t-note t-ul" x="34" y="262">penalty for the split: +0.04 dB</text>
+        <text class="t-note" x="34" y="278">the 20 dB of gain ahead of the loss divides it away</text>
+
+        <!-- ---------- reversed ---------- -->
+        <rect class="frame" x="540" y="40" width="480" height="250"></rect>
+        <text class="t-head t-ul" x="554" y="66">REVERSED — SPLIT BEFORE THE LNA</text>
+
+        <path class="sig" d="M580 150 L580 122 M570 122 L580 108 L590 122"></path>
+        <text class="t-tiny" x="580" y="166" text-anchor="middle">EL</text>
+
+        <path class="sig" d="M580 150 L630 150" marker-end="url(#p4-ink)"></path>
+        <rect class="bx" x="630" y="126" width="110" height="48"></rect>
+        <text class="t-box" x="685" y="146" text-anchor="middle">SPLIT</text>
+        <text class="t-note" x="685" y="162" text-anchor="middle">−3.2 dB</text>
+
+        <path class="sig" d="M740 150 L790 150" marker-end="url(#p4-ink)"></path>
+        <rect class="bx" x="790" y="126" width="110" height="48"></rect>
+        <text class="t-box" x="845" y="146" text-anchor="middle">LNA</text>
+        <text class="t-note" x="845" y="162" text-anchor="middle">NF 1.0 · G 20 dB</text>
+
+        <path class="sig" d="M900 150 L960 150" marker-end="url(#p4-ink)"></path>
+
+        <text class="t-note" x="554" y="216">F = 2.089 + (1.259 − 1) ÷ 0.479  =  2.630</text>
+        <text class="t-box t-ul" x="554" y="242">SYSTEM NOISE FIGURE  4.20 dB</text>
+        <text class="t-note t-ul" x="554" y="262">penalty for the split: +3.20 dB</text>
+        <text class="t-note" x="554" y="278">the loss now sits where nothing has amplified the signal yet</text>
+
+        <!-- ---------- the governing relation ---------- -->
+        <path class="frame" d="M20 316 L1020 316"></path>
+        <text class="t-head" x="20" y="344">FRIIS, THE ONLY THING THIS DRAWING IS ABOUT</text>
+        <text class="t-box" x="20" y="372">F_total  =  F₁  +  (F₂ − 1) ÷ G₁</text>
+        <text class="t-note" x="20" y="392">The second stage's noise contribution is divided by everything that amplified before it. The splitter's loss is real in both</text>
+        <text class="t-note" x="20" y="406">arrangements — what changes is whether 100× of gain stands in front of it. Placement, not component quality, buys the 3.16 dB.</text>
+
+        <text class="t-tiny" x="1020" y="392" text-anchor="end">PLATE 4 · SOURCE §3.3</text>
+        <text class="t-tiny" x="1020" y="406" text-anchor="end">REVISED 2026-07-31</text>
+      </svg>
+    </div>
+
+    <dl class="notes">
+      <div class="note">
+        <dt>§3.3</dt>
+        <dd>
+          Figures are Inferred from Friis, assuming a 1.0 dB / 20 dB LNA. The linear terms
+          on the plate are shown rather than hidden so the arithmetic can be checked live:
+          1.259 is 1.0 dB as a ratio, 2.089 is 3.2 dB as a ratio, and 100 is 20 dB of gain.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>Second benefit</dt>
+        <dd>
+          Splitting after the amplifier also means both coherent groups see the <em>same</em>
+          amplifier for a given element. That element's amplifier phase becomes common to both
+          paths instead of being two independent error sources — which matters because phase
+          is the measurement.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>Scope</dt>
+        <dd>
+          The LNAs already live in the processing body and the dock sits before them, so this
+          is a processing-body change only. No new band-module SKU, no antenna rework.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <div class="prose">
+      <p class="verdict">
+        All three plates are conceptual and pitch-quality, not procurement-ready. Dimensions
+        are design intent; the case-fit conclusions in Plate 3 are Inferred from approximate
+        interior dimensions and have not been measured against a real enclosure.
+      </p>
+    </div>
+  </section>
+
+</div>
