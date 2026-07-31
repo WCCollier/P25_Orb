@@ -1,0 +1,201 @@
+/*
+ * Shared foundation for all four demo pages.
+ *
+ * The two live tabs are styled to look deliberately unlike each other. Tab 1 is
+ * a dense monospace instrument readout; Tab 2 is a calm, plain-language command
+ * interface. That contrast is not decoration — it is the argument the demo is
+ * making, so it is built into the design rather than described in the script.
+ */
+
+:root {
+  --bg:          #0b0e12;
+  --bg-raised:   #141920;
+  --bg-sunken:   #070a0d;
+  --line:        #232b36;
+  --line-strong: #33404f;
+
+  --text:        #e6ecf3;
+  --text-dim:    #8d9bad;
+  --text-faint:  #5c6878;
+
+  --accent:      #4da3ff;   /* ARC Edge / product chrome */
+  --ok:          #3fbf7f;
+  --warn:        #f0a939;
+  --alarm:       #ff4d4d;
+  --phosphor:    #6ee7a0;   /* Tab 1 raw readout */
+  --amber:       #ffb454;
+
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+
+a { color: var(--accent); }
+
+/* --- shared chrome ------------------------------------------------------ */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 18px;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.topbar .brand {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.topbar .role {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.spacer { flex: 1 1 auto; }
+
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.tag.ok     { color: var(--ok);     border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+.tag.warn   { color: var(--warn);   border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+.tag.alarm  { color: var(--alarm);  border-color: color-mix(in srgb, var(--alarm) 55%, transparent); }
+.tag.accent { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+button {
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg-sunken);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+button:disabled { opacity: 0.4; cursor: default; }
+
+button.primary {
+  background: color-mix(in srgb, var(--accent) 18%, var(--bg-sunken));
+  border-color: var(--accent);
+  color: #dbeaff;
+}
+
+.panel {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel > header {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.panel > .body {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.empty {
+  color: var(--text-faint);
+  font-size: 13px;
+  font-style: italic;
+  padding: 8px 2px;
+}
+
+/* Scrollbars, so the dense panels don't look broken in light-on-dark. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-sunken); }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+/* --- roadmap marking -----------------------------------------------------
+ * Anything on these pages that is specified but not built carries this
+ * treatment. A viewer must never have to ask which parts of the demo are
+ * real, so the page says so itself: a dashed edge, a NOT BUILT chip, and a
+ * caption naming the requirement the element stands for.
+ */
+
+.panel.roadmap {
+  border: 1px dashed var(--line-strong);
+  background: var(--bg-sunken);
+}
+
+.panel.roadmap > header { color: var(--text-faint); }
+
+.panel.roadmap > .body { opacity: 0.75; }
+
+.tag.roadmap {
+  color: var(--text-faint);
+  border-color: var(--line-strong);
+  border-style: dashed;
+}
+
+.roadmap-ref {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  display: block;
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+
+.roadmap-item {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.roadmap-item:last-child { border-bottom: none; }
+.roadmap-item .what { font-size: 13px; color: var(--text-dim); }
+.roadmap-item .why {
+  font-size: 12.5px;
+  color: var(--text-faint);
+  line-height: 1.5;
+  margin: 4px 0 0;
+}

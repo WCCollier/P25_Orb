@@ -1,0 +1,1122 @@
+{
+  "generated_at": "2026-07-26T03:37:49Z",
+  "model": "claude-haiku-4-5",
+  "system_prompt": "You classify individual radio transmissions heard on a public safety P25 land mobile radio system during an active multi-agency incident. Your output is read by an on-scene commander who cannot listen to every channel at once.\n\nYou will be given one transmission: the radio's unit ID, its talkgroup, whether the transmission was cut off mid-word, and a transcript.\n\nClassify only what is in this one transmission. Do not speculate about the wider incident, and do not infer events you were not told about. If a transmission is routine, say so plainly \u2014 over-flagging routine traffic is a failure, because a commander who learns to distrust the alerts will ignore a real one.\n\nField guidance:\n\n- priority: EMERGENCY if this transmission indicates immediate danger to life. URGENT if it needs command attention soon but nobody is described as in danger right now. ROUTINE otherwise.\n- category: the single best fit.\n- distress: true only if this transmission indicates a person is in danger or needs help. A unit reporting that a situation is under control is not distress.\n- keywords: the exact words in the transcript that drove your assessment. Empty list if nothing stood out.\n- is_status_check: true if this transmission is dispatch or command calling a specific unit and asking it to respond \u2014 a radio check, a welfare check, or asking whether anyone has eyes on that unit.\n- subject_unit: if this transmission is ABOUT a different unit (a status check on them, or a report on their condition), give that unit's ID exactly as it appears in the transcript, in the form 8M-NNNN. Otherwise the empty string. A unit talking about itself is not a subject unit.\n- cut_off_meaning: only if the transmission was cut off. State briefly what the speaker appeared to be starting to say, and be explicit that it is incomplete. Otherwise the empty string.\n- digest: one short plain-language line for the commander's feed. Write it the way a good dispatcher would relay it: who, what, where. No jargon the commander would have to decode, and no restating the unit ID, which is displayed alongside.\n\nA transmission that is cut off mid-word is more concerning than a complete one, not less. Say what you actually heard, flag that it is incomplete, and do not invent the rest of the sentence.\n",
+  "runs": [
+    {
+      "event_id": "e003",
+      "input": {
+        "unit": "8M-1104",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Dispatch, 1104, I'm 10-97 at the north lot, staging with the second unit."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "TACTICAL_MOVEMENT",
+        "distress": false,
+        "keywords": [
+          "10-97",
+          "staging"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "8M-1104 arrived at north lot, staging with second unit."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyEqc8LoLR4XKjygMdC",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\": \"ROUTINE\", \"category\": \"TACTICAL_MOVEMENT\", \"distress\": false, \"keywords\": [\"10-97\", \"staging\"], \"is_status_check\": false, \"subject_unit\": \"\", \"cut_off_meaning\": \"\", \"digest\": \"8M-1104 arrived at north lot, staging with second unit.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1026,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 81,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e006",
+      "input": {
+        "unit": "8M-0100",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "1104, dispatch, copy 10-97 north lot. Command post is the athletic entrance, east side."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "ACKNOWLEDGEMENT",
+        "distress": false,
+        "keywords": [],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Unit 1104 acknowledges arrival at north lot. Command post established at athletic entrance, east side."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyEyFWKoyiJ1NsKxtzg",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"ACKNOWLEDGEMENT\",\"distress\":false,\"keywords\":[],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Unit 1104 acknowledges arrival at north lot. Command post established at athletic entrance, east side.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1026,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 69,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e009",
+      "input": {
+        "unit": "8M-3052",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Dispatch, 3052, two more county units inbound from the west, ETA four minutes."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "TACTICAL_MOVEMENT",
+        "distress": false,
+        "keywords": [
+          "county units inbound",
+          "ETA four minutes"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Two additional county units en route from west, four minutes out."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyF6T6JUpYJ42oKaxTh",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"TACTICAL_MOVEMENT\",\"distress\":false,\"keywords\":[\"county units inbound\",\"ETA four minutes\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Two additional county units en route from west, four minutes out.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1023,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 72,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e012",
+      "input": {
+        "unit": "8M-7702",
+        "talkgroup": "5302 (REG1 TAC2)",
+        "truncated": false,
+        "transcript": "Air unit is up, we have the exterior on camera, no movement on the south side."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "TACTICAL_MOVEMENT",
+        "distress": false,
+        "keywords": [
+          "exterior on camera",
+          "no movement on the south side"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Air unit reports camera coverage of exterior with no movement observed on south side."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyFDqbK63FyJU8iowon",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"TACTICAL_MOVEMENT\",\"distress\":false,\"keywords\":[\"exterior on camera\",\"no movement on the south side\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Air unit reports camera coverage of exterior with no movement observed on south side.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1020,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 75,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e016",
+      "input": {
+        "unit": "8M-1187",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "1187 to dispatch, we need crowd control on the parent side, they're coming over the fence."
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "CROWD_CONTROL",
+        "distress": false,
+        "keywords": [
+          "crowd control",
+          "coming over the fence"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Unit requests crowd control at parent side; people breaching fence perimeter."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyFLqHV3Vggo7kiQZBr",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"URGENT\",\"category\":\"CROWD_CONTROL\",\"distress\":false,\"keywords\":[\"crowd control\",\"coming over the fence\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Unit requests crowd control at parent side; people breaching fence perimeter.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1024,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 72,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e020",
+      "input": {
+        "unit": "8M-5010",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Medic 5010, we have three walking wounded at the triage point, requesting a second bus."
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "MEDICAL",
+        "distress": false,
+        "keywords": [
+          "three walking wounded",
+          "triage point",
+          "requesting a second bus"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Three walking wounded at triage point; requesting additional ambulance."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyFT1MmvFcWdneRGtb8",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"URGENT\",\"category\":\"MEDICAL\",\"distress\":false,\"keywords\":[\"three walking wounded\",\"triage point\",\"requesting a second bus\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Three walking wounded at triage point; requesting additional ambulance.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1024,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 72,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e027",
+      "input": {
+        "unit": "8M-6001",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Campus PD, we've got the west corridor cleared, moving to the gym."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "TACTICAL_MOVEMENT",
+        "distress": false,
+        "keywords": [
+          "west corridor cleared",
+          "moving to the gym"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "West corridor cleared, moving to gym."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyFYhubwB4pTJP4wtT2",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"TACTICAL_MOVEMENT\",\"distress\":false,\"keywords\":[\"west corridor cleared\",\"moving to the gym\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"West corridor cleared, moving to gym.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1018,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 66,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e046",
+      "input": {
+        "unit": "8M-0100",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "All units, all units, hold your traffic unless it's emergency. The system is saturated."
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "SYSTEM_ADVISORY",
+        "distress": false,
+        "keywords": [
+          "hold your traffic unless it's emergency",
+          "system is saturated"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "System saturated\u2014all units hold non-emergency traffic."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyFvEhxnctih1Dip2Cm",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\": \"URGENT\", \"category\": \"SYSTEM_ADVISORY\", \"distress\": false, \"keywords\": [\"hold your traffic unless it's emergency\", \"system is saturated\"], \"is_status_check\": false, \"subject_unit\": \"\", \"cut_off_meaning\": \"\", \"digest\": \"System saturated\u2014all units hold non-emergency traffic.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1021,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 84,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e049",
+      "input": {
+        "unit": "8M-8830",
+        "talkgroup": "8TAC95D (analog talkaround, off-trunk)",
+        "truncated": false,
+        "transcript": "Any unit on tac, this is 8830, mutual aid from out of the area. I can't get on your system. Where do you need me?"
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "SYSTEM_ADVISORY",
+        "distress": false,
+        "keywords": [
+          "mutual aid from out of the area",
+          "can't get on your system"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "8M-8830 mutual aid unit unable to access system, requesting assignment."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyG6nDcQRQgy3U8oz4u",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"SYSTEM_ADVISORY\",\"distress\":false,\"keywords\":[\"mutual aid from out of the area\",\"can't get on your system\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"8M-8830 mutual aid unit unable to access system, requesting assignment.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1038,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 81,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e054",
+      "input": {
+        "unit": "8M-4471",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": true,
+        "transcript": "Shots f\u2014"
+      },
+      "output": {
+        "priority": "EMERGENCY",
+        "category": "SHOTS_FIRED",
+        "distress": true,
+        "keywords": [
+          "Shots f\u2014"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "Unit was beginning to report 'Shots fired' but transmission was cut off mid-word.",
+        "digest": "Unit 8M-4471 reporting shots fired \u2014 transmission cut off incomplete."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyGEdVyMFTMkRWXKJXP",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"EMERGENCY\",\"category\":\"SHOTS_FIRED\",\"distress\":true,\"keywords\":[\"Shots f\u2014\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"Unit was beginning to report 'Shots fired' but transmission was cut off mid-word.\",\"digest\":\"Unit 8M-4471 reporting shots fired \u2014 transmission cut off incomplete.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1005,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 91,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e062",
+      "input": {
+        "unit": "8M-3077",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "3077, did somebody just key up? I caught the front of it and it dropped."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "ACKNOWLEDGEMENT",
+        "distress": false,
+        "keywords": [],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Unit 3077 asking if anyone just transmitted; reports missed a transmission."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyGNhRo2KHGEzFcf6Ej",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\": \"ROUTINE\", \"category\": \"ACKNOWLEDGEMENT\", \"distress\": false, \"keywords\": [], \"is_status_check\": false, \"subject_unit\": \"\", \"cut_off_meaning\": \"\", \"digest\": \"Unit 3077 asking if anyone just transmitted; reports missed a transmission.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1021,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 72,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e065",
+      "input": {
+        "unit": "8M-0100",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "4471, dispatch. 4471, radio check, do you copy?"
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "STATUS_CHECK",
+        "distress": false,
+        "keywords": [
+          "radio check",
+          "do you copy"
+        ],
+        "is_status_check": true,
+        "subject_unit": "4471",
+        "cut_off_meaning": "",
+        "digest": "Dispatch conducting radio check on unit 4471."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyGXktQ3CSyj6svLPB9",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"STATUS_CHECK\",\"distress\":false,\"keywords\":[\"radio check\",\"do you copy\"],\"is_status_check\":true,\"subject_unit\":\"4471\",\"cut_off_meaning\":\"\",\"digest\":\"Dispatch conducting radio check on unit 4471.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1018,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 67,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e069",
+      "input": {
+        "unit": "8M-6001",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Campus PD to command, we're at the gym doors, nothing here."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "STATUS_CHECK",
+        "distress": false,
+        "keywords": [
+          "nothing here"
+        ],
+        "is_status_check": true,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Campus PD reports all clear at gym doors."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyGeBqRkxZr9P3Zh2yD",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"STATUS_CHECK\",\"distress\":false,\"keywords\":[\"nothing here\"],\"is_status_check\":true,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Campus PD reports all clear at gym doors.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1017,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 60,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e072",
+      "input": {
+        "unit": "8M-0100",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "4471, dispatch, second call. Any unit with eyes on 4471?"
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "STATUS_CHECK",
+        "distress": false,
+        "keywords": [
+          "Any unit with eyes on 4471"
+        ],
+        "is_status_check": true,
+        "subject_unit": "4471",
+        "cut_off_meaning": "",
+        "digest": "Dispatch requesting visual confirmation on unit 4471."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyGmtwDDuaZyiVHdaeK",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"URGENT\",\"category\":\"STATUS_CHECK\",\"distress\":false,\"keywords\":[\"Any unit with eyes on 4471\"],\"is_status_check\":true,\"subject_unit\":\"4471\",\"cut_off_meaning\":\"\",\"digest\":\"Dispatch requesting visual confirmation on unit 4471.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1019,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 69,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e075",
+      "input": {
+        "unit": "8M-3052",
+        "talkgroup": "8TAC95D (analog talkaround, off-trunk)",
+        "truncated": false,
+        "transcript": "Command, 3052 on talkaround. We're moving toward 4471's last known, the two hundred hallway."
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "TACTICAL_MOVEMENT",
+        "distress": false,
+        "keywords": [
+          "moving toward",
+          "last known",
+          "two hundred hallway"
+        ],
+        "is_status_check": false,
+        "subject_unit": "8M-4471",
+        "cut_off_meaning": "",
+        "digest": "3052 moving toward 4471's last known location in the two hundred hallway."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyGsYm4WmryypjYLFbA",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"URGENT\",\"category\":\"TACTICAL_MOVEMENT\",\"distress\":false,\"keywords\":[\"moving toward\",\"last known\",\"two hundred hallway\"],\"is_status_check\":false,\"subject_unit\":\"8M-4471\",\"cut_off_meaning\":\"\",\"digest\":\"3052 moving toward 4471's last known location in the two hundred hallway.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1032,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 84,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e082",
+      "input": {
+        "unit": "8M-2210",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Officer down! Officer down, two hundred hallway, I need medics now!"
+      },
+      "output": {
+        "priority": "EMERGENCY",
+        "category": "OFFICER_DOWN",
+        "distress": true,
+        "keywords": [
+          "Officer down",
+          "two hundred hallway",
+          "medics now"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Officer down in two hundred hallway, medics requested immediately."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyH32XD7UTJWTHESNYe",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"EMERGENCY\",\"category\":\"OFFICER_DOWN\",\"distress\":true,\"keywords\":[\"Officer down\",\"two hundred hallway\",\"medics now\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Officer down in two hundred hallway, medics requested immediately.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1018,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 73,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e085",
+      "input": {
+        "unit": "8M-5010",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Medic 5010 copies, we're coming to you. Which entrance?"
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "TACTICAL_MOVEMENT",
+        "distress": false,
+        "keywords": [],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Medic 5010 responding and asking for entrance direction."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyHAm7KWTqwT6GvfmaH",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"TACTICAL_MOVEMENT\",\"distress\":false,\"keywords\":[],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Medic 5010 responding and asking for entrance direction.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1019,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 63,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e088",
+      "input": {
+        "unit": "8M-0100",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "All units, emergency traffic only. Medics to the two hundred hallway, east stairwell."
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "MEDICAL",
+        "distress": false,
+        "keywords": [
+          "emergency traffic only",
+          "Medics",
+          "two hundred hallway, east stairwell"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "All units placed on emergency traffic only. Medics dispatched to 200-level hallway, east stairwell."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyHH8qoLEtAqLUuZNWr",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"URGENT\",\"category\":\"MEDICAL\",\"distress\":false,\"keywords\":[\"emergency traffic only\",\"Medics\",\"two hundred hallway, east stairwell\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"All units placed on emergency traffic only. Medics dispatched to 200-level hallway, east stairwell.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1023,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 90,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e091",
+      "input": {
+        "unit": "8M-1104",
+        "talkgroup": "8TAC95D (analog talkaround, off-trunk)",
+        "truncated": false,
+        "transcript": "1104 on talkaround. I'm with 4471, he's up, he's hit in the vest, he's talking."
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "OFFICER_DOWN",
+        "distress": true,
+        "keywords": [
+          "he's hit in the vest",
+          "he's talking"
+        ],
+        "is_status_check": false,
+        "subject_unit": "8M-4471",
+        "cut_off_meaning": "",
+        "digest": "8M-4471 struck in body armor but conscious and communicating. With 8M-1104."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyHQHwqjXKoJzs5cesV",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"URGENT\",\"category\":\"OFFICER_DOWN\",\"distress\":true,\"keywords\":[\"he's hit in the vest\",\"he's talking\"],\"is_status_check\":false,\"subject_unit\":\"8M-4471\",\"cut_off_meaning\":\"\",\"digest\":\"8M-4471 struck in body armor but conscious and communicating. With 8M-1104.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1035,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 88,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e095",
+      "input": {
+        "unit": "8M-4471",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "4471, I'm okay, I'm okay. I took one in the plate. 2210 is the one that's down, he's behind me in the two hundred hallway."
+      },
+      "output": {
+        "priority": "EMERGENCY",
+        "category": "OFFICER_DOWN",
+        "distress": true,
+        "keywords": [
+          "I took one in the plate",
+          "2210 is the one that's down",
+          "behind me in the two hundred hallway"
+        ],
+        "is_status_check": false,
+        "subject_unit": "8M-2210",
+        "cut_off_meaning": "",
+        "digest": "8M-4471 reports being struck (stopped by body armor); 8M-2210 down in the 200 hallway behind 4471."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyHZLAjJrnCBb9qR3gJ",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"EMERGENCY\",\"category\":\"OFFICER_DOWN\",\"distress\":true,\"keywords\":[\"I took one in the plate\",\"2210 is the one that's down\",\"behind me in the two hundred hallway\"],\"is_status_check\":false,\"subject_unit\":\"8M-2210\",\"cut_off_meaning\":\"\",\"digest\":\"8M-4471 reports being struck (stopped by body armor); 8M-2210 down in the 200 hallway behind 4471.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1042,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 114,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e098",
+      "input": {
+        "unit": "8M-0100",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "Copy 4471. Medics are en route to 2210, two hundred hallway."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "MEDICAL",
+        "distress": false,
+        "keywords": [
+          "Medics are en route"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Medics dispatched to 2210 two hundred hallway."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyHhjwHYwEmA9pjrCi4",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"MEDICAL\",\"distress\":false,\"keywords\":[\"Medics are en route\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Medics dispatched to 2210 two hundred hallway.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1022,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 68,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e099",
+      "input": {
+        "unit": "8M-6001",
+        "talkgroup": "8TAC95D (analog talkaround, off-trunk)",
+        "truncated": false,
+        "transcript": "Campus PD on talkaround, we have the two hundred hallway secured, medics coming through now."
+      },
+      "output": {
+        "priority": "URGENT",
+        "category": "MEDICAL",
+        "distress": false,
+        "keywords": [
+          "medics coming through"
+        ],
+        "is_status_check": false,
+        "subject_unit": "",
+        "cut_off_meaning": "",
+        "digest": "Campus PD reports 200 hallway secured, medics en route."
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyHoirBhTaPAetfM8Kw",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"URGENT\",\"category\":\"MEDICAL\",\"distress\":false,\"keywords\":[\"medics coming through\"],\"is_status_check\":false,\"subject_unit\":\"\",\"cut_off_meaning\":\"\",\"digest\":\"Campus PD reports 200 hallway secured, medics en route.\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1027,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 67,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    },
+    {
+      "event_id": "e102",
+      "input": {
+        "unit": "8M-5010",
+        "talkgroup": "5301 (REG1 TAC1)",
+        "truncated": false,
+        "transcript": "5010, we have contact with 2210, we're working him now."
+      },
+      "output": {
+        "priority": "ROUTINE",
+        "category": "STATUS_CHECK",
+        "distress": false,
+        "keywords": [],
+        "is_status_check": false,
+        "subject_unit": "8M-2210",
+        "cut_off_meaning": "",
+        "digest": "5010 has made contact with unit 2210 and is working with them"
+      },
+      "api_response": {
+        "model": "claude-haiku-4-5-20251001",
+        "id": "msg_011CdPyHusCEZ13JntS5oc8j",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"priority\":\"ROUTINE\",\"category\":\"STATUS_CHECK\",\"distress\":false,\"keywords\":[],\"is_status_check\":false,\"subject_unit\":\"8M-2210\",\"cut_off_meaning\":\"\",\"digest\":\"5010 has made contact with unit 2210 and is working with them\"}"
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1019,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 69,
+          "service_tier": "standard",
+          "inference_geo": "not_available"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P25 Orb — RF Environment</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/rf.css">
+</head>
+<body class="rf">
+
+<div class="topbar">
+  <span class="brand">P25 Orb</span>
+  <span class="role">RF Environment &mdash; receiver diagnostics</span>
+  <span class="tag" id="sys-tag">LCRA REGIONAL</span>
+  <span class="spacer"></span>
+  <span class="tag" id="link-tag">Command Feed: waiting</span>
+  <a href="index.html" class="tag accent">All pages</a>
+</div>
+
+<div class="controls">
+  <button id="btn-play" class="primary">Play</button>
+  <button id="btn-reset">Reset</button>
+  <span class="clock" id="clock">00:00 / 02:52</span>
+  <span class="speed">
+    <button class="speed-btn" data-speed="1">1&times;</button>
+    <button class="speed-btn" data-speed="2">2&times;</button>
+  </span>
+  <span class="spacer"></span>
+  <span class="beat-jump" id="beat-jump"></span>
+</div>
+
+<div class="beat-banner" id="beat-banner">
+  <strong>Ready.</strong>
+  <span>Press Play. Open the Command Feed in a second tab to see what the Orb makes of this.</span>
+</div>
+
+<main class="rf-grid">
+
+  <section class="panel scope">
+    <header>
+      Control channel &mdash; <span id="cc-freq">851.2125</span> MHz
+      <span class="spacer"></span>
+      <span class="hint">raw signalling, no interpretation</span>
+    </header>
+    <div class="body" id="log">
+      <div class="empty">Receiver idle. No traffic decoded.</div>
+    </div>
+  </section>
+
+  <aside class="rf-side">
+
+    <section class="panel">
+      <header>Receiver</header>
+      <div class="body">
+        <dl class="kv">
+          <dt>System</dt><dd id="k-system">&mdash;</dd>
+          <dt>WACN</dt><dd id="k-wacn">&mdash;</dd>
+          <dt>System ID</dt><dd id="k-sysid">&mdash;</dd>
+          <dt>NAC</dt><dd id="k-nac">&mdash;</dd>
+          <dt>Site</dt><dd id="k-site">&mdash;</dd>
+          <dt>Control ch.</dt><dd id="k-cc">&mdash;</dd>
+          <dt>Fallback</dt><dd id="k-fallback">&mdash;</dd>
+          <dt>Mode</dt><dd><span class="tag ok">RX ONLY &mdash; UNLICENSED</span></dd>
+        </dl>
+        <!--
+          R11f puts sensitivity in the diagnostics view because placement is the
+          primary mitigation and this is the screen a technician has open while
+          deciding where to put the unit. Shown unbuilt rather than omitted: a
+          receiver that has gone partly deaf and says nothing is the product's
+          own failure mode turned on the instrument.
+        -->
+        <dl class="kv sensitivity">
+          <dt>Noise floor</dt><dd class="unbuilt">not measured</dd>
+          <dt>Degraded by</dt><dd class="unbuilt">not measured</dd>
+        </dl>
+        <span class="roadmap-ref">Software PRD R11a&ndash;R11f &mdash; not built</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Channel activity</header>
+      <div class="body">
+        <div id="channels"></div>
+        <p class="note">
+          The control channel and 8TAC95D are channelised from start-up and never
+          torn down. Voice channels come and go with grants. One receiver, one
+          slice, all of it at once.
+        </p>
+        <p class="note caveat">
+          Analog talkaround carries no unit identity unless the fleet sends an ANI
+          burst. The demo attributes these to a unit; a real deployment needs that
+          burst.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Signalling counters</header>
+      <div class="body">
+        <div class="counters">
+          <div class="counter"><span class="n" id="c-req">0</span><span class="l">Requests</span></div>
+          <div class="counter ok"><span class="n" id="c-grant">0</span><span class="l">Grants</span></div>
+          <div class="counter warn"><span class="n" id="c-queue">0</span><span class="l">Queued</span></div>
+          <div class="counter alarm"><span class="n" id="c-busy">0</span><span class="l">Busy</span></div>
+          <div class="counter alarm"><span class="n" id="c-deny">0</span><span class="l">Denied</span></div>
+          <div class="counter alarm"><span class="n" id="c-emerg">0</span><span class="l">Emergency</span></div>
+        </div>
+        <p class="note">
+          These are counts, not conclusions. Nothing on this page decides what any
+          of it means &mdash; that happens in the Command Feed.
+        </p>
+      </div>
+    </section>
+
+  </aside>
+</main>
+
+<script src="js/protocol.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/rf-environment.js"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P25 Orb — Try the classifier live</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/live.css">
+</head>
+<body class="live">
+
+<div class="topbar">
+  <span class="brand">P25 Orb</span>
+  <span class="role">Try the classifier live</span>
+  <span class="spacer"></span>
+  <span class="tag" id="status-tag">checking…</span>
+  <a href="index.html" class="tag accent">All pages</a>
+</div>
+
+<main class="live-wrap">
+
+  <p class="lede">
+    Type anything an officer might say over the radio and the same model that
+    labelled every transmission in the demo will classify it, right now, over the
+    network.
+  </p>
+
+  <div class="isolation">
+    <strong>This page is separate from the demo on purpose.</strong>
+    The two-tab presentation replays classifications that were generated ahead of
+    time and cached, so it needs no network at all. This page is the one place
+    that makes a live call — so if the venue's wifi drops, this is all that
+    breaks.
+  </div>
+
+  <section class="composer">
+    <label for="transcript">Transmission</label>
+    <textarea id="transcript" rows="3"
+      placeholder="e.g. Dispatch, 1104, I've got one running north on foot, I need another unit"></textarea>
+
+    <div class="presets" id="presets"></div>
+
+    <div class="controls-row">
+      <label class="field">
+        <span>Unit ID</span>
+        <input id="unit" value="8M-4471" size="9">
+      </label>
+      <label class="field">
+        <span>Talkgroup</span>
+        <input id="talkgroup" value="5301 (REG1 TAC1)" size="18">
+      </label>
+      <label class="check">
+        <input type="checkbox" id="truncated">
+        <span>Cut off mid-word</span>
+      </label>
+      <span class="spacer"></span>
+      <button id="go" class="primary">Classify</button>
+    </div>
+  </section>
+
+  <section class="result" id="result" hidden></section>
+
+  <details class="explain">
+    <summary>What is actually happening when you press Classify</summary>
+    <ol>
+      <li>The browser posts your text to <code>/api/classify</code> on the local
+          server started by <code>serve.py</code>.</li>
+      <li>That server reads the Anthropic API key from <code>.env</code> and calls
+          the model. <strong>The key never reaches the browser</strong> — putting it
+          in client-side JavaScript would ship the secret to anyone who opens
+          developer tools or later reads the repository.</li>
+      <li>The prompt, the model and the output schema are the exact ones in
+          <code>classifier.py</code> — the same file the cached demo labels were
+          generated with. There is no second, easier prompt for the live demo.</li>
+      <li>The response comes back as structured JSON, which is what lets the
+          detection engine treat it as data instead of parsing prose.</li>
+    </ol>
+  </details>
+
+</main>
+
+<script src="js/try-it-live.js"></script>
+</body>
+</html>

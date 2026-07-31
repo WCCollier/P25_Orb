@@ -1,0 +1,295 @@
+/*
+ * Tab 2 — Command Feed.
+ *
+ * Everything here is tuned for someone reading it under stress, at arm's length,
+ * while other people are talking to them. Plain language over jargon, one clear
+ * hierarchy, and colour used only where it carries meaning. Set beside Tab 1,
+ * the difference in how much work the reader has to do is the product.
+ */
+
+body.feed { display: flex; flex-direction: column; overflow: hidden; }
+
+.feed-grid {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 400px minmax(0, 1fr) 300px;
+  gap: 12px;
+  padding: 12px 18px 18px;
+  min-height: 0;
+}
+
+.col-left, .col-right {
+  display: grid;
+  gap: 12px;
+  min-height: 0;
+}
+.col-left  { grid-template-rows: minmax(0, 3fr) minmax(0, 2fr); }
+.col-right { grid-template-rows: auto auto minmax(0, 1fr) auto; overflow-y: auto; }
+
+/* The roadmap panel sits in an auto row, so on a short screen it would grow at
+   the expense of the live ones. It is the least important thing in this column
+   during a demo — cap it and let it scroll inside itself. */
+.col-right .panel.roadmap { max-height: 24vh; }
+
+.legend { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; }
+.legend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 3px; }
+.legend .dot.high { background: var(--alarm); }
+.legend .dot.suspected { background: var(--warn); }
+
+.attrib { font-size: 10px; color: var(--text-faint); text-transform: none; letter-spacing: 0; }
+
+/* This page loads only base.css and feed.css, so the trunk-status list had been
+   falling through to the browser's default <dl> rendering — label and value on
+   separate lines, value indented. It reads as calm and deliberate here rather
+   than in rf.css's monospace instrument register, which this page never loads. */
+.kv {
+  margin: 14px 0 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 12px;
+  align-items: baseline;
+}
+.kv dt { color: var(--text-dim); font-size: 13px; }
+.kv dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- alarm cards -------------------------------------------------------- */
+
+.alert {
+  border: 1px solid var(--line-strong);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  background: var(--bg-sunken);
+  padding: 11px 13px;
+  margin-bottom: 10px;
+  animation: raise 0.35s ease-out;
+}
+
+@keyframes raise {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.alert.high      { border-left-color: var(--alarm); }
+.alert.suspected { border-left-color: var(--warn); }
+.alert.acknowledged { opacity: 0.45; }
+
+.alert-head { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+
+.alert-tier {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.alert.high .alert-tier      { background: var(--alarm); color: #240404; }
+.alert.suspected .alert-tier { background: var(--warn);  color: #2a1c02; }
+
+.alert-unit { font-weight: 700; font-size: 16px; }
+.alert-agency { color: var(--text-dim); font-size: 12px; }
+
+.alert-why {
+  margin: 9px 0 0;
+  font-size: 12px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.signals { list-style: none; margin: 5px 0 0; padding: 0; }
+.signals li {
+  padding: 5px 0 5px 15px;
+  position: relative;
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+}
+.signals li::before {
+  content: '';
+  position: absolute;
+  left: 2px; top: 12px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.signals .kind { font-weight: 600; }
+.signals .detail { display: block; color: var(--text-dim); font-size: 12px; line-height: 1.45; }
+.signals .when { color: var(--text-faint); font-family: var(--mono); font-size: 11px; }
+
+/* Two observations of one transmission. Bracketed together and labelled, so the
+   card cannot be read as two independent findings. */
+.signals li.shared-source { border-left: 2px solid var(--warn); padding-left: 13px; }
+.signals li.shared-source::before { left: 6px; background: var(--warn); }
+.signals li.shared-source ~ li.shared-source::after {
+  content: 'both heard in the same transmission — one observation, not two';
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--warn);
+  font-style: italic;
+}
+
+.alert-context {
+  margin-top: 9px;
+  font-size: 12px;
+  color: var(--text-dim);
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.alert-context .flag { color: var(--warn); }
+.alert-context .heard { color: var(--ok); }
+.alert-context .related { display: block; margin-top: 4px; color: var(--text-faint); }
+
+.alert-actions { margin-top: 10px; display: flex; gap: 8px; }
+.alert-actions button { padding: 4px 10px; font-size: 12px; }
+
+/* --- command view ------------------------------------------------------- */
+
+.cv-item {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+.cv-item:last-child { border-bottom: 0; }
+.cv-rank {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  min-width: 16px;
+}
+.cv-item.high .cv-text      { color: var(--alarm); font-weight: 600; }
+.cv-item.suspected .cv-text { color: var(--warn); }
+.cv-item.congestion .cv-text{ color: var(--text-dim); }
+
+.cv-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--text-faint);
+  line-height: 1.5;
+  border-top: 1px solid var(--line);
+  padding-top: 9px;
+}
+
+/* --- digest ------------------------------------------------------------- */
+
+.digest .body { padding: 0; }
+
+.entry {
+  display: grid;
+  grid-template-columns: 54px 92px 1fr;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  animation: appear-soft 0.25s ease-out;
+}
+@keyframes appear-soft { from { opacity: 0; } to { opacity: 1; } }
+
+.entry .when { font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); padding-top: 2px; }
+.entry .who  { font-size: 12.5px; color: var(--text-dim); }
+.entry .who b { display: block; color: var(--text); font-weight: 600; font-size: 13px; }
+.entry .what { min-width: 0; }
+.entry .text { font-size: 14px; }
+.entry .said {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  color: var(--text-faint);
+  font-style: italic;
+}
+.entry .badges { margin-top: 5px; display: flex; gap: 5px; flex-wrap: wrap; }
+
+.badge {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-faint);
+}
+.badge.EMERGENCY { background: var(--alarm); border-color: var(--alarm); color: #240404; font-weight: 700; }
+.badge.URGENT    { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 50%, transparent); }
+.badge.kw        { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.badge.cut       { color: var(--alarm); border-color: var(--alarm); }
+
+.entry.system { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.entry.system .text { color: var(--text-dim); }
+.entry.alert-entry { background: color-mix(in srgb, var(--alarm) 9%, transparent); }
+.entry.alert-entry .text { color: var(--alarm); font-weight: 600; }
+.entry.fallback .who::after {
+  content: '8TAC95D';
+  display: block;
+  font-size: 10px;
+  color: var(--amber);
+  letter-spacing: 0.05em;
+}
+
+/* --- trunk gauge -------------------------------------------------------- */
+
+.gauge { margin-bottom: 12px; }
+.gauge-level {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+.gauge-level.NOMINAL   { color: var(--ok); }
+.gauge-level.ELEVATED  { color: var(--warn); }
+.gauge-level.SATURATED { color: var(--alarm); }
+
+.gauge-bar {
+  height: 7px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 7px 0 6px;
+}
+.gauge-fill {
+  height: 100%;
+  width: 0;
+  background: var(--ok);
+  transition: width 0.4s ease, background 0.4s ease;
+}
+.gauge-caption { font-size: 12px; color: var(--text-faint); line-height: 1.45; }
+
+/* --- advisories & units ------------------------------------------------- */
+
+.advisory {
+  border-left: 3px solid var(--warn);
+  padding: 6px 0 6px 9px;
+  margin-bottom: 9px;
+  font-size: 13px;
+}
+.advisory .rec { display: block; color: var(--amber); font-size: 12px; margin-top: 3px; }
+
+.unit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--line);
+}
+.unit-row .id { font-family: var(--mono); color: var(--text-dim); }
+.unit-row .stat { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
+.unit-row.blocked .stat { color: var(--alarm); }
+.unit-row.alerted .id { color: var(--alarm); font-weight: 700; }
+
+@media (max-width: 1280px) {
+  .feed-grid { grid-template-columns: 340px minmax(0, 1fr); }
+  .col-right { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 900px) {
+  .feed-grid { grid-template-columns: 1fr; }
+  .col-left, .col-right { grid-template-rows: none; grid-template-columns: 1fr; }
+}

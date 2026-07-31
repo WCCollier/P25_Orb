@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P25 Orb — Control Panel</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/panel.css">
+</head>
+<body class="panel-page">
+
+<div class="topbar">
+  <span class="brand">P25 Orb</span>
+  <span class="role">Control Panel &mdash; field setup and administration</span>
+  <span class="spacer"></span>
+  <span class="tag ok">RX-only, unlicensed tier</span>
+  <a href="index.html" class="tag accent">All pages</a>
+</div>
+
+<main class="panel-wrap">
+
+  <div class="mockup-banner">
+    Static mockup. This page shows the configuration surface the product would
+    expose; it is not wired up. The working software in this proof of concept
+    is the detection engine, the Command Feed, and the RF Environment
+    diagnostics view.
+  </div>
+
+  <div class="panel-grid">
+
+    <section class="panel">
+      <header>Operating mode</header>
+      <div class="body">
+        <label class="radio-option">
+          <input type="radio" name="mode" checked>
+          <span class="radio-label">Passive monitoring (RX only)</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="mode">
+          <span class="radio-label">Transmit enabled</span>
+        </label>
+        <div class="cap-heading">Transmit capabilities</div>
+        <div class="cap-row">
+          <div class="cap-top">
+            <span>Interop / talkaround (8TAC95D)</span>
+            <span class="tag ok">Available</span>
+          </div>
+          <div class="cap-sub">
+            Power amplifier and T/R switch are fitted on every band module.
+            Authorised by the communications leader at the incident.
+          </div>
+        </div>
+        <div class="cap-row">
+          <div class="cap-top">
+            <span>Licensed trunk participation</span>
+            <span class="tag">Duplexer pack not fitted</span>
+          </div>
+          <div class="cap-sub">
+            Needs an assigned P25 unit ID from the system operator and the
+            clip-in duplexer pack. Arranged over weeks or months, never
+            mid-response.
+          </div>
+        </div>
+        <p class="help">
+          The two transmit capabilities are authorised on completely
+          different timescales, which is why the duplexer is a clip-in pack
+          rather than a separate unit. Neither is a hardware upgrade: the
+          amplifier is on every module and transmit is enabled in software.
+        </p>
+        <div class="status-row">
+          <div><span class="k">Transmit hardware:</span> power amplifier and T/R switch present, transmit disabled in software</div>
+          <div><span class="k">Power profile:</span> RX-only (power amplifier unpowered)</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Target system</header>
+      <div class="body">
+        <div class="field-group">
+          <label>Band module (detected)</label>
+          <div class="detected">700/800 MHz &middot; three-element array &middot; S/N BM78-0412</div>
+        </div>
+        <p class="help">
+          The band is a physical module, not a setting. Array, filters,
+          power amplifier and the array calibration table all live in it,
+          and the module reports its own identity to the processing body
+          over the dock. Changing band means changing the module.
+        </p>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="wacn">WACN</label>
+            <input type="text" id="wacn" value="BEE00">
+          </div>
+          <div class="field-group">
+            <label for="sysid">System ID</label>
+            <input type="text" id="sysid" value="4E2">
+          </div>
+          <div class="field-group">
+            <label for="nac">NAC</label>
+            <input type="text" id="nac" value="2A7">
+          </div>
+        </div>
+        <p class="help">
+          These three values together confirm the unit is tracking the
+          intended trunk and not a neighbouring system on the same band.
+        </p>
+        <div class="field-group">
+          <label for="site">Site / RFSS</label>
+          <input type="text" id="site" value="RFSS 1 / SITE 4">
+        </div>
+        <div class="field-group">
+          <label for="cc">Control channel</label>
+          <input type="text" id="cc" value="851.2125 MHz">
+        </div>
+        <div class="status-row">
+          <div><span class="tag ok">Control channel locked &mdash; decoding</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Fallback channel</header>
+      <div class="body">
+        <div class="field-group">
+          <label for="fallback">Direct / talkaround channel</label>
+          <select id="fallback">
+            <option selected>8TAC95D &mdash; 851.5500 MHz</option>
+            <option>7GTAC57D &mdash; 700 MHz</option>
+          </select>
+        </div>
+        <p class="help">
+          The Texas Statewide Interoperability Channel Plan designates a
+          direct/talkaround channel per band. The Orb monitors it alongside
+          the trunk, which is how it hears units that could not get on the
+          system at all.
+        </p>
+        <p class="help">
+          The list is confined to the fitted band module. A UHF or VHF
+          talkaround channel is not offered here because the receiver cannot
+          reach it &mdash; the front-end filters and the array are cut for one
+          band, and both live in the module.
+        </p>
+        <label class="check-row">
+          <input type="checkbox" checked>
+          <span>Monitor fallback channel continuously</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel section-disabled">
+      <header>
+        P25 identity (licensed mode)
+        <span class="spacer"></span>
+        <span class="tag">Inactive in RX-only mode</span>
+      </header>
+      <div class="body">
+        <div class="field-group">
+          <label for="unit-id">Assigned unit ID</label>
+          <input type="text" id="unit-id" placeholder="8M-&hellip;">
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="home-wacn">Home WACN</label>
+            <input type="text" id="home-wacn" placeholder="">
+          </div>
+          <div class="field-group">
+            <label for="home-sysid">Home System ID</label>
+            <input type="text" id="home-sysid" placeholder="">
+          </div>
+        </div>
+        <p class="help">
+          Populated only when the agency has been issued an ID by the system
+          operator. The hardware is identical either way &mdash; this is an
+          authorisation unlock, not a different unit.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Encryption keys</header>
+      <div class="body">
+        <p class="help lead">
+          For an agency to load keys it already legitimately holds &mdash; its
+          own system, or a mutual-aid arrangement it is party to. This does
+          not decrypt systems you are not authorised on, and no key material
+          leaves the unit.
+        </p>
+        <table class="key-table">
+          <tr><td>SLOT 1 &mdash; LCRA REG1 &middot; AES-256 &middot; loaded 2026-07-19</td></tr>
+          <tr><td class="empty-slot">SLOT 2 &mdash; (empty)</td></tr>
+        </table>
+        <div class="button-row">
+          <button>Load key from secure element</button>
+          <button>Clear all keys</button>
+        </div>
+        <span class="tag">Keys stored in hardware secure element</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Detection thresholds</header>
+      <div class="body">
+        <div class="field-row two">
+          <div class="field-group">
+            <label for="th-status">Status check answer window</label>
+            <input type="text" id="th-status" value="15 seconds">
+          </div>
+          <div class="field-group">
+            <label for="th-congestion">Congestion window</label>
+            <input type="text" id="th-congestion" value="30 seconds">
+          </div>
+        </div>
+        <div class="field-row two">
+          <div class="field-group">
+            <label for="th-saturated">Saturated below</label>
+            <input type="text" id="th-saturated" value="50% of calls granted">
+          </div>
+          <div class="field-group">
+            <label for="th-correlated">Correlated blocking</label>
+            <input type="text" id="th-correlated" value="4 units in 15 seconds">
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="th-sensitivity">Sensitivity degradation margin</label>
+          <input type="text" id="th-sensitivity" value="6 dB">
+          <span class="roadmap-ref">Software PRD R11b &mdash; not implemented</span>
+        </div>
+        <p class="help">
+          What counts as &ldquo;too long without an answer&rdquo; is a
+          doctrine decision, not an engineering one, so these are per-agency
+          settings rather than constants.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Diagnostics</header>
+      <div class="body">
+        <p class="help lead">
+          Confirm the unit is hearing the intended trunk before leaving the
+          site.
+        </p>
+        <a href="rf-environment.html" class="diag-link">Open RF Environment diagnostics</a>
+        <p class="help">
+          This is the same view as Tab 1 of the demo. In the product it lives
+          here, inside the Control Panel, for the deploying technician.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel roadmap">
+      <header>
+        Array and heading integrity
+        <span class="spacer"></span>
+        <span class="tag roadmap">Not built</span>
+      </header>
+      <div class="body">
+        <div class="roadmap-item">
+          <div class="what">Array manifold calibration &mdash; loaded from the band module</div>
+          <div class="why">Each module carries its own measured phase-and-amplitude table. Without it the three elements cannot be compared and no bearing exists.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="what">Magnetometer gradient check</div>
+          <div class="why">Two dedicated magnetometers at the outboard lid corners. Earth's field is uniform across the lid, so any difference between them is a local disturbance &mdash; a vehicle, a fence, a light pole. The hardware is selected; the validation is not done.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="what">Deployment orientation and levelling</div>
+          <div class="why">A bearing is only as good as the heading it is measured against.</div>
+        </div>
+        <p class="help">Hardware design &sect;5.3 and &sect;5.8. Hardware selected, validation open. Nothing on this page reads these sensors.</p>
+      </div>
+    </section>
+
+    <section class="panel roadmap">
+      <header>
+        Orb collective
+        <span class="spacer"></span>
+        <span class="tag roadmap">Not built</span>
+      </header>
+      <div class="body">
+        <div class="roadmap-item">
+          <div class="what">Peers discovered on the ARC Edge network</div>
+          <div class="why">Orbs find each other and merge what they each heard. There is no master &mdash; every unit runs the same reducer over the same observations and reaches the same answer.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="what">Shared COP layer publication</div>
+          <div class="why">The unit with the lowest identifier among visible peers publishes, which needs no election traffic and no protocol.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="what">System-namespaced unit identity</div>
+          <div class="why">Unit IDs are unique only within one P25 system, and an interoperability channel is cross-agency by definition. This is already a defect for a single unit, not just for a collective.</div>
+        </div>
+        <p class="help">Software PRD &sect;6. Design proposal; no code exists.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <header>Network</header>
+      <div class="body">
+        <div class="status-row flush">
+          <div><span class="k">Interface:</span> Ethernet to ARC Edge base unit</div>
+          <div><span class="k">Assembly:</span> processing body factory-bolted to the ARC Edge body; the pair slots into the band module</div>
+          <div><span class="k">Power:</span> external supply &mdash; patrol vehicle or field power bank, a few hundred watts available</div>
+          <div><span class="k">Command Feed reachable at:</span> any host on the ARC Edge network</div>
+        </div>
+        <div class="tag-row">
+          <span class="tag warn">Requires Orb Aerospace's mechanical interface specification and agreement to a factory bolt-on</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+</body>
+</html>

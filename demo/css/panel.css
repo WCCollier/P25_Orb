@@ -1,0 +1,219 @@
+/*
+ * Control Panel — static mockup of the field setup / administration surface.
+ *
+ * This page is not wired to anything: it exists to show the configuration a
+ * real product would expose, using the same panel/tag/button language as the
+ * two working demo tabs. Layout follows live.css's plain, readable register
+ * rather than rf.css's dense instrument one, since this is a form, not a feed.
+ */
+
+body.panel-page { overflow-y: auto; }
+
+.panel-wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 20px 20px 60px;
+}
+
+.mockup-banner {
+  border-left: 3px solid var(--warn);
+  background: color-mix(in srgb, var(--warn) 8%, transparent);
+  padding: 11px 14px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 13.5px;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.panel-grid > .panel > header {
+  justify-content: space-between;
+}
+
+/* --- form primitives ----------------------------------------------------- */
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+.field-group:last-child { margin-bottom: 0; }
+
+.field-group label {
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.field-group select,
+.field-group input[type="text"],
+.field-group .detected {
+  width: 100%;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--bg-sunken);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+}
+
+/* Read-only display for a value that reports itself rather than being set. */
+.field-group .detected {
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* Three columns inside a half-width panel leave about 150px per field, which
+   clips any value longer than a couple of words. Rows carrying sentences use
+   two. */
+.field-row.two { grid-template-columns: repeat(2, 1fr); }
+
+.radio-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--text);
+  padding: 6px 0;
+}
+.radio-option input { margin-top: 3px; }
+.radio-option .radio-label { display: flex; flex-direction: column; gap: 3px; }
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.help {
+  font-size: 12.5px;
+  color: var(--text-faint);
+  line-height: 1.5;
+  margin: 6px 0 0;
+}
+
+/* Helper text that opens a section rather than trailing a field. */
+.help.lead { margin-top: 0; }
+
+/* Tags default to nowrap, which suits short chips; the ones down here carry a
+   sentence and have to wrap inside a half-width panel. */
+.tag-row { margin-top: 12px; }
+.tag-row .tag { white-space: normal; }
+
+.status-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.status-row .k { color: var(--text-faint); }
+
+.cap-heading {
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-top: 10px;
+}
+
+/* Two-line-per-row layout: a label/chip line, then a caption underneath. */
+.cap-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cap-row:last-child { border-bottom: none; }
+.cap-row .cap-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+.cap-row .cap-sub {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
+/* Where the status rows are the whole section, not a footnote under fields. */
+.status-row.flush { margin-top: 0; padding-top: 0; border-top: none; }
+
+/* --- section 4: dimmed licensed-mode fields ------------------------------ */
+
+.section-disabled {
+  opacity: 0.55;
+}
+.section-disabled input,
+.section-disabled select {
+  color: var(--text-faint);
+}
+
+/* --- section 5: key table ------------------------------------------------- */
+
+.key-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-family: var(--mono);
+  margin: 10px 0 12px;
+}
+.key-table td {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-dim);
+}
+.key-table tr:last-child td { border-bottom: none; }
+.key-table td.empty-slot { color: var(--text-faint); }
+
+.button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+/* --- section 7: diagnostics link ------------------------------------------ */
+
+.diag-link {
+  display: inline-block;
+  font: inherit;
+  font-size: 13px;
+  color: #dbeaff;
+  background: color-mix(in srgb, var(--accent) 18%, var(--bg-sunken));
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  text-decoration: none;
+  margin: 6px 0 8px;
+}
+.diag-link:hover { background: color-mix(in srgb, var(--accent) 28%, var(--bg-sunken)); }
+
+@media (max-width: 900px) {
+  .panel-grid { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
+}

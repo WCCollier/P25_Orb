@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P25 Orb — ARC Edge proof of concept</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/live.css">
+<style>
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 22px 0 8px; }
+  .card {
+    display: block;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    padding: 16px 18px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card h3 { font-size: 16px; margin-bottom: 5px; }
+  .card p { margin: 0; font-size: 13.5px; color: var(--text-dim); line-height: 1.55; }
+  .card .step { font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+  .card.secondary .step { color: var(--text-faint); }
+  .howto { counter-reset: step; padding-left: 0; list-style: none; }
+  .howto li { padding: 7px 0 7px 30px; position: relative; font-size: 14px; border-bottom: 1px solid var(--line); }
+  .howto li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute; left: 0; top: 8px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--bg-sunken);
+    border: 1px solid var(--line-strong);
+    font-family: var(--mono); font-size: 11px;
+    display: grid; place-items: center;
+    color: var(--text-dim);
+  }
+  kbd {
+    font-family: var(--mono); font-size: 11.5px;
+    background: var(--bg-sunken); border: 1px solid var(--line-strong);
+    border-radius: 3px; padding: 1px 5px;
+  }
+</style>
+</head>
+<body class="live">
+
+<div class="topbar">
+  <span class="brand">P25 Orb</span>
+  <span class="role">A proposed ARC Edge add-on &mdash; proof of concept</span>
+  <span class="spacer"></span>
+  <span class="tag ok">RX-only, unlicensed tier</span>
+</div>
+
+<main class="live-wrap">
+
+  <p class="lede">
+    When a P25 trunk saturates, officers press the button and nothing goes out.
+    The trunk knows. Nobody else does. P25 Orb listens to that trunk and tells
+    the on-scene commander what never got through.
+  </p>
+
+  <div class="cards">
+    <a class="card" href="rf-environment.html">
+      <span class="step">Tab 1 &mdash; open first</span>
+      <h3>RF Environment</h3>
+      <p>What the receiver hears: raw P25 control-channel signalling, no
+         interpretation. This tab owns the clock and drives the other one.</p>
+    </a>
+    <a class="card" href="command-feed.html">
+      <span class="step">Tab 2 &mdash; open second</span>
+      <h3>Command Feed</h3>
+      <p>The same events as the commander is shown them: running digest, two-tier
+         alarms, and a ranked view of what needs attention now.</p>
+    </a>
+    <a class="card secondary" href="control-panel.html">
+      <span class="step">Supporting</span>
+      <h3>Control Panel</h3>
+      <p>Static mockup of the field setup and administration surface. Not
+         interactive &mdash; it shows the configuration the product would expose.</p>
+    </a>
+    <a class="card secondary" href="try-it-live.html">
+      <span class="step">Optional &mdash; needs network</span>
+      <h3>Try the classifier live</h3>
+      <p>Type a phrase and have the real model classify it on the spot. Kept on
+         its own page so it can fail without touching the demo.</p>
+    </a>
+  </div>
+
+  <div class="isolation">
+    <strong>Where you see a dashed panel.</strong> Several things in this
+    proof of concept are specified in the design documents but not built
+    &mdash; receiver sensitivity reporting, multi-unit cooperation, the map
+    layer. Rather than leave them out and describe them from the stage, they
+    appear on the relevant page as dashed panels marked <em>not built</em>,
+    each naming the requirement it stands for. Everything not marked that
+    way is working code.
+  </div>
+
+  <h3 style="margin-top:26px">Running the demo</h3>
+  <ol class="howto">
+    <li>Open <strong>RF Environment</strong> in one tab and <strong>Command Feed</strong> in a second. Put them side by side.</li>
+    <li>Press <strong>Play</strong> on the RF Environment tab. It drives both tabs; the Command Feed has no timer of its own.</li>
+    <li><kbd>Space</kbd> plays and pauses, <kbd>R</kbd> resets. The numbered buttons jump to any of the seven beats for rehearsal.</li>
+    <li>The whole sequence runs 2 minutes 52 seconds at 1&times;. There is a 2&times; option for rehearsal.</li>
+  </ol>
+
+  <div class="isolation" style="margin-top:22px">
+    <strong>What is real and what is simulated.</strong>
+    The detection, synthesis and alarm engine is real working code, and the AI
+    classifications were genuinely produced by Claude Haiku 4.5 and cached so the
+    presentation needs no network. The radio events themselves are a scripted
+    timeline, because no P25 receiver hardware exists for this demo. ARC Edge's
+    own path-selection is represented narratively, since that is Orb Aerospace's
+    own intellectual property and not ours to implement.
+  </div>
+
+</main>
+</body>
+</html>

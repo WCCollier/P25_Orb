@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARC Edge — Command Feed</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/feed.css">
+</head>
+<body class="feed">
+
+<div class="topbar">
+  <span class="brand">ARC Edge</span>
+  <span class="role">Command Feed &mdash; On-Scene Commander</span>
+  <span class="spacer"></span>
+  <span class="tag accent" id="uplink">Uplink: Starlink LEO &mdash; DMPO-selected</span>
+  <span class="tag" id="link-tag">RF source: waiting</span>
+  <a href="index.html" class="tag accent">All pages</a>
+</div>
+
+<main class="feed-grid">
+
+  <!-- ---------------- alarms + command view ---------------- -->
+  <section class="col-left">
+
+    <div class="panel alarms">
+      <header>
+        Alarm panel
+        <span class="spacer"></span>
+        <span class="legend">
+          <span class="dot high"></span>High confidence
+          <span class="dot suspected"></span>Suspected
+        </span>
+      </header>
+      <div class="body" id="alarms">
+        <div class="empty">No alarms. Routine traffic only.</div>
+      </div>
+    </div>
+
+    <div class="panel command-view">
+      <header>Command view &mdash; what needs you now</header>
+      <div class="body" id="command-view">
+        <div class="empty">Nothing outstanding.</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ---------------- digest ---------------- -->
+  <section class="panel digest">
+    <header>
+      Running digest
+      <span class="spacer"></span>
+      <span class="attrib" id="attrib">classifier: &mdash;</span>
+    </header>
+    <div class="body" id="digest">
+      <div class="empty">Waiting for the RF Environment tab. Press Play there.</div>
+    </div>
+  </section>
+
+  <!-- ---------------- scene status ---------------- -->
+  <aside class="col-right">
+
+    <div class="panel">
+      <header>Trunk status</header>
+      <div class="body">
+        <div class="gauge" id="gauge">
+          <div class="gauge-level" id="gauge-level">NO SIGNAL</div>
+          <div class="gauge-bar"><div class="gauge-fill" id="gauge-fill"></div></div>
+          <div class="gauge-caption" id="gauge-caption">
+            Not enough traffic yet to judge.
+          </div>
+        </div>
+        <dl class="kv">
+          <dt>Getting through</dt><dd id="s-grant">&mdash;</dd>
+          <dt>Blocked</dt><dd id="s-blocked">&mdash;</dd>
+          <dt>Transmissions</dt><dd id="s-tx">&mdash;</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="panel">
+      <header>Scene advisories</header>
+      <div class="body" id="advisories">
+        <div class="empty">None.</div>
+      </div>
+    </div>
+
+    <div class="panel units">
+      <header>Units heard</header>
+      <div class="body" id="units">
+        <div class="empty">None yet.</div>
+      </div>
+    </div>
+
+    <div class="panel roadmap">
+      <header>
+        Specified, not built
+        <span class="spacer"></span>
+        <span class="tag roadmap">Roadmap</span>
+      </header>
+      <div class="body">
+        <div class="roadmap-item">
+          <div class="what">Is this unit going partly deaf?</div>
+          <div class="why">A strong nearby transmitter raises our noise floor and every channel loses sensitivity at once. Until this is built, nothing on this screen distinguishes an absence from something we failed to hear.</div>
+          <span class="roadmap-ref">PRD R11a&ndash;R11e</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="what">How many Orbs are contributing</div>
+          <div class="why">This is one simulated unit. The two browser tabs talk over BroadcastChannel, which is same-machine and is not a network.</div>
+          <span class="roadmap-ref">PRD &sect;6.6</span>
+        </div>
+        <div class="roadmap-item">
+          <div class="what">Bearings and fixes on the map layer</div>
+          <div class="why">The direction-finding solver is real working code and passes 20 assertions, but it is standalone and is not wired to this interface.</div>
+          <span class="roadmap-ref">PRD &sect;6.8</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</main>
+
+<script src="js/protocol.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/classifications.js"></script>
+<script src="js/detection-engine.js"></script>
+<script src="js/command-feed.js"></script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+/*
+ * Tab 1 — RF Environment.
+ *
+ * Instrument aesthetic on purpose: monospace, dense, phosphor green, no
+ * hierarchy beyond timestamp order. This is what the radio environment looks
+ * like before anything makes sense of it. Whatever a viewer feels looking at
+ * this during the blocked-attempt burst is the feeling the product exists to
+ * remove.
+ */
+
+body.rf {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  background: var(--bg-sunken);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.clock {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--phosphor);
+  letter-spacing: 0.04em;
+}
+
+.speed { display: inline-flex; gap: 4px; }
+.speed-btn { padding: 4px 9px; font-size: 12px; }
+.speed-btn.active { border-color: var(--accent); color: var(--accent); }
+
+.beat-jump { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.beat-jump button { padding: 4px 8px; font-size: 12px; font-family: var(--mono); }
+.beat-jump button.active { border-color: var(--phosphor); color: var(--phosphor); }
+
+.beat-banner {
+  padding: 9px 18px;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--text-dim);
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.beat-banner strong { color: var(--text); }
+
+.rf-grid {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 12px;
+  padding: 12px 18px 18px;
+  min-height: 0;
+}
+
+.hint {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+
+/* --- the scrolling control-channel readout ------------------------------ */
+
+.scope .body {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  background: var(--bg-sunken);
+  padding: 10px 12px;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 62px 118px 96px 1fr;
+  gap: 10px;
+  padding: 1px 0;
+  color: var(--phosphor);
+  white-space: nowrap;
+  animation: appear 0.16s ease-out;
+}
+
+@keyframes appear { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; } }
+
+.line .t    { color: var(--text-faint); }
+.line .unit { color: var(--text-dim); }
+.line .op   { letter-spacing: 0.04em; }
+.line .arg  { color: var(--text-dim); white-space: normal; }
+
+.line.grant   .op { color: var(--phosphor); }
+.line.request .op { color: var(--text-dim); }
+.line.queued  .op { color: var(--amber); }
+.line.busy    .op,
+.line.denied  .op { color: var(--alarm); font-weight: 600; }
+.line.busy    .arg,
+.line.denied  .arg { color: var(--alarm); }
+.line.voice   .op { color: #9ecbff; }
+.line.voice   .arg { color: var(--text); }
+.line.fallback .op { color: var(--amber); }
+.line.fallback .arg { color: var(--amber); }
+
+.line.emergency {
+  background: color-mix(in srgb, var(--alarm) 16%, transparent);
+  border-left: 2px solid var(--alarm);
+  margin-left: -12px;
+  padding-left: 10px;
+}
+.line.emergency .op { color: var(--alarm); font-weight: 700; }
+
+.line.truncated .arg::after {
+  content: ' [CARRIER DROP]';
+  color: var(--alarm);
+  font-weight: 600;
+}
+
+/* --- side panels -------------------------------------------------------- */
+
+/* All three panels size to their content and the column scrolls if the viewport
+   is too short. The counters panel used to take the leftover space instead,
+   which meant prose added to either panel above it came out of the counters'
+   height — on a 900px screen that squeezed them to nothing, and a collapsed
+   panel reads as a bug where one below the fold merely reads as a long page.
+   Everything fits without scrolling at roughly 1000px of viewport height. */
+.rf-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Each panel takes its natural height and the column scrolls if the viewport is
+   short. This was a grid with a `1fr` row, which let the bottom panel absorb
+   the leftover space — so prose added to a panel above it came out of the
+   counters' height, and on a 900px screen squeezed them to nothing. A panel
+   that has silently collapsed reads as a bug; one below the fold just reads as
+   a long page. Everything fits without scrolling from about 1000px of viewport
+   height up. */
+.rf-side > .panel { flex: 0 0 auto; }
+
+.kv { margin: 0; display: grid; grid-template-columns: 88px 1fr; gap: 3px 10px; font-size: 12.5px; }
+.kv dt { color: var(--text-faint); }
+.kv dd { margin: 0; font-family: var(--mono); color: var(--text-dim); }
+
+#channels .chan {
+  display: grid;
+  grid-template-columns: 68px 1fr auto;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--line);
+}
+#channels .chan .role { color: var(--text-faint); }
+#channels .chan .who { color: var(--phosphor); }
+#channels .chan.idle .who,
+#channels .chan.quiet .who { color: var(--text-faint); }
+
+/* The two channelisers that exist from start-up read as instrument state, not
+   as traffic — so they are marked rather than mixed in with the dynamic ones. */
+#channels .chan.permanent { border-left: 2px solid var(--line-strong); padding-left: 6px; }
+#channels .chan.permanent .role { color: var(--text-dim); }
+
+.note.caveat { border-left: 2px solid var(--amber); padding-left: 8px; margin-top: 8px; }
+
+.kv.sensitivity { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line-strong); }
+.kv .unbuilt { color: var(--text-faint); font-style: italic; }
+
+.counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.counter {
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 7px 4px;
+  text-align: center;
+}
+.counter .n { display: block; font-family: var(--mono); font-size: 19px; color: var(--text); }
+.counter .l { display: block; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+.counter.ok .n    { color: var(--ok); }
+.counter.warn .n  { color: var(--warn); }
+.counter.alarm .n { color: var(--alarm); }
+
+.note {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
+@media (max-width: 1000px) {
+  .rf-grid { grid-template-columns: 1fr; }
+  .rf-side { grid-template-rows: none; }
+}
