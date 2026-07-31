@@ -37,7 +37,7 @@ vocabulary is what stops you repeating it live.
 | **Channel designator** | The operational name — *8TAC95D* — bundling frequency, mode, and squelch settings |
 | **Control channel / voice channel** | *Jobs* an RF channel does in a trunked system: signalling, or carrying a call |
 | **Uplink / downlink** | The two directions, **on different frequencies** — 45 MHz apart at 800 MHz. A "control channel" is really a pair of frequencies |
-| **Receive chain** | A hardware path inside the radio chip. The ADRV9026 has four; the AD9361 before it had two. **This is the one that caused the error** |
+| **Receive chain** | A hardware path inside the radio chip. Each ADRV9002 has two; four chips give eight, arranged as two **coherent groups** of three plus a calibration reference (§8.3). The AD9361 before that had two chains on one chip. **This is the one that caused the error** |
 | **Talkgroup** | The group a call is addressed to. Radio users call this "a channel" because it is a knob position on their radio |
 
 **The rule:** if you say "channel" and mean hardware, say **chain** instead. If
@@ -58,7 +58,7 @@ customer actually asks: *"will this work on our system?"*
 
 | | What it is | Varies? |
 |---|---|---|
-| **Processing body** | Transceiver, FPGA, compute, LNAs, GNSS, secure element, Ethernet, power | **No.** Identical for every band — but the transceiver tunes only **650 MHz to 6 GHz**, so VHF and UHF modules need a mixer. See §8.3 |
+| **Processing body** | Transceiver, FPGA, compute, LNAs, GNSS, secure element, Ethernet, power | **No.** Identical for every band — the transceiver tunes **30 MHz to 6 GHz**, so VHF, UHF and 700/800 are all covered with no mixer. See §8.3 |
 | **Band module** | Housing, antenna array, filters, PA and duplexer | **Yes.** One per radio environment |
 | **Licence** | Transmit enable, unit ID, keys | Software and authorisation only |
 
@@ -140,7 +140,7 @@ Signal flows top to bottom. Think of it as a pipeline where each stage does one
 job.
 
 ```
-   ANTENNA
+   ANTENNA  (×3 elements, every module — §8.1b)
       │        picks up everything in the band
       ▼
    BANDPASS FILTER          "only let through the frequencies we care about"
@@ -149,17 +149,42 @@ job.
    LOW-NOISE AMPLIFIER      "make the weak signal bigger without adding hiss"
       │
       ▼
-   RF TRANSCEIVER (ADRV9026)  "turn radio waves into numbers"
-      │                      ~1.5 Gbps of raw numbers
-      ▼
-   FPGA BRIDGE (Zynq)       "sort the flood into a few streams"
-      │                      a handful of 12.5 kHz channels
+   SPLIT (after the LNA)    one 2-way divider per element — costs 0.04 dB of
+      │                     noise, not the 3.2 dB a split before the LNA would
+      │
+      ├─────────────────┬─────────────────────
+      ▼                 ▼
+   UPLINK GROUP      DOWNLINK GROUP     "turn radio waves into numbers —
+   chips A+B         chips C+D           twice, once per direction of the call"
+   ~806–808 MHz      ~851–853 MHz
+      │                 │
+      └────────┬────────┘
+               ▼
+   FPGA BRIDGE (Zynq-class)   "sort the flood into a few streams"
+      │                        a handful of 12.5 kHz streams per group
       ▼
    COMPUTE (Jetson-class)   "turn numbers into meaning"
       │
       ▼
    ETHERNET  ──▶  ARC EDGE BASE UNIT
 ```
+
+**Port map — who feeds what.** Each of the 3 antenna elements feeds *both*
+groups; nothing is switched or time-shared:
+
+```
+element 1 ──┬──▶ uplink group   RX1        downlink group RX1 ◀──┬── element 1
+element 2 ──┼──▶ uplink group   RX2        downlink group RX2 ◀──┼── element 2
+element 3 ──┴──▶ uplink group   RX3        downlink group RX3 ◀──┴── element 3
+
+cal tone source ──▶ uplink group   RX4  (reference tap, tone f_UL)
+cal tone source ──▶ downlink group RX4  (reference tap, tone f_DL)
+```
+
+RX4 in each group never touches an antenna. It listens to the calibration tone
+straight from its source, so comparing it against the same tone arriving
+through the antenna chain tells you whether *the chain* has drifted or the
+*source* has — see §8.3.
 
 > **The FPGA stage was missing from the first version of this diagram**, and it
 > is not optional. See §8.3a. Mentioning that you found and fixed it is worth
@@ -188,91 +213,158 @@ It sets the system's **sensitivity** — how weak a signal the unit can still
 decode, which in practical terms is how far away an officer can be and still be
 heard. Catalogue part; this is not a place that rewards cleverness.
 
-### The transceiver — the one choice that matters
+### The transceiver — the one choice that matters, and the one that changed today
 
-**Analog Devices ADRV9026.** A "software-defined radio" chip: rather than being
-built for one band, it tunes anywhere in a wide range and hands the results to
-software as numbers.
+**Four Analog Devices ADRV9002 chips, arranged as two "coherent groups" of
+three receive chains each**, plus a calibration reference chain per group.
+"Coherent group" is the term to use — it means three chains co-tuned to one
+window and phase-aligned against each other, sampling the array to produce one
+bearing. There are **two** of them.
 
 Confirmed from the manufacturer's documentation:
 
-- **650 MHz to 6.0 GHz** tuning range
-- **four receive chains on one die**, with on-chip multichip synchronisation
-- up to **200 MHz** of bandwidth
-- **the receive chains share an oscillator**, so they cannot be tuned to
-  different frequencies
-- a JESD204B/C serial digital interface
+- **30 MHz to 6.0 GHz** tuning range — covers VHF, UHF and 700/800 with no
+  mixer, which matters in a moment
+- **two receivers per chip**, each with its **own independent RF synthesiser**,
+  so a chip's two receivers can sit at different centre frequencies
+- **on-chip multichip synchronisation (MCS)**, re-run automatically on every
+  retune — and, worth saying because it surprises people, **MCS is needed even
+  within a single chip**: its two receivers are not phase-aligned by
+  construction
+- **150 dB/Hz dynamic range**, marketed by the manufacturer specifically against
+  the "blocking" problem in mission-critical land-mobile radio — exactly our
+  problem, see §8.3b
+- **LVDS or CMOS SSI** digital interface — **not** the JESD204B/C interface of
+  the part we briefly used before this one. That matters for the FPGA stage;
+  see §8.3a
+- channel bandwidths of **12 kHz to 40 MHz**
 
-**We changed to this part from the AD9361, and you should know both.** The
-AD9361 has two receive chains and tunes 70 MHz–6 GHz; two of them, synchronised,
-was the earlier plan and is still the documented fallback. **The reason we
-changed is a failure mode, not effort:** synchronising two chips can
-half-succeed, and a half-succeeded synchronisation produces a **wrong bearing
-rather than a missing one.** That is the class of error this whole design works
-to eliminate, so removing a mechanism that can generate it was worth more than
-the engineering time it saved.
+**How the eight chains are used:**
 
-### How we monitor several channels at once
+| | Uplink group — chips A, B | Downlink group — chips C, D |
+|---|---|---|
+| Tuned to | ~806–808 MHz | ~851–853 MHz |
+| Chains 1–3 | elements 1, 2, 3 | elements 1, 2, 3 |
+| Chain 4 | calibration reference tap (`f_UL`) | calibration reference tap (`f_DL`) |
+| Hears | **handsets** — channel requests and granted voice. **These are the bearings that matter** | tower signalling, `8TAC95D` talkaround, and doubles as a **known-position calibration reference** — §8.3b, §9 |
 
-The obvious guess — one receiver per channel — is wrong, and it is worth knowing
-why, because an earlier version of our own hardware document made exactly that
-mistake and a reviewer caught it.
+**Every element feeds both groups.** After its LNA, each element's signal passes
+through a small 2-way splitter, with one leg to each group. Nothing is switched
+or time-shared — both groups are listening all the time.
 
-The receive chains **share a local oscillator**. They must observe the same
-centre frequency. So "more chains lets us watch more channels" is not true and
-never could have been.
+### The biggest finding: the array was pointed at the wrong band
 
-What actually happens is **wideband capture and digital channelisation.** One
-receiver is tuned to a centre frequency wide enough to swallow every channel of
-interest in one gulp, and the compute module separates them in software
-afterwards.
+**This is worth being able to say plainly, because it is the single most
+important correction in this design's history.** The array used to capture only
+the *downlink* — what the tower transmits. Every bearing the system could ever
+have computed would therefore have been a bearing **to the tower**, and the
+tower's position is never in question; nobody needs a direction-finder to locate
+a surveyed radio mast.
 
-For our 800 MHz example, the control channel, the voice channels and 8TAC95D all
-sit within about **2.5 MHz** of each other — well inside the chip's 56 MHz
-capability. One capture, everything in it, separated digitally.
+Handsets transmit on the **uplink** and on talkaround, not on the downlink. So
+the array had to move to where the handsets actually are, which is what the
+uplink coherent group now does.
 
-The analogy that fits your background: it is closer to **capturing a whole
-network segment and demultiplexing in software** than to plugging in a second
-network card. This is standard software-defined radio practice — SDRTrunk follows
-a whole trunked system with one receiver this way.
+### Why two narrow groups rather than one wide one
 
-### Three consequences, and why this part is still right
+The obvious alternative is a single wide capture spanning both directions.
+It does not work, for two independent reasons.
 
-**One body covers every band — with a correction you should deliver yourself.**
-This is the claim to be careful with, and knowing why is worth more than knowing
-the claim.
+**It barely fits, and then it doesn't.** Handset emissions span from
+806.2125 MHz (uplink control signalling) to 851.5500 MHz (talkaround) — **45.34
+MHz**, set by the 800 MHz system's duplex split. A single window that wide needs
+at least 45 MHz of capture. The AD9361 we used earlier could just about reach
+that (56 MHz). The ADRV9002 cannot (40 MHz) — and no clever tuning fixes that,
+because the three chains of one group have to be co-tuned to stay coherent.
 
-The AD9361 tuned **70 MHz–6 GHz**, which swallowed every band in the Texas plan.
-The ADRV9026 we replaced it with tunes **650 MHz–6 GHz**. **VHF at 136–174 MHz
-and UHF at 380–520 MHz are both below that floor.** The part change was made for
-coherence reasons and nobody re-checked the tuning range against the product
-line; the "one body covers every band" line survived unexamined until a review
-caught it.
+**Even if it fit, one gain control for everything in it is a real problem.** A
+single wide capture has a single automatic gain control acting on everything
+inside it. A patrol car keying up on the uplink thirty metres away would pull
+that gain down for the **downlink control channel too** — and the control
+channel is where every alarm this product raises comes from. A wideband
+capture that goes deaf to ordinary nearby traffic is a design that fails at
+exactly the moment it is needed.
 
-The proposed fix is a **mixer in the VHF and UHF band modules** that shifts those
-bands up into the transceiver's range — standard practice, catalogue parts, and
-it lives in the band module where all the other band-specific hardware already
-is. It is proposed rather than decided, because the mixer adds spurious signals
-that land on our hardest open question, the dynamic-range budget.
+Two narrow groups give **two independent gain controls.** A strong uplink
+signal desensitises the uplink group only; the control channel keeps decoding
+regardless.
 
-**Say all of that plainly if it comes up.** The 800 MHz system being demonstrated
-is unaffected; what is affected is a commercial claim about the wider product
-line. *"We found this ourselves and here is what it costs to fix"* is a much
-stronger position than being caught by someone reading the datasheet.
+**And narrower is better for a second reason that has nothing to do with gain.**
+Each group now sees about 2 MHz of spectrum instead of 47 MHz. Intermodulation —
+signals mixing together inside the receiver to create phantom tones — is the one
+dynamic-range problem that more processing gain cannot fix (§8.3b), and it gets
+dramatically better the fewer strong signals share the window.
 
-**The shared oscillator is exactly what direction finding needs.** Phase
-interferometry requires elements sampled against a common phase reference, which
-is what a shared LO *is*. The property that limits multi-frequency monitoring is
-the same one that makes the part suitable for a three-element array.
+### How each group monitors several channels at once
 
-**Transmit is already there.** The licensed tier does not need a different radio.
-It needs a power amplifier, a duplexer, and an authorisation.
+The obvious guess — one receive chain per RF channel — is still wrong, and it
+is the exact mistake an earlier version of this document made and a reviewer
+caught: the three chains inside one coherent group are co-tuned by design, so
+"three chains" never meant "three channels."
 
-> **Where the shared oscillator genuinely bites:** monitoring two widely
-> separated bands at once — a VHF trunk plus an 800 MHz channel — is impossible
-> on one transceiver. It does not arise for us, because the Texas plan designates
-> a talkaround channel *per band*, so an agency's trunk and its fallback are in
-> the same band by construction. But say so if asked; it is a real limit.
+What each group actually does is **wideband capture and digital
+channelisation.** It digitises its whole ~2 MHz window at once, and the compute
+stage separates the individual RF channels out of that one capture in software
+afterwards. The downlink group's window comfortably holds the control channel,
+the granted voice channels and `8TAC95D` — they sit within about 2.5 MHz of each
+other. The uplink group's window holds the corresponding inbound requests and
+voice.
+
+The analogy that fits a computing background: this is closer to **capturing a
+whole network segment and demultiplexing it in software** than to plugging in a
+second network card per channel. It is standard software-defined radio
+practice — SDRTrunk follows a whole trunked system with one receiver this way.
+
+> **Where this still does not help:** watching two genuinely separate bands at
+> once — a VHF trunk plus this 800 MHz system, say — needs a second processing
+> body, not more chains here. It does not arise for us, because the Texas plan
+> designates a talkaround channel *per band*, so an agency's trunk and its
+> fallback sit in the same band by construction. Say so if asked; it is a real
+> limit.
+
+### "One body covers every band" is true again — say how it got there
+
+This claim broke once and is now fixed, and the honest version of that story is
+stronger than pretending it never happened. The AD9361 we started with tuned
+70 MHz–6 GHz, covering every band in the Texas plan. The part we moved to next,
+for phase-coherence reasons, tuned only 650 MHz–6 GHz — putting VHF (136–174
+MHz) and UHF (380–520 MHz) below its floor, and nobody re-checked that when the
+part changed. A reviewer caught it.
+
+**The ADRV9002 we use now tunes 30 MHz–6 GHz** — lower than even the original
+AD9361 — so the gap closes outright, with no mixer needed anywhere. It closed as
+a side effect of solving the uplink/downlink problem above, not because anyone
+was chasing it directly, which is worth saying plainly rather than claiming
+credit for it.
+
+### The split costs almost nothing, and stays out of the band module
+
+Splitting one element's signal in two would normally cost **3.2 dB** of the
+signal — 3.01 dB from simply halving the power, plus a little insertion loss.
+Doing the split **after the LNA** instead of before it means that 3.2 dB is
+divided down by the LNA's own gain, and the real cost is about **0.04 dB** of
+system noise figure. [Confirmed — standard passive-component physics; the LNA
+gain assumed is stated in `docs/hardware-design.md` §3.3.]
+
+Because the LNAs already live in the processing body, this is **a
+processing-body change only. The band modules are untouched** — no new SKU, no
+antenna rework.
+
+### Two calibration tones, and a reference tap that tells drift apart
+
+A calibration tone is only useful if it falls inside the window a group is
+listening to, and the two groups are 45 MHz apart. So there are **two** tones,
+`f_UL` and `f_DL`, generated together and injected at the three element
+couplers exactly as before — both windows get calibrated the same way.
+
+**The fourth chain in each group is a direct tap on the tone source itself**,
+bypassing the antenna entirely. Comparing the tone as it arrives through the
+whole antenna chain against the tone as the source actually emitted it is what
+separates *the chain drifting* from *the source drifting* — without that
+reference, a wandering oscillator and a wandering cable look identical.
+
+**Transmit is already there.** The licensed tier does not need a different
+radio. It needs a power amplifier, a duplexer, and an authorisation.
 
 > **If asked "why not a cheap off-the-shelf scanner?"** — a consumer scanner
 > gives you audio out of a speaker. We need the decoded signalling as structured
@@ -282,18 +374,22 @@ It needs a power amplifier, a duplexer, and an authorisation.
 
 ### 8.3a The FPGA bridge — the stage we missed
 
-The radio chip hands out its digitised signal on a specialised high-speed serial
-interface called **JESD204B/C**. **A Jetson has no input that can accept that.**
-Jetson modules take video (CSI), USB and PCIe. None of them is a radio interface.
+The radio chips hand out their digitised signal on **LVDS or CMOS SSI** — a
+source-synchronous parallel interface. **A Jetson has no input that can accept
+that.** Jetson modules take video (CSI), USB and PCIe. None of them is a radio
+interface.
 
-*(The AD9361 we moved away from used a simpler parallel interface called LVDS at
-around 1.5 gigabits per second. JESD is faster and more capable, but it needs
-gigabit serial transceivers in the FPGA and a fiddlier bring-up — so the part
-change made this stage more expensive, not less. Say so if the topic comes up.)*
+*(The ADRV9026 we briefly used before this one needed a faster, more
+complicated interface called JESD204B/C, which would have needed gigabit serial
+transceivers in the FPGA and a fiddlier bring-up. Moving to the ADRV9002 for the
+uplink/downlink reasons above **made this stage cheaper, not more expensive**:
+LVDS/CMOS SSI needs no gigabit serial transceivers at all, and an ordinary
+mid-range Zynq-class part is enough. Say so if the topic comes up — it is one of
+the genuine upsides of today's change, not just a cost to absorb.)*
 
 So there has to be a stage in between: an **FPGA** — a chip whose logic you
-configure rather than program — that catches the flood and hands the Jetson
-something it can take, over PCIe or USB.
+configure rather than program — that catches the flood from all four chips and
+hands the Jetson something it can take, over PCIe or USB.
 
 Every comparable radio does this. Analog Devices publish the interface logic for
 exactly this purpose, so it is integration rather than invention.
@@ -400,11 +496,17 @@ gives more transmissions than success; and hearing a request with no answer
 following it is a new kind of detection in itself — different from the "blocked"
 case in the demo, because being blocked means the trunk *heard* you.
 
-**But it is blocked on something real.** Officers transmit on **uplink**
-frequencies, 45 MHz away from what we currently listen to. Our captured slice
-covers downlinks only. Fixing it means either a much wider slice — which hurts,
-see below — or a second radio chip. **The second chip also solves the
-direction-finding channel problem**, so one purchase answers two questions.
+**This used to be blocked on something real, and it is fixed now.** Officers
+transmit on **uplink** frequencies, 45 MHz away from the downlink the array used
+to capture. The old captured slice covered downlinks only, which meant the
+whole of Case A was unreachable no matter how good the software got.
+
+**The uplink coherent group closes that gap.** It is tuned to ~806–808 MHz —
+exactly where handset requests and granted voice sit — so the RF capture
+problem is solved by the same transceiver change that fixed direction finding
+(§8.3). What is still missing is the software: the demo's engine is not wired
+to decode and report on this group yet. Say it that way — the hardware can hear
+it, nothing downstream is listening for it.
 
 **Case B — an analog transmission too weak to understand.** Much easier, and
 **needs no hardware change at all.** 8TAC95D is simplex, so officers transmit on
@@ -432,9 +534,12 @@ work with.
 
 So the wider the slice, the more channels you monitor — and the more likely you
 are to swallow the one strong signal that blinds you to the weak one you actually
-wanted. **That is in direct tension with everything above**, and it has not been
-budgeted for this design. Knowing that tension exists, and saying so, is the
-difference between understanding the architecture and reciting it.
+wanted. **That is in direct tension with everything above.** Splitting into two
+narrow ~2 MHz groups instead of one 47 MHz one (§8.3) is a real mitigation — a
+fixed handful of signals share each window rather than a whole duplex band — but
+it is a mitigation, not a budget. No dynamic-range budget has been computed for
+this design. Knowing that tension exists, and saying so, is the difference
+between understanding the architecture and reciting it.
 
 ---
 

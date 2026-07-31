@@ -567,7 +567,21 @@ than the answer.]
 | Tuned to | ~806–808 MHz | ~851–853 MHz |
 | RX 1–3 | elements 1, 2, 3 | elements 1, 2, 3 |
 | RX 4 | `f_UL` calibration reference | `f_DL` calibration reference |
-| Hears | **handsets** — requests, granted voice | tower signalling, 8TAC95D, **a known-position reference** |
+| Hears | **handsets** — requests, granted voice | tower signalling, **`8TAC95D` talkaround**, and a **known-position reference** |
+| Locates | trunk handsets | **talkaround handsets** (8TAC95D is simplex), plus the tower for calibration |
+
+**Both groups produce useful bearings, and that was not obvious until the windows
+were drawn.** An earlier framing of this decision assumed direction finding on
+talkaround would have to be given up, or bought back by retuning the array
+between modes. It does not: **`8TAC95D` at 851.5500 MHz falls inside the downlink
+window**, 337.5 kHz from the control channel, so the downlink group locates
+talkaround handsets *with the same three chains it uses to decode the tower.*
+
+So the architecture covers every way a handset can transmit — trunk request,
+granted trunk voice, and simplex talkaround — **with bearings on all three,
+simultaneously, with no mode switching.** That is the single strongest argument
+for two groups over one wide window, and it arrives as a consequence of the Texas
+plan's channel siting rather than of anything we designed.
 
 **Every element feeds both groups**, through a 2-way Wilkinson splitter placed
 after its LNA. Nothing is time-shared and nothing is switched.
@@ -792,17 +806,39 @@ currently granted, and the analog talkaround channel — all at once. It does th
 with **wideband capture and digital channelisation**, not with one receiver per
 channel.
 
-A single receive chain is tuned to a centre frequency with enough bandwidth to
-span every channel of interest, digitising the whole slice at once. The compute
-module then separates the individual channels in software and decodes them in
-parallel. This is standard software-defined radio practice and is exactly how the
-open-source SDRTrunk project follows a trunked system with one receiver.
+A receive chain is tuned to a centre frequency with enough bandwidth to span
+every channel of interest in its **window** (§0), digitising the whole thing at
+once. The compute module then separates the individual channels in software and
+decodes them in parallel. This is standard software-defined radio practice and is
+exactly how the open-source SDRTrunk project follows a trunked system with one
+receiver.
 
-For the illustrative 800 MHz configuration in the demo, the **downlink** channels
-of interest span roughly 851.2 MHz to 853.7 MHz — about **2.5 MHz**, comfortably
-inside the part's 56 MHz capability. In the demo's beat 3, this is what lets the
-Orb hear the out-of-area unit who was denied on the trunk and went to 8TAC95D:
-that traffic is inside the same captured slice, not on a second receiver.
+**Since 2026-07-31 there are two windows, not one** (§3.3), and which channel
+lands in which matters:
+
+| Window | Span | Contains | Group |
+|---|---|---|---|
+| **Uplink** | ~806.2–808.2 MHz, about **2 MHz** | Channel requests and granted voice — **everything a handset transmits on the trunk** | Uplink coherent group |
+| **Downlink** | ~851.2–853.7 MHz, about **2.5 MHz** | Control channel, granted voice as repeated by the tower, **and `8TAC95D` at 851.5500** | Downlink coherent group |
+
+Both sit far inside a single ADRV9002's 40 MHz, which is why neither group needs
+anything clever.
+
+**`8TAC95D` is in the downlink window, and that is a geographic accident rather
+than a design choice** — the Texas plan happens to put the 800 MHz talkaround
+channel at 851.5500, 337.5 kHz from our control channel. It is *simplex*, so
+despite living among the tower's frequencies it carries handset transmissions
+(§7.4 item D). In the demo's beat 3 this is what lets the Orb hear the out-of-area
+unit who was denied on the trunk and went to talkaround: that traffic is inside
+the downlink window, decoded alongside the control channel by the same group, not
+on a second receiver.
+
+**One consequence to state, because it is a real limitation:** talkaround is
+decoded by the *downlink* group, which is also the group that produces the tower
+reference — so **talkaround transmissions can be located as well as heard**, using
+the same three elements. Trunk handsets are located by the uplink group. Both
+capabilities exist simultaneously, which is exactly what the two-group
+architecture was chosen to buy.
 
 ##### The four stages, concretely
 
