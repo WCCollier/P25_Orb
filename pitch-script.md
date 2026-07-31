@@ -605,10 +605,19 @@ Not as the first version of the design stood, and I want to be precise about
 that. Our unit listens to what the tower transmits; an officer's radio transmits
 on a different frequency about forty-five megahertz away.
 
-We have since selected a receiver that covers both — the same choice that solved
-our direction-finding problem, so one decision answered two questions. But that
-is a decision on paper. It is written up in the hardware document with the
-numbers, and it is not built, and I would not stand here and tell you
+We have since reworked the receiver so that it listens to both — and in doing so
+we found something worse and fixed it. Our direction-finding array had been
+pointed at the tower. A bearing to the tower is worth nothing; we know where the
+tower is. The array now points at the frequencies the handsets actually transmit
+on, which means **the officer whose call never got through is the one we can both
+hear and take a bearing on.**
+
+The tower did not go to waste, either. It is a transmitter at a surveyed
+position, so we now use it as a permanent reference — it tells us continuously
+whether our own direction finding is still calibrated.
+
+But all of that is a decision on paper. It is written up in the hardware document
+with the numbers, and it is not built, and I would not stand here and tell you
 otherwise.
 
 **"Your block diagram is missing a stage."**

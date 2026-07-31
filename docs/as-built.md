@@ -341,12 +341,31 @@ amplifier is unpowered. It is the lean configuration, not a stripped-down one.
   that two units heard the same transmission — decoded identity, GNSS timestamp
   plus channel, frequency-offset fingerprinting, geometric validation — is
   written up in `df/README.md` and none of it is implemented.
-- **Transceiver selected: Analog Devices ADRV9026** — four coherent receivers on
-  one die, on-chip multichip sync, 200 MHz bandwidth, JESD204B/C. Reverses an
-  earlier AD9361 selection, which survives as the documented fallback (two
-  synchronised devices). Decided on a **failure mode** rather than a costing: a
-  multi-chip sync that half-succeeds produces a wrong bearing, not a missing one.
-  `hardware-design.md` §3.3, §5.5.
+- **Transceiver selected: four Analog Devices ADRV9002** [2026-07-31, after two
+  reversals in one day — the sequence is recorded in `hardware-design.md` §3.3
+  because it is more instructive than the answer]. Eight receive chains arranged
+  as **two coherent groups** of three, each with a calibration reference channel.
+  30 MHz–6 GHz, on-chip multichip sync, 150 dB/Hz dynamic range, LVDS/CMOS SSI
+  so the FPGA needs no gigabit serial transceivers. Two AD9361s on one unified
+  47 MHz window remain the documented fallback.
+- **The array was pointed at the wrong band, and this is the most consequential
+  finding in the project.** The captured slice was the *downlink* — what the
+  tower transmits — so **every bearing the system could have computed was a
+  bearing to the tower**, whose position is never in question. Handsets transmit
+  on the uplink and on talkaround. The array now looks at the uplink, and the
+  downlink gets its own coherent group for decoding. `hardware-design.md` §3.3.
+- **Each element is split after its LNA and feeds both groups.** A 2-way
+  Wilkinson divider costs 3.2 dB, but placed *after* the amplifier that becomes
+  **0.04 dB of system noise figure** rather than 3.2 dB. Processing-body change
+  only; the band modules are untouched.
+- **The tower is now a permanent calibration beacon.** The downlink group watches
+  a transmitter at a surveyed, known position, so it continuously measures a
+  bearing whose correct answer is known — an end-to-end check on array manifold,
+  feed phase, connectors, splitters, chip synchronisation and magnetometer
+  heading. **It defuses the objection that drove the whole decision:** a
+  synchronisation that half-succeeds used to produce a silent, confidently wrong
+  bearing; now it shows up as the reference bearing stepping. `hardware-design.md`
+  §5.7.
 - **Magnetometer arrangement selected**, no longer pending: two dedicated
   magnetometers at the outboard lid corners, IMU colocated with the inboard
   element at the centre hinge, on the storm-case band modules. **The VHF module
@@ -356,25 +375,31 @@ amplifier is unpowered. It is the lean configuration, not a stripped-down one.
   case trunk, and the assembly slots into a band module. Requires Orb Aerospace's
   agreement and mechanical specs, and the storm case is our proposal — their
   confirmed Field Kit is a soft backpack.
-- **The dynamic-range budget is the open question that matters most.**
-  `hardware-design.md` §7.4. It is three mechanisms rather than one, the selected
-  ADRV9026's published figures (81 dBc SFDR, IIP2 58–65 dBm, IIP3 15–18 dBm) are
-  base-station-grade, ADC bit depth is unpublished, and **nothing has been
-  measured.**
-- **The transceiver change narrowed the tuning range, and that broke a claim
-  about the product line.** [Found 2026-07-31.] The ADRV9026 tunes **650 MHz–
-  6 GHz**; the AD9361 it replaced tuned 70 MHz–6 GHz. **VHF and UHF — two of the
-  three band modules — are below the floor**, so "one processing body covers
-  every band" stopped being true when the part changed and was not caught for a
-  day. Proposed fix is block up-conversion inside those two modules, which keeps
-  the body band-agnostic and arguably sharpens the module's interface contract;
-  it is proposed rather than decided because the mixer's spurious products land
-  on the dynamic-range budget above. `hardware-design.md` §3.3 and §7.4 item J.
-  **The demonstrated 800 MHz system is unaffected.**
+- **The dynamic-range budget is the open question that matters most**, and it is
+  now a budget to compute rather than an architecture to find. `hardware-design.md`
+  §7.4. Three mechanisms: quantisation noise (helped by processing gain), AGC
+  backoff, and intermodulation (not helped). **The two-group architecture improved
+  the two that processing gain cannot touch**, because each group sees ~2 MHz
+  rather than 47 MHz. The selected ADRV9002 is specified at 150 dB/Hz and is the
+  first part considered that was engineered against this exact problem. **Still
+  nothing measured**, and LNA compression sits ahead of the splitters, so it is
+  common to both groups in every architecture considered — the one blocking path
+  this design does not improve.
+- **The blocking problem is present in the demonstrated product, not waiting on a
+  roadmap item.** 8TAC95D is simplex and sits 337.5 kHz from the control channel
+  in the same window, so a handheld transmitting thirty metres away desensitises
+  control-channel decoding today. Talkaround is the one thing in our capture
+  transmitted by something that might be standing next to the unit.
+- **Item J — band coverage below 650 MHz — opened and closed the same day.** The
+  ADRV9026 tuned only to 650 MHz, putting VHF and UHF below its floor. Closed by
+  selecting the ADRV9002, which tunes from 30 MHz; the block up-conversion that
+  was proposed as a mitigation is **not needed and not being built**.
 
-  *Worth knowing as a process point, not just a fact:* the transceiver decision
-  was right on its own terms and still broke something two documents away. The
-  habit of recording corrections as corrections is what surfaced it.
+  *Worth carrying as a process point rather than a fact:* the ADRV9026 decision
+  was correct on its own terms and still broke a commercial claim two documents
+  away that nobody re-checked. **After any part substitution, re-verify every
+  specification the old part's numbers were quietly supporting** — not only the
+  one that motivated the change.
 - **Instrument-health reporting is specified and not built.** The unit must
   detect and announce when a nearby transmitter has desensitised it, because no
   component choice removes that possibility. Six requirements in

@@ -42,7 +42,8 @@ correction is §3.3.1. The vocabulary below is what prevents a repeat.
 | **Channel designator** | The operational *name* in the Texas plan — e.g. 8TAC95D — bundling frequency, bandwidth, mode, and squelch/NAC parameters | Do not use interchangeably with a bare frequency |
 | **Control channel** / **voice (traffic) channel** | *Roles* an RF channel plays in a trunked system. The control channel carries signalling; voice channels are assigned on demand | — |
 | **Downlink** (outbound) / **uplink** (inbound) | The two directions of a repeated RF channel, on **different frequencies** — 45 MHz apart in the 800 MHz band. A "control channel" is really a *pair* | Never say "the control channel frequency" without saying which direction |
-| **Receive chain** | A hardware signal path inside the transceiver. The selected ADRV9026 has **four**; the AD9361 that preceded it had two, and that is the sense that caused the documented error | ~~receive channel~~ |
+| **Receive chain** | A hardware signal path inside a transceiver. Each ADRV9002 has **two**; the design uses four devices, so eight chains — see §3.3 | ~~receive channel~~ |
+| **Window** | A contiguous span of spectrum one coherent group is tuned to capture — e.g. the ~2 MHz uplink window at 806–808 MHz. **Two windows, both inside the 800 MHz band** | Never call a window a *band* — bands are SKUs (§1.1.1) |
 | **Channelisation** / **channeliser** | The DSP process that extracts one narrow RF channel from a wide captured slice — see §3.3.1 | — |
 | **Talkgroup** | The logical group of users a call is addressed to. Radio *users* often call this "a channel" because it is a knob position on their radio | Never call a talkgroup a channel in engineering text |
 
@@ -55,6 +56,28 @@ radio. It is named in `docs/software-prd.md`, not here.
 **House rule for this document:** unqualified "channel" always means *RF
 channel*. Hardware paths are **chains**. Directions are **uplink** and
 **downlink**, always stated.
+
+### 0.0a "Array" was becoming the next "channel" — four meanings, disambiguated
+
+**Added 2026-07-31, caught in review before it produced an error rather than
+after.** The split-feed architecture of §3.3 made "array" ambiguous in exactly
+the way "channel" had been, and one sentence in review — *"each array lives on
+its own chip pair"* — was already wrong, because there is only ever one array.
+
+| Term used here | Means | How many |
+|---|---|---|
+| **Antenna array** | The three radiating elements in the band module | **One.** Shared by everything downstream |
+| **LNA bank** | The three low-noise amplifiers on one board in one thermal environment (§3.1a) | **One** |
+| **Array manifold** | The *measured calibration table* for the antenna array, held in module EEPROM (§3.1a, §5.3) | A dataset, not hardware |
+| **Coherent group** | **Three receive chains, co-tuned to one window and phase-aligned by MCS, that sample the antenna array and produce one bearing** | **Two.** The uplink group and the downlink group (§3.3) |
+
+**The distinction that matters:** the antenna array is *shared*; what is
+duplicated is the set of receivers that samples it. Each element's signal is
+split after its LNA and fed to both coherent groups, so the same three antennas
+support two independent bearings on two windows at once (§3.3).
+
+**Unqualified "array" in this document always means the antenna array.** A set of
+co-tuned chains is a **coherent group**, never an array.
 
 ### 0.1 Names for what flows through the processing chain
 
@@ -149,7 +172,7 @@ RF-subsystem software are a different design. Two findings from this document
 bear on it directly: a transmitting site **cannot** use the lid array, because
 20 W at 17.6 cm puts roughly +27 dBm into a receive element — past an LNA's
 damage threshold, not merely desensitising (§3.1a, §7.4 item D); and the
-ADRV9026's **four transmit chains** (§3.3) are enough for a control channel plus
+transceivers' **transmit chains** (§3.3) are enough for a control channel plus
 voice channels.
 
 **What this buys commercially.** The expensive, complex, software-heavy part is
@@ -247,11 +270,11 @@ altogether. Accepted deliberately rather than overlooked.
 │      │           │           │         module. No single-element    │
 │      │           │           │         variant exists (§1.1.1).     │
 │   ┌──▼───┐    ┌──▼───┐    ┌──▼───┐                                  │
-│   │COUPLR│    │COUPLR│    │COUPLR│ ◄── CAL TONE, injected on the    │
-│   └──┬───┘    └──┬───┘    └──┬───┘     ARRAY side so the dock is    │
-│   ┌──▼───┐    ┌──▼───┐    ┌──▼───┐     inside the calibration loop  │
-│   │ BPF  │    │ BPF  │    │ BPF  │     (§3.1a)                      │
-│   └──┬───┘    └──┬───┘    └──┬───┘                                  │
+│   │COUPLR│    │COUPLR│    │COUPLR│ ◄── CAL TONES f_UL + f_DL, both  │
+│   └──┬───┘    └──┬───┘    └──┬───┘     injected on the ARRAY side   │
+│   ┌──▼───┐    ┌──▼───┐    ┌──▼───┐     so the dock is inside the    │
+│   │ BPF  │    │ BPF  │    │ BPF  │     calibration loop (§3.1a).    │
+│   └──┬───┘    └──┬───┘    └──┬───┘     One tone per window (§3.3).  │
 │      │           │           │      ┌──────────────────────────┐    │
 │      │           │           │      │ PA + DUPLEXER            │    │
 │      │           │           │      │ band-specific, ALWAYS    │    │
@@ -265,25 +288,46 @@ altogether. Accepted deliberately rather than overlooked.
 │   ┌──▼───┐    ┌──▼───┐    ┌──▼───┐               │                  │
 │   │ LNA  │    │ LNA  │    │ LNA  │  all three on one board, one     │
 │   └──┬───┘    └──┬───┘    └──┬───┘  thermal environment, so drift   │
-│      │           │           │      is correlated and calibrates    │
-│      └───────────┼───────────┘      out (§3.1a)                     │
-│                  │                                │                 │
-│      PROCESSING BODY — BAND-AGNOSTIC. Identical for every band.     │
-│                  │                                │                 │
-│   ┌──────────────▼────────────────────────────────┴──────────────┐  │
-│   │        RF AGILE TRANSCEIVER  (ADRV9026)                      │  │
-│   │  FOUR coherent receive CHAINS (§0) on one die, with           │  │
-│   │  on-chip multichip sync. Up to 200 MHz bandwidth.             │  │
-│   │  3 chains to the array; 4th unassigned (§3.3).                │  │
-│   │  Fallback: two synchronised AD9361s — §5.5.                   │  │
-│   └──────────────┬───────────────────────────────────────────────┘  │
-│                  │  digital IQ  (JESD204B/C serial)                 │
-│   ┌──────────────▼───────────────────────────────────────────────┐  │
+│   ┌──▼───┐    ┌──▼───┐    ┌──▼───┐  is correlated and calibrates    │
+│   │SPLIT │    │SPLIT │    │SPLIT │  out (§3.1a)                     │
+│   └┬────┬┘    └┬────┬┘    └┬────┬┘                                  │
+│    L    R      L    R      L    R   2-way Wilkinson AFTER the LNA:  │
+│    │    │      │    │      │    │   the 3.2 dB split costs 0.04 dB  │
+│    └────┼──────┴────┼──────┴────┼─► of noise figure, not 3.2 (§3.3) │
+│         └───────────┴───────────┴─►                                 │
+│      all L legs → UPLINK group      all R legs → DOWNLINK group     │
+│                                                   │  TX from the    │
+│      PROCESSING BODY — BAND-AGNOSTIC.             │  transceivers'  │
+│      Identical for every band.                    │  TX chains,     │
+│                                                   │  licence-gated  │
+│  ┌────────────────────────┐  ┌─────────────────┐  │  in software    │
+│  │ UPLINK COHERENT GROUP  │  │ DOWNLINK COHER- │  │                 │
+│  │                        │  │ ENT GROUP       │◄─┘                 │
+│  │ chips A + B            │  │ chips C + D     │                    │
+│  │ tuned ~806–808 MHz     │  │ tuned ~851–853  │                    │
+│  │                        │  │                 │                    │
+│  │  A.RX1 ◄ EL1           │  │  C.RX1 ◄ EL1    │                    │
+│  │  A.RX2 ◄ EL2           │  │  C.RX2 ◄ EL2    │                    │
+│  │  B.RX1 ◄ EL3           │  │  D.RX1 ◄ EL3    │                    │
+│  │  B.RX2 ◄ f_UL ref tap  │  │  D.RX2 ◄ f_DL   │                    │
+│  │                        │  │                 │                    │
+│  │ HANDSETS: requests and │  │ TOWER signalling│                    │
+│  │ granted voice.         │  │ + 8TAC95D, and  │                    │
+│  │ THE BEARINGS THAT      │  │ a KNOWN-POSITION│                    │
+│  │ MATTER — a tower's     │  │ REFERENCE that  │                    │
+│  │ bearing is of no       │  │ validates the   │                    │
+│  │ operational use        │  │ DF chain (§5.7) │                    │
+│  └───────────┬────────────┘  └────────┬────────┘                    │
+│              └──────────┬─────────────┘                             │
+│   4× ADRV9002 · 30 MHz–6 GHz · on-chip MCS · 150 dB/Hz DR (§3.3)    │
+│   Fallback: 2× AD9361, one unified 47 MHz window — §5.5             │
+│                          │  digital IQ (LVDS or CMOS SSI)           │
+│   ┌──────────────────────▼───────────────────────────────────────┐  │
 │   │   FPGA / SoC BRIDGE                          ── see §3.5.1   │  │
-│   │   Terminates the JESD204B/C IQ interface, which no Jetson-   │  │
-│   │   class module can accept directly. Hosts the CHANNELISER    │  │
-│   │   (§3.3.1) and timing. Zynq-class **with gigabit serial      │  │
-│   │   transceivers**; ADI supply the HDL.                        │  │
+│   │   Terminates the LVDS/CMOS SSI IQ interface, which no        │  │
+│   │   Jetson-class module can accept directly. Hosts the         │  │
+│   │   CHANNELISER (§3.3.1) and timing. Zynq-class; **no gigabit  │  │
+│   │   serial transceivers required**. ADI supply the HDL.        │  │
 │   └──────────────┬───────────────────────────────────────────────┘  │
 │                  │  PCIe or USB3 — narrowband streams only          │
 │   ┌──────────────▼───────────────────────────────────────────────┐  │
@@ -499,76 +543,157 @@ rewards cleverness.
 
 ### 3.3 RF transceiver — *off-the-shelf silicon, no custom silicon required*
 
-**Selected: Analog Devices ADRV9026.** [Design decision, 2026-07-31. Reverses an
-earlier selection of the AD9361 — see below for why, and §5.5 for the fallback.]
+**Selected: four Analog Devices ADRV9002**, with each element's signal split
+after its LNA and fed to two independent coherent groups (§0.0a). [Design
+decision, 2026-07-31. This is the third selection in one day; the reasoning trail
+and both reversals are kept below, because the *sequence* is more instructive
+than the answer.]
 
-- **Four independently controlled receivers on one die**, with a documented
-  multichip synchronisation mechanism aligning LO and baseband clock phase.
-  [Confirmed — Analog Devices product documentation]
-- Up to **200 MHz** primary bandwidth.
-- **JESD204B/C** serial digital interface.
-- Typical power around **5 W (TDD) / 7 W (FDD) at 200 MHz bandwidth**. Power at
-  the few-megahertz slice we actually use has **not** been established, and the
-  headline figure is quoted at roughly eighty times our requirement.
+- **30 MHz to 6 GHz** tuning range [Confirmed — Analog Devices]
+- **Two receivers per device**, four devices, **eight chains**
+- Channel bandwidths from **12 kHz to 40 MHz** — 12.5 kHz is a P25 channel
+- **Two independent RF synthesisers per device**, so its two receivers can sit at
+  different centre frequencies [Confirmed]
+- **On-chip multichip synchronisation (MCS)** with phase synchronisation
+  re-performed on every PLL retune [Confirmed]
+- **150 dB/Hz dynamic range**, marketed explicitly against the blocking problem
+  in mission-critical land mobile radio [Confirmed]
+- **LVDS or CMOS SSI** digital interface — *not* JESD204B/C [Confirmed]
 
-#### Why this part rather than two AD9361s
+#### How the eight chains are used
 
-A three-element array needs three coherent receive chains. The AD9361 carries two
-per die — it was built for 2×2 MIMO — so it takes two of them, synchronised. That
-works, and it is the fallback (§5.5), but it requires a shared reference clock
-distribution, LO distribution or dual-PLL locking, and a multi-chip
-synchronisation procedure at every start-up.
+| | Uplink group — chips A, B | Downlink group — chips C, D |
+|---|---|---|
+| Tuned to | ~806–808 MHz | ~851–853 MHz |
+| RX 1–3 | elements 1, 2, 3 | elements 1, 2, 3 |
+| RX 4 | `f_UL` calibration reference | `f_DL` calibration reference |
+| Hears | **handsets** — requests, granted voice | tower signalling, 8TAC95D, **a known-position reference** |
 
-**The deciding argument is a failure mode, not effort.** A multi-chip
-synchronisation that half-succeeds produces a **wrong bearing, not a missing
-one** — the same class of silent-confident-error this design works throughout to
-eliminate (multipath in §5.7, ghost associations in `df/README.md`, magnetic
-disturbance in §5.8). Removing a whole mechanism for generating one is worth more
-than the engineering time it saves.
+**Every element feeds both groups**, through a 2-way Wilkinson splitter placed
+after its LNA. Nothing is time-shared and nothing is switched.
+
+#### Why this arrangement, and the two reversals that produced it
+
+**Reversal 1 — away from the AD9361, on a failure mode.** A three-element array
+needs three coherent chains; the AD9361 has two per die, so it takes two devices
+plus a synchronisation procedure. A multi-chip synchronisation that half-succeeds
+produces a **wrong bearing rather than a missing one** — the silent-confident
+error this design works throughout to eliminate. That argument was correct.
+
+**It led to the ADRV9026, and that was wrong**, for a reason nobody checked at
+the time: its tuning range starts at 650 MHz, which puts the VHF and UHF band
+modules below its floor (§7.4 item J). A decision that improves one property
+silently broke another two documents away.
+
+**Reversal 2 — the array was pointed at the wrong band entirely.** Found in
+review, and it is the most consequential finding in this document's history. The
+captured slice was the *downlink*, so **every bearing the system could compute
+would have been a bearing to the tower** — the one transmitter whose position is
+never in question. Handsets transmit on the uplink and on talkaround. The array
+had to move.
+
+**Those two facts together force this architecture**, and the forcing is
+arithmetic rather than preference:
+
+- Handset emissions span **806.2125 MHz (uplink control) to 851.5500 MHz
+  (talkaround) — 45.34 MHz**, set by the 800 MHz duplex split.
+- Covering all of them in **one** coherent group therefore needs ≳45 MHz of
+  capture. The AD9361's 56 MHz reaches it; the ADRV9002's 40 MHz **cannot**, and
+  no allocation trick changes that, because the three elements of a group must be
+  co-tuned to be coherent.
+- So either one wide group on an AD9361 pair, or **two narrow groups** — which
+  needs more than two receivers' worth of devices.
+
+**Two narrow groups win, and the deciding argument is again a failure mode.** A
+single 47 MHz group has **one gain control for everything in it**. A patrol car
+keying up on the uplink thirty metres away would pull the gain down for the
+**downlink control channel too** — and the control channel is the entire event
+stream: congestion, blocked attempts, emergency declarations, every alarm the
+product demonstrably raises. **The unified capture puts the product's core
+function at the mercy of ordinary nearby traffic.**
+
+Two groups have two independent gain controls. A strong uplink signal
+desensitises the uplink group only. The control channel keeps decoding.
 
 Three supporting reasons:
 
-**Four channels on one die share a thermal environment.** Two dies at different
-board positions drift apart; four channels on one die drift together, and
-correlated drift calibrates out while differential drift does not. This is the
-same reasoning that put all three LNAs on one board (§3.1a).
+**Intermodulation improves dramatically.** Each group sees ~2 MHz containing a
+handful of signals rather than 47 MHz containing an entire duplex band. Third-order
+products are the one dynamic-range mechanism processing gain cannot remove
+(§3.3.1), and narrowing the window is the direct remedy. This is what demotes
+item D from the sharpest open question to an ordinary budget.
 
-**The uplink question stops being marginal.** Covering both a downlink and its
-uplink 45 MHz away barely fitted inside the AD9361's 56 MHz. At 200 MHz it is
-comfortable, which converts §3.3.2 Case A from an awkward stretch into a
-configuration choice.
+**The band problem disappears.** 30 MHz–6 GHz covers VHF, UHF and 700/800 with no
+up-conversion, no mixers, no image filtering and no added spurs. Item J closes
+outright.
 
-**Power stopped being the objection when §7 item G resolved.** The concern was a
-5–7 W transceiver against a backpack battery. With a few hundred watts available
-from a patrol vehicle or field power bank, that is no longer a constraint on
-feasibility — only on endurance (§6).
+**The digital interface gets easier, not harder.** The ADRV9026 required
+JESD204B/C and an FPGA with gigabit serial transceivers. The ADRV9002 uses
+LVDS/CMOS SSI, so the bridge returns to an ordinary Zynq-class part (§3.5.1). At
+our ~2 MHz per group the sample rates sit near the boundary between SSI's
+single-lane and four-lane modes, so pin count stays modest. [Inferred]
 
-#### What it does not remove, and what it adds
+#### What splitting costs, and why it is nearly free
 
-**It does not remove the need for phase calibration.** Everything from antenna to
-LNA is still per-element: the array manifold, the filters, the cables, the dock
-connectors. The calibration tone of §3.1a is still injected at the antenna ports
-and still required. The accurate claim is that this removes **the largest and
-most fragile single source** of inter-chain phase error, not the discipline.
+A 2-way Wilkinson divider is **3.2 dB** down per output — 3.01 dB is the physics
+of halving power, ~0.2 dB is insertion loss — with ~20 dB port isolation and
+outputs in phase by construction. [Confirmed — standard passive component.]
 
-**It adds a harder digital interface.** JESD204B/C is a serial link with SYSREF
-distribution and deterministic-latency configuration to bring up, against the
-AD9361's parallel LVDS. That pushes the FPGA upmarket to a part with gigabit
-serial transceivers (§3.5.1) and is real integration cost.
+**Placement decides whether that matters:**
 
-**But it does not move the synchronisation problem rather than solving it**, and
-that objection should be expected. Intra-device channel alignment is handled by
-the device's own framer, so the four receivers arrive aligned by construction.
-JESD complexity is an integration cost, not a phase-coherence risk.
+| Splitter position | System noise figure | Penalty |
+|---|---|---|
+| **After the LNA** — as designed | **1.04 dB** | **+0.04 dB** |
+| Before the LNA | 4.20 dB | +3.20 dB |
 
-#### The fourth receiver
+With ~20 dB of gain ahead of it, the loss is divided by the LNA's gain in the
+Friis cascade and effectively vanishes. [Inferred — Friis, assuming a 1.0 dB /
+20 dB LNA.] Because the LNAs already live in the body and the dock sits *before*
+them (§3.1a), **this is a processing-body change only. The band modules are
+untouched** — no new SKU, no antenna rework.
 
-Three are used by the array. **The fourth is available and unassigned.** Two
-candidate uses, neither chosen: a dedicated reference channel measuring the
-calibration tone source directly, which would separate source drift from chain
-drift; or a fourth array element, which would improve bearing accuracy and array
-gain at the cost of a fourth antenna, filter, coupler and LNA in every module.
-**Recorded as headroom, not as a plan.** [Assumption]
+One structural benefit: splitting after the LNA means both groups see the same
+amplifier for a given element, so that element's amplifier phase is common to
+both paths rather than being two independent error sources.
+
+#### Two calibration tones, because one cannot serve both groups
+
+A tone is only measurable if it lands inside the window a group is tuned to, and
+the two windows are 45 MHz apart. So the calibration source generates **two**
+tones — `f_UL` inside the uplink window and `f_DL` inside the downlink window —
+combines them, and injects both at all three element couplers, exactly as §3.1a
+specifies for one.
+
+Each tone needs a parking spot inside its window that is not on top of a live P25
+channel. A small siting constraint, and a real one.
+
+**The fourth receiver in each group is a reference tap on the tone source
+itself**, bypassing the antenna path. That is what makes it a *reference* rather
+than a fourth copy: comparing the tone as it arrives through the chain against
+the tone as the source emitted it **separates source drift from chain drift.**
+Without it, a wandering oscillator and a wandering cable look identical.
+
+This was previously recorded as unassigned headroom. It is now assigned.
+
+#### What this does not remove
+
+**Phase calibration is still required, and still per-element.** The array
+manifold, filters, cables, dock connectors and now the splitters are all
+per-element. The calibration tone is not optional and never was. The accurate
+claim is that MCS removes the largest and most fragile single source of
+inter-chain phase error — not the discipline.
+
+**MCS is required even within one device.** The ADRV9002's two receivers have
+independent PLLs and are **not** phase-aligned by construction; MCS is needed to
+match RX1 and RX2 on a single chip. [Confirmed]
+
+**That fact is what makes four devices acceptable**, and it deserves stating
+plainly because it reverses the reasoning that chose the ADRV9026. If MCS must
+run regardless of device count, then **adding devices does not add a new class of
+risk** — it adds participants to a procedure already being run, using a
+vendor-supported mechanism with a dedicated hardware sync signal, re-executed
+automatically on every retune. Device count returns to being a question of cost,
+power and board area, which is where it belonged.
 
 #### The tuning range narrowed when we changed parts, and it breaks a claim we were making
 
@@ -577,68 +702,79 @@ defect introduced by the ADRV9026 selection and it was not noticed at the time.*
 
 | Part | Tuning range | VHF 136–174 | UHF 380–520 | 700/800 |
 |---|---|---|---|---|
-| AD9361 *(previous)* | **70 MHz – 6 GHz** | ✅ | ✅ | ✅ |
-| **ADRV9026** *(selected)* | **650 MHz – 6 GHz** | ❌ | ❌ | ✅ |
+| AD9361 | 70 MHz – 6 GHz | ✅ | ✅ | ✅ |
+| ADRV9026 *(briefly selected, rejected)* | **650 MHz – 6 GHz** | ❌ | ❌ | ✅ |
+| **ADRV9002** *(selected)* | **30 MHz – 6 GHz** | ✅ | ✅ | ✅ |
 
-[Confirmed — Analog Devices product documentation and distributor listings state
-650 MHz to 6000 MHz.]
+[Confirmed — Analog Devices product documentation.]
 
-**Two of the three band modules in the SKU structure sit below the floor.** The
-statement this section previously carried — *"one body covers every band, wide
-tuning means an agency on UHF and an agency on 800 MHz buy the same processing
-body"* — was true of the AD9361 and is **false of the part now selected.** It is
-corrected here rather than quietly deleted, because it is exactly the kind of
-claim that gets made confidently in a customer conversation.
+**The ADRV9026 put two of the three band modules below its floor**, and the claim
+this section used to carry — *"one body covers every band"* — was true of the
+AD9361 and false of the part that briefly replaced it. **The ADRV9002 restores it
+outright**, with no mixer and no up-conversion, which is why §7.4 item J is closed
+rather than mitigated.
 
-**The demonstrated product is unaffected.** It is an 800 MHz system, comfortably
-inside the range. What is affected is the multi-band SKU argument, which is a
-commercial claim rather than a demonstrated one.
+The episode is kept here rather than deleted because the lesson generalises:
+**after any part substitution, re-check every specification the old part's numbers
+were quietly supporting**, not only the one that motivated the change.
 
-##### The proposed resolution: block up-conversion in the band module
+#### The tower is a permanent calibration beacon — and that is the downlink group's second job
 
-**Proposed, not decided — see §7.4 item J.** Put a mixer in the VHF and UHF band
-modules that translates the band of interest up into the transceiver's range,
-after the LNA and before the dock. VHF at 136–174 MHz against a 1 GHz local
-oscillator lands at 1136–1174 MHz; UHF lands similarly. Standard technique, and
-the parts are catalogue. [Inferred]
+**This falls out of the two-group architecture and it is worth more than it
+cost.** The downlink group is tuned to the tower. A tower is a transmitter at a
+**surveyed, fixed, known position**, radiating more or less continuously.
 
-**Why this is architecturally clean rather than a patch.** All band-specific
-hardware already lives in the band module by construction (§1.1), and this is
-band-specific hardware. It also *improves* the interface contract: the module's
-job becomes **"present your band to the body somewhere between 650 MHz and
-6 GHz"**, which is a sharper specification than "the body tunes everywhere," and
-it is the 700/800 module — which needs no mixer at all — that becomes the
-special case.
+So the downlink group is not merely decoding signalling. **It is continuously
+measuring a bearing whose correct answer is already known.**
 
-**The one thing that must not be got wrong.** A single local oscillator must feed
-all three element chains through a matched splitter. A common LO adds the *same*
-phase to all three, and interferometry uses only *relative* phase, so coherence
-survives. Three independent oscillators would destroy direction finding
-completely. This is the same discipline already applied to LNA placement and the
-calibration tone (§3.1a). [Inferred]
+That gives an end-to-end check on the entire direction-finding chain — array
+manifold, feed phase, dock connectors, splitters, MCS alignment, magnetometer
+heading — against ground truth, for free, whenever the tower is transmitting.
+Nothing else in this design validates all of those at once.
 
-**What it costs, stated plainly:** three mixers, an LO source and splitter, image
-filtering, a worse noise figure, and **new spurious products landing directly on
-the open dynamic-range budget** (§7.4 item D) — which is the reason this is
-proposed rather than decided.
+**Four things it catches:**
+
+| Failure | How it shows up |
+|---|---|
+| **MCS half-succeeded** | Reference bearing jumps at the moment of a retune |
+| **Heading error** (§5.8) | Reference bearing offset by a constant — exactly a magnetometer bias |
+| **Multipath** (§5.7) | Reference bearing wanders while the unit and tower are both stationary |
+| **Manifold or connector drift** | Slow reference bearing creep across a deployment |
+
+**This defuses the objection that drove two reversals.** We rejected multi-device
+synchronisation because a half-succeeded sync yields a *wrong bearing rather than
+a missing one* — a silent, confident error. With a known-position emitter
+permanently in view, **that failure is no longer silent.** It becomes a detected
+fault the moment the reference bearing moves, and §1.5 of `docs/software-prd.md`
+already specifies how the unit is to report its own degradation.
+
+The design's recurring principle, applied once more: an undetected error is worse
+than an admitted one — so build the instrument that admits it.
+
+**Two honest limits.** The tower bearing validates everything *common* to both
+coherent groups, but the uplink group has its own PLLs, its own gain control and
+its own splitter legs, so it is validated only inasmuch as it shares the antenna
+array, the LNAs and the manifold. And a tower on a bearing that happens to lie
+near the array's front-back ambiguity axis is a weaker reference than one abeam.
+Neither is a reason not to do it. [Inferred]
 
 #### Still true, and still the reason a software-defined radio is right
 
-**One body covers every band the module can present to it**, which after the
-correction above means every band in the Texas plan *provided* the up-conversion
-question resolves. The band-specific content lives in the module either way
-(§1.1).
+**One body covers every band**, restored by the ADRV9002's 30 MHz floor. The
+band-specific content lives in the module (§1.1).
 
-**One receive chain is enough to monitor everything at once, because of bandwidth
-rather than channel count.** See §3.3.1. This was the point an earlier revision
-of this document got wrong — it claimed multiple receive *chains* were how the
-unit watched several *radio channels*, which is a §0 terminology collision and
-was false. Chains on a shared oscillator observe the same centre frequency;
-multiple channels come from capturing wide and separating digitally.
+**Bandwidth, not chain count, is what lets one group watch many channels at
+once.** See §3.3.1. This was the point an earlier revision got wrong — it claimed
+multiple receive *chains* were how the unit watched several *radio channels*,
+which is a §0 terminology collision and was false. Chains co-tuned within a group
+observe the same centre frequency; multiple channels come from capturing a window
+and separating it digitally.
 
-**A shared oscillator across the receive chains is exactly what direction finding
-wants** — coherent sampling against a common phase reference is the definition of
-what an interferometer needs.
+**A common phase reference across a group's chains is exactly what direction
+finding wants** — coherent sampling against one reference is the definition of
+what an interferometer needs. On this part that reference is established by MCS
+rather than by a physically shared oscillator, which is why MCS is load-bearing
+and not a convenience.
 
 **The transmit chains are already there.** The licensed configuration needs a
 power amplifier, a duplexer and an authorisation, not a different radio.
@@ -736,7 +872,7 @@ The master equation covers only the first:
 
 ##### What the selected part actually specifies
 
-**Analog Devices does not publish an ADC bit count for the ADRV9026**, and that
+**Analog Devices does not publish an ADC bit count for these parts**, and that
 is reasonable rather than evasive: in an integrated transceiver the converter
 sits behind an analog chain whose nonlinearity and noise matter as much, so the
 meaningful specification is end-to-end. [Confirmed — searched; a support-forum
@@ -942,7 +1078,7 @@ attempt means the trunk *heard* you.
 
 **Resolved 2026-07-31 by the transceiver selection.** A downlink at 851.5 MHz and
 its uplink at 806.5 MHz are 45 MHz apart. That barely fitted inside the AD9361's
-56 MHz; it sits comfortably inside the **ADRV9026's 200 MHz** (§3.3). Widening
+56 MHz; it sits comfortably inside a single ADRV9002 group's **40 MHz** (§3.3). Widening
 the slice is therefore a configuration choice rather than a stretch.
 
 **What is not resolved is the cost of doing it**, and it is the dynamic-range
@@ -1056,10 +1192,9 @@ when the network is gone.
 
 #### 3.5.1 The FPGA bridge — *a stage the first revision of this diagram omitted*
 
-The transceiver presents its digitised I/Q on a high-speed serial **JESD204B/C**
-interface — the AD9361 that preceded it used parallel **LVDS** at up to roughly
-1.5 Gbps per chain. **No Jetson-class module has an input that can accept
-either.** Jetson ingest is CSI, USB and PCIe; none is a radio converter
+The transceiver presents its digitised I/Q on a configurable **LVDS or CMOS
+serial synchronous interface (SSI)**. [Confirmed — Analog Devices.] **No
+Jetson-class module has an input that can accept it.** Jetson ingest is CSI, USB and PCIe; none is a radio converter
 interface. [Confirmed — Analog Devices publish interface cores specifically for
 FPGA integration, and every comparable design — ADALM-Pluto, USRP — places an
 FPGA between the transceiver and the host.]
@@ -1068,12 +1203,18 @@ So the block diagram needs a stage that the earlier revision did not show: an
 **FPGA or FPGA-SoC bridge** that terminates the converter interface and presents
 narrowband streams to the Jetson over PCIe or USB3.
 
-**The ADRV9026 selection raises what this part has to be.** JESD204B/C is a
-serial link needing **gigabit transceivers** in the fabric, plus SYSREF
-distribution and deterministic-latency configuration to bring up — meaningfully
-more than terminating parallel LVDS. A Zynq-class device **with serial
-transceivers** is the right family, and the cost and power delta against the
-LVDS case has not been quantified (§7.2 item B).
+**The ADRV9002 selection lowers what this part has to be.** LVDS/CMOS SSI is a
+source-synchronous bus rather than a gigabit serial link, so **no serial
+transceivers are needed in the fabric** and there is no SYSREF or
+deterministic-latency bring-up. An ordinary mid-range Zynq-class device is the
+right family. What sizes it instead is **pin count across four devices**: at our
+~2 MHz per group the sample rates sit near the boundary between SSI's single-lane
+and four-lane modes, so the lane count per chain — and therefore the total LVDS
+pair count — is the number to establish. [Inferred]
+
+*An earlier revision of this section, written when the ADRV9026 was selected,
+required gigabit transceivers and SYSREF distribution. That requirement is gone
+with that part.*
 
 This is not merely a format converter, and that is what makes it good news
 rather than bad. It is the natural home for:
@@ -1512,9 +1653,11 @@ line in the module and it was missing from the earlier single-column BOM.
 
 | # | Function | Example part / family | Class | Notes |
 |---|---|---|---|---|
-| B1 | RF transceiver | Analog Devices **ADRV9026** | Off-the-shelf | **Selected.** Four coherent receivers on one die, on-chip multichip sync, up to 200 MHz BW, JESD204B/C. Fallback is two synchronised **AD9361**s — §5.5. |
+| B1 | RF transceiver | **4× Analog Devices ADRV9002** | Off-the-shelf | **Selected.** Two receivers each, eight chains total, forming two coherent groups (§0.0a, §3.3). 30 MHz–6 GHz, on-chip MCS, 150 dB/Hz, LVDS/CMOS SSI. Fallback is two **AD9361**s on one unified window — §5.5. |
+| B1a | **Element splitters** | 3× 2-way Wilkinson divider, 806–869 MHz | Off-the-shelf | **New, §3.3.** Splits each element after its LNA so both coherent groups see all three elements. 3.2 dB, ~20 dB isolation, in-phase outputs. Placement after the LNA is what makes the loss cost 0.04 dB of noise figure. |
+| B1b | **Calibration tone source** | Dual-tone synthesiser + combiner | Off-the-shelf | **Two tones — one per window (§3.3).** Combined and injected at the three element couplers in the module; a direct reference tap feeds the fourth receiver of each group. |
 | B2 | LNA **×3** | Catalogue MMIC LNA, sub-1 dB NF | Catalogue | Sets sensitivity. All three on one board for correlated thermal drift — §3.1a. |
-| B3 | **FPGA / SoC bridge** | Xilinx **Zynq**-class **with gigabit serial transceivers** | Off-the-shelf silicon, integration work | **Required, not optional — §3.5.1.** Terminates the JESD204B/C interface, which no Jetson can accept, and hosts the channeliser. ADI supply the HDL. The serial interface pushes this part upmarket versus the LVDS case. |
+| B3 | **FPGA / SoC bridge** | Xilinx **Zynq**-class | Off-the-shelf silicon, integration work | **Required, not optional — §3.5.1.** Terminates the LVDS/CMOS SSI interfaces of all four transceivers, which no Jetson can accept, and hosts the channeliser. ADI supply the HDL. **No gigabit serial transceivers needed** — the ADRV9002's SSI is an ordinary source-synchronous interface, so this part stays mid-range. Pin count across four devices is the sizing driver. |
 | B4 | Compute module | NVIDIA **Jetson Orin Nano / Orin NX** | Off-the-shelf | Demod + TSBK parsing + local AI fallback. |
 | B5 | GNSS + disciplined oscillator | u-blox-class receiver + TCXO/OCXO | Catalogue | Timestamping; groundwork for multi-unit. |
 | B6 | Secure element | Microchip ATECC608-class / NXP SE-class | Catalogue | Key storage. Also the natural home for the licence/authorisation state. |
@@ -1522,7 +1665,7 @@ line in the module and it was missing from the earlier single-column BOM.
 | B8 | Power supply | Custom regulation board | Custom, routine | Dedicated supply, per §6. Also feeds the module across the dock. |
 | B9 | Calibration tone source | Catalogue synthesiser | Catalogue | Split three ways, injected module-side — §3.1a. |
 | B10 | Dock connector (body half) | Blind-mate multi-coax + power + data | Catalogue | 3× RF, DC, digital bus, TX drive. |
-| B11 | Carrier PCB | Custom | **Custom** | Integrates B1–B10. Where the RF engineering lives. The JESD204B/C run from B1 to B3 is a controlled-impedance, length-matched serial layout task in its own right. |
+| B11 | Carrier PCB | Custom | **Custom** | Integrates B1–B10. Where the RF engineering lives. **The three splitter legs feeding each coherent group must be length-matched within a group**; between groups they need not be, since the two groups never share a bearing computation (§0.0a). The SSI runs from four devices to B3 are source-synchronous and length-matched per bus. |
 
 **B. Band module — housing and array. One per radio environment.**
 
@@ -1894,24 +2037,31 @@ chain, which one AD9361 does not have.
 
 ### 5.5 The third chain — selected, with a fallback
 
-**Resolved 2026-07-31.** The ADRV9026 of §3.3 provides four coherent receive
-chains on one die and this question no longer stands open. The table below is
-retained because the fallback matters and because the reasoning should survive
-the decision.
+**Resolved 2026-07-31, and then re-resolved twice the same day.** The question as
+originally posed — *how do we get a third coherent chain* — turned out to be the
+wrong question. The right one was **which band the chains should be pointed at**,
+and the answer changed the architecture (§3.3).
 
-**Selected:** ADRV9026, four coherent chains, on-chip multichip sync.
-**Fallback:** two synchronised AD9361s — the option immediately below, which
-remains viable and is the route to take if the ADRV9026's power or cost at our
-actual bandwidth proves unacceptable (§7.4).
+**Selected:** **four ADRV9002s** forming two coherent groups of three chains
+each — one on the uplink where handsets transmit, one on the downlink. Element
+signals are split after the LNA so both groups see all three elements.
 
-**Not pursued:** staying at two elements, or the RF switch matrix.
+**Fallback:** two AD9361s covering handset uplink and talkaround in **one**
+unified 47 MHz window. Genuinely viable, and the route to take if four devices
+prove unaffordable in power, cost or board area. Its cost is that a single window
+means a single gain control, so a nearby uplink transmission also desensitises
+the downlink control channel (§3.3).
+
+**Not pursued:** staying at two elements; the RF switch matrix; the ADRV9026,
+which cannot reach VHF or UHF (§7.4 item J).
 
 | Option | What it costs |
 |---|---|
 | **Stay at two elements** | Simplest, works today, no new parts. Keeps the front-back ambiguity, which must then be resolved some other way — by moving the unit and taking a second bearing, or by discarding the candidate that falls behind a known obstruction. |
 | **Add a second AD9361** | Gives four coherent chains, more than enough. Requires multi-chip synchronisation: a shared reference clock and a shared LO distributed between devices, plus per-path calibration. Analog Devices documents this, so it is established rather than novel, but it is real engineering and it adds cost, board area and power. **Now answers three open questions with one part:** the third coherent chain; *uplink* coverage (§3.3.2), since a separate device tunes independently; and the fact that §1.1.1 ships three-element modules to every customer, so the body needs to use them. **This is the selected fallback**, retained because it is genuinely viable and because a single-source dependency on one transceiver family is worth having an answer to. |
 | **RF switch matrix ahead of two chains** | Cheapest in parts. Time-division sampling across three elements rather than true instantaneous capture, which complicates calibration and is weak on short or fading signals. **More viable here than for most DF applications**, because a P25 voice transmission lasts seconds — enormous compared with switching times. The standard arrangement keeps one chain permanently on a reference element and switches the second among the others, so relative phase always has a common reference. |
-| **A different RFIC with 3+ coherent receive chains** | **SELECTED — the ADRV9026, §3.3.** Solves it directly on one die, with multichip sync as a documented feature rather than assembled by hand. Costs a JESD204B/C interface instead of parallel LVDS, and a power and cost profile aimed at cellular infrastructure. |
+| **A different RFIC with 3+ coherent receive chains** | **Considered and rejected — the ADRV9026.** Four coherent receivers on one die, but it tunes only to 650 MHz, which puts VHF and UHF below its floor (§7.4 item J), and its four receivers share a synthesiser so its spare chain cannot reach the uplink. |
+| **Four ADRV9002s, split element feeds** | **SELECTED — §3.3.** Two coherent groups of three chains, independently tuned and independently gain-controlled, plus a calibration reference channel each. Costs four devices, three splitters and a second cal tone; buys VHF/UHF coverage, DF on handsets *and* talkaround, and the tower as a permanent reference. |
 
 #### 5.5.1 Why a third chain needs another chip at all
 
@@ -1960,11 +2110,13 @@ multi-chip coherence substantially easier.
 ##### The option that was chosen
 
 §5.5's "a different RFIC with 3+ coherent receive chains" was written without a
-candidate. There is an obvious one: the **Analog Devices ADRV9026**, a
-quad-channel transceiver with **four independently controlled receivers** and a
-documented **multichip synchronisation mechanism that aligns LO and baseband
-clock phase across devices** — which is precisely the property a phase
-interferometer needs, provided as a feature rather than assembled by hand.
+candidate. Two were found. The **ADRV9026** has four receivers on one die but
+tunes only to 650 MHz and shares one synthesiser across them — rejected (§7.4
+item J). The **ADRV9002** has two receivers, **two independent synthesisers**, a
+30 MHz floor, and a documented **multichip synchronisation mechanism that aligns
+LO and baseband clock phase both within and across devices** — which is precisely
+the property a phase interferometer needs, provided as a feature rather than
+assembled by hand. Four of them is the selected answer (§3.3).
 [Confirmed — Analog Devices product documentation.]
 
 The costs are real and should not be glossed. It uses a **JESD204B/C** serial
@@ -2109,6 +2261,39 @@ bearing is bad needs a fourth station, or a per-bearing quality metric that is
 genuinely independent of signal strength, or outside knowledge — the candidate
 fix landing behind a station, or inside a structure known to be clear.
 
+#### The strongest mitigation available to us: a transmitter whose bearing we already know
+
+**Added 2026-07-31 with the two-group architecture of §3.3.** The downlink
+coherent group is tuned to the tower. A tower is at a **surveyed, fixed, known
+position** and transmits more or less continuously, so the downlink group is
+permanently measuring a bearing whose correct answer is known in advance.
+
+**That converts most of this error budget from a specification into a
+measurement.** Every term in the table above except the target's own multipath is
+common to the reference path, so a discrepancy between measured and expected
+tower bearing is a *live readout of the accumulated error* — manifold, feed
+phase, connectors, splitters, MCS alignment and magnetometer heading together.
+
+| Error term | Visible in the tower bearing? |
+|---|---|
+| Array manifold and feed phase | **Yes** — as a stable offset |
+| Magnetometer bias (§5.8) | **Yes** — as a stable offset |
+| MCS misalignment | **Yes** — as a step at a retune |
+| Multipath *on the tower path* | **Yes** — as wander while stationary |
+| Multipath *on the target path* | **No.** Independent geometry |
+| Thermal/SNR noise on the target | **No** |
+
+**What it does not do**, and this is the limit to state: it cannot correct a
+bearing to a *handset*, because the handset's multipath and SNR are its own. It
+bounds and monitors the systematic terms, which is a different and lesser claim
+than fixing the random ones. It is also measured by the *downlink* group, so it
+validates the uplink group only through what the two share — the antenna array,
+the LNAs, the splitters and the manifold, but not the uplink group's own PLLs or
+gain control.
+
+**And one geometric caveat:** a tower lying near the array's front-back ambiguity
+axis is a weaker reference than one abeam. [Inferred]
+
 #### One mitigation this product is unusually well placed to use
 
 **Bearing stability across the transmission.** When a direct path and a
@@ -2167,6 +2352,17 @@ with a reference emitter at known positions across representative environments.
 > **The VHF module is explicitly out of scope.** Its array is a mast or vehicle
 > mount rather than a lid (§5.1), so none of the corner-placement geometry below
 > applies to it. It is an as-yet-undesigned configuration, not a designed one.
+
+> **A second, independent check on heading arrived with §3.3, and it partly
+> changes this problem.** The downlink coherent group continuously measures a
+> bearing to the tower, whose true bearing is known. **A magnetometer bias shows
+> up directly as a constant offset in that measurement** (§5.7), which means
+> heading error becomes observable in the field rather than only on a calibration
+> bench. Two caveats keep it from closing B.5: the check is only available while
+> a tower is in view, which is precisely *not* the case in the trunk-down
+> scenarios the product exists for; and it measures the *sum* of heading error
+> and array error, so separating the two still needs the gradiometer below.
+> Complementary, not a replacement.
 
 Two distinct problems hide behind "the magnetometer is disturbed," and only one
 of them is hard.
@@ -2418,20 +2614,29 @@ Two components dominate, and everything else is noise against them.
 
 | Configuration | Radio | Compute | Approximate total |
 |---|---|---|---|
-| **Receive only** | ADRV9026 + 3× LNA, no PA | Jetson at 7–15 W, plus FPGA | **Roughly 20–35 W** |
+| **Receive only** | 4× ADRV9002 + 3× LNA + 3 splitters, no PA | Jetson at 7–15 W, plus FPGA | **Roughly 20–35 W — re-estimate required** |
 | **Licensed transmit, keyed** | Adds PA driving ≤20 W ERP | Same | **Substantially higher during transmit** |
 
-[Inferred — from the confirmed Jetson power modes, the ADRV9026's ~5–7 W at
-200 MHz bandwidth (our slice is far narrower and its power there is not
-established), an unmeasured FPGA figure, and the general result that RF power
-amplifiers dominate transmitter draw. **Not measured.**]
+[Inferred — from the confirmed Jetson power modes, an unmeasured FPGA figure, and
+the general result that RF power amplifiers dominate transmitter draw. **Not
+measured, and now the least well-founded number in this document.**]
+
+**The transceiver line needs redoing and has not been.** Four ADRV9002s is four
+devices where the estimate assumed one, pulling upward; but the ADRV9002 is a
+handheld-and-tactical part with power-saving modes rather than a cellular
+base-station part, and the FPGA no longer needs gigabit serial transceivers, both
+pulling downward. **Which dominates is not established.** The only continuous-RX
+figure found in research was a 210 mW DMR duty-cycled average at 5% receive and
+90% idle — which is not our case at all, since we receive continuously, and it
+must not be used. Establishing continuous-receive power for four devices is a
+named action, not an assumption. [Assumption]
 
 Ethernet PHY, GNSS, and the secure element are real but negligible against these.
 
-**Revised upward 2026-07-31**, for two reasons that pull in opposite directions:
-the ADRV9026 (§3.3) and its gigabit-serial-capable FPGA both draw more than the
-AD9361-plus-LVDS arrangement they replaced, while §7 item G resolved the supply
-envelope to **a few hundred watts** from a patrol vehicle or field power bank.
+**Item G resolved the supply envelope to a few hundred watts** from a patrol
+vehicle or field power bank, which is what makes a four-device transceiver
+arrangement affordable at all. The receive-only argument has changed character
+accordingly: it is now about **endurance** rather than feasibility.
 
 **That resolution is what made the transceiver decision comfortable.** A 5–7 W
 transceiver was a serious objection against a backpack battery and is not one
@@ -2475,15 +2680,25 @@ widths — which is an engineering estimate, not an architecture question.
 ### 7.2 Decided
 
 **B. The third coherent receive chain, and uplink coverage with it.** **Closed
-2026-07-31 by selecting the ADRV9026** (§3.3, §5.5): four coherent receivers on
-one die with on-chip multichip synchronisation, and 200 MHz of bandwidth which
-makes covering a downlink and its uplink 45 MHz away comfortable rather than
-marginal. Two synchronised AD9361s remain the documented fallback.
+2026-07-31 by selecting four ADRV9002s** (§3.3, §5.5), forming two coherent
+groups of three chains — one on the uplink where handsets transmit, one on the
+downlink. Uplink coverage is no longer a roadmap item bolted on later; **it is
+what the array points at.** Two AD9361s on one unified 47 MHz window remain the
+documented fallback.
 
-Decided on **reliability rather than a completed costing**: a multi-chip
-synchronisation that half-succeeds produces a wrong bearing rather than a missing
-one, and removing a mechanism that can generate a silent confident error is worth
-more than the engineering time saved.
+The reasoning went through two reversals in a day and both are recorded in §3.3,
+because the sequence is more instructive than the answer. The original
+argument — that a multi-chip synchronisation which half-succeeds produces a wrong
+bearing rather than a missing one, and that removing a silent-confident-error
+mechanism is worth more than the engineering time saved — **still holds.** What
+changed is that MCS turned out to be required *within* a single ADRV9002 as well
+as between devices, so device count stopped being a reliability variable at all.
+
+**Not measured, and it should be before silicon is committed:** continuous-receive
+power for four devices (§6), the SSI lane count that sizes the FPGA, and whether
+MCS phase alignment on a group's chains survives the other receiver on the same
+device being independently tuned to a different window. That last one is the
+assumption the whole allocation rests on.
 
 **Not measured, and it should be before silicon is committed:** power for both
 candidates at our actual few-megahertz slice rather than at the datasheet's
@@ -2544,28 +2759,49 @@ receive-only product.
 
 ### 7.4 Genuinely open, ours, and the one that matters
 
-**D. The dynamic-range budget.** Not listed here in earlier revisions, and it
-should have been. Wideband capture cannot filter a strong in-band signal before
-the converter, so **the strongest signal in the slice sets the noise floor for
-every channel extracted from it** (§3.3.1). Our interferer is also the same kind
-of radio as our target — a police vehicle radio on the trunk we monitor — so
+**D. The dynamic-range budget.** Wideband capture cannot filter a strong in-band
+signal before the converter, so **the strongest signal in a window sets the noise
+floor for every channel extracted from it** (§3.3.1). Our interferer is the same
+kind of radio as our target — a police radio on the system we monitor — so
 selectivity offers no escape.
 
-**What is now known.** It is three mechanisms rather than one: quantisation noise
-(helped by processing gain), spurs and intermodulation (not helped). The selected
-ADRV9026 specifies **81 dBc SFDR, IIP2 58–65 dBm, IIP3 15–18 dBm** — cellular
-base-station-grade figures, and better than the ~74 dB a bare 12-bit converter
-would give. ADC bit depth is not published, and for an integrated transceiver
-that is a reasonable choice.
+**Substantially improved by the §3.3 architecture, and it is worth being precise
+about which part improved.** Three mechanisms are in play:
 
-**What is not known.** Everything that matters: the figures are quoted at
-conditions that are not ours, and no budget has been computed for our slice
-width, our filter, or our environment.
+| Mechanism | Helped by processing gain? | Effect of two narrow groups |
+|---|---|---|
+| **Quantisation noise** | Yes — 23 dB from a 2 MHz window to a 12.5 kHz channel | Slightly *worse* than a wide window, which would give ~36 dB |
+| **AGC backoff from a strong in-window signal** | No | **Much better** — each window admits far fewer emitters |
+| **Spurs and intermodulation** | **No** | **Much better** — third-order products scale hard with the number and strength of in-window signals |
 
-**Why it outranks everything else left.** It directly bounds the weak-signal
-sensitivity that §3.3.2's subscriber-side capability depends on — the second tier
-of the product's own headline claim. **It is the only open item that constrains a
-capability the product is actually sold on.**
+**The net is a large improvement**, because the two mechanisms that processing
+gain cannot touch are exactly the two that narrowing the window fixes. Losing
+~13 dB of oversampling gain to win on both is the right trade.
+
+**And the architecture removed the worst consequence entirely.** Under the
+rejected single 47 MHz capture, one gain control served everything — so a nearby
+uplink transmission would have desensitised **the downlink control channel**, the
+source of every alarm the product raises. Two groups have two gain controls, and
+that coupling is gone.
+
+**What is now known about the part.** The ADRV9002 is specified at **150 dB/Hz
+dynamic range** and is marketed explicitly against blocking in mission-critical
+land mobile radio — the first part considered here that was engineered against
+this exact problem rather than adapted to it. [Confirmed]
+
+**What is still not known, and this is why the item stays open.** No budget has
+been computed for our windows, our filters, or our environment. Specifically
+unquantified: third-order intermodulation with several strong uplink emitters in
+one ~2 MHz window; whether the AGC can be configured to protect the weak-signal
+case rather than simply track the loudest; and LNA compression, which sits ahead
+of the splitters and is therefore **common to both groups in every architecture
+considered** — the one blocking path this design does not improve.
+
+**Why it still outranks what is left.** It bounds the weak-signal sensitivity that
+§3.3.2's subscriber-side capability rests on — now the *primary* capability rather
+than a roadmap one, since the uplink group is what the array points at. **It
+remains the only open item that constrains something the product is sold on** —
+but it is now a budget to be computed rather than an architecture to be found.
 
 ##### It is present in the current design, not waiting on uplink coverage
 
@@ -2602,25 +2838,18 @@ unit must detect and announce its own desensitisation (§3.3.1, and
 `docs/software-prd.md` §1.5). That requirement is independent of the budget and
 should not be deferred behind it.
 
-**J. Band coverage below 650 MHz.** [Opened 2026-07-31, found during a QA pass
-on the training material.] **The ADRV9026 tunes 650 MHz–6 GHz; the AD9361 it
-replaced tuned 70 MHz–6 GHz.** Two of the three band modules — VHF and UHF — are
-below the floor. See §3.3 for the full correction and for the proposed
-resolution, block up-conversion inside the band module.
+**J. Band coverage below 650 MHz — CLOSED 2026-07-31, same day it opened.**
+Opened when a QA pass found that the ADRV9026 tunes only 650 MHz–6 GHz, putting
+the VHF and UHF band modules below its floor. **Closed by selecting the ADRV9002**
+(§3.3), which tunes from 30 MHz and covers every band in the Texas plan directly.
+The block up-conversion that was proposed as a mitigation is **not needed and not
+being built** — no mixers, no second LO, no image filtering, no added spurs.
 
-**This is a self-inflicted item and worth being honest about how it arose.** Item
-B was decided on a coherence argument, correctly. Nobody re-checked the tuning
-range against the SKU structure afterwards, and the "one body covers every band"
-line survived the part change unexamined for a day. **A decision that improves one
-property can silently break another**, and this design's own discipline —
-recording corrections as corrections — is what caught it.
-
-**What it does not affect:** the demonstrated product, which is 800 MHz and
-comfortably in range. What it affects is a commercial claim about the SKU line.
-
-**Why it is not simply closed by the up-conversion proposal:** the mixer's
-spurious products land on item D, which is the open item that already matters
-most. The two have to be resolved together rather than separately.
+**Kept in this list rather than deleted, because the episode is the lesson.** Item
+B was decided on a coherence argument that was correct on its own terms, and it
+silently broke a commercial claim two documents away that nobody re-checked.
+**After any part substitution, re-verify every specification the old part's
+numbers were supporting** — not only the one that motivated the change.
 
 ### What affects the demonstrated product
 
@@ -2679,6 +2908,7 @@ that have several meanings.
 | **LNA** | Low-Noise Amplifier | The first amplifier. Its own noise sets the whole system's sensitivity |
 | **LO** | Local Oscillator | The reference tone a mixer multiplies against to shift frequency. **Shared across chains, which is what makes interferometry possible** |
 | **LVDS** | **Low-Voltage Differential Signaling** | A way of sending fast digital data over *pairs* of wires carrying opposite voltages. The receiver reads the difference, so noise picked up equally by both wires cancels — which is how it survives gigabit rates. Used between the AD9361 and the FPGA, ~1.5 Gbit/s per chain |
+| **SSI** | Serial Synchronous Interface | The ADRV9002's digital I/Q port, configurable as LVDS or CMOS. Source-synchronous, so the FPGA needs **no gigabit serial transceivers** — unlike JESD204B/C |
 | **MIMO** | Multiple Input, Multiple Output | Several antennas at both ends. The AD9361 is a 2×2 MIMO part, which is *why* it has exactly two receive chains |
 | **MMIC** | Monolithic Microwave Integrated Circuit | An RF function on a single chip |
 | **MRC** | Maximal-Ratio Combining | Co-phasing several copies of a signal and weighting by quality before summing. Source of the 4.8 dB |
@@ -2712,8 +2942,10 @@ that have several meanings.
 | | | |
 |---|---|---|
 | **AOA** | Angle of Arrival | Bearing from phase differences across an array. Our approach |
+| **Coherent group** | *(this document's term, §0.0a)* | Three receive chains co-tuned to one window and phase-aligned by MCS, sampling the antenna array to produce one bearing. **Two of them**; only one antenna array |
 | **GDOP** | Geometric Dilution of Precision | How much poor crossing geometry inflates position error |
 | **IMU** | Inertial Measurement Unit | Accelerometers and gyroscopes; reports orientation |
+| **MCS** | Multichip Synchronisation | Analog Devices' mechanism for phase- and latency-aligning receive chains **within and across** transceiver devices. Load-bearing here: it is what makes the chains of a coherent group comparable, and it is required even inside one device |
 | **MUSIC** | MUltiple SIgnal Classification | A spectral direction-finding method that can resolve several arrivals at once. Not implemented |
 | **TDOA** | Time Difference of Arrival | The alternative to AOA. Needs more stations; rejected in §5 |
 | **WMM** | World Magnetic Model | Predicts the Earth's field at a given place and date. Basis of §5.8 option A |

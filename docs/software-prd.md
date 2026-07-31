@@ -190,9 +190,24 @@ than *semantic*.**
 | **Link margin / SNR per transmission** | Same, plus a noise-floor estimate | **Nothing — free today** |
 | **Carrier frequency offset** — a stable per-radio fingerprint | Already estimated at stage 12 for demodulation | **Nothing — free today** |
 | **Analog carrier present, audio unintelligible** | `hardware-design.md` §3.3.2 Case B | **Nothing — free today** |
-| **Bearing + declared uncertainty per transmission** | Stage 10d | The third receive chain, `hardware-design.md` §5.5 |
-| **P25 transmission detected but not decodable** | §3.3.2 detect/recognise tiers | Nothing on downlink; uplink needs coverage |
-| **A request the trunk never answered** | §3.3.2 Case A | Uplink coverage, `hardware-design.md` §7.2 item B |
+| **Bearing + declared uncertainty per transmission** | Stage 10d | **Nothing in the architecture — resolved 2026-07-31.** `hardware-design.md` §3.3 |
+| **P25 transmission detected but not decodable** | §3.3.2 detect/recognise tiers | **Nothing — resolved.** Both windows are now covered |
+| **A request the trunk never answered** | §3.3.2 Case A | **Nothing — resolved.** The uplink is what the array points at |
+
+**Three of these were re-graded on 2026-07-31 and the change is large enough to
+restate.** The hardware architecture was reworked into **two coherent groups** —
+three phase-coherent receive chains on the uplink where handsets transmit, three
+on the downlink (`hardware-design.md` §3.3, §0.0a). Two consequences for this
+document:
+
+- **Bearings are no longer gated on a missing receive chain.** They are gated on
+  engine work that has not been done, which is a different and smaller kind of
+  open.
+- **The bearings are now useful.** The previous architecture pointed the array at
+  the downlink, so every bearing it could have produced was a bearing *to the
+  tower*. Handsets transmit on the uplink and on talkaround. **The signal this
+  product exists to find — the officer whose channel request the trunk never
+  answered — is now both audible and locatable by the same hardware.**
 
 #### Why this matters more than a feature list
 
