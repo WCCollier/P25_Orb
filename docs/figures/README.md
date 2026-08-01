@@ -9,6 +9,7 @@ whenever the source section changes.
 
 | File | Contains | Source sections |
 |---|---|---|
+| `plates-5-6.html` | **Plate 5** — two-unit bearing fix: good crossing geometry, shallow crossing geometry, and the three-station residual triangle. **Plate 6** — the deployed configuration as an isometric line illustration: case open, lid flat, array upright. | §5.1, §5.6, §5.9, §7.2 |
 | `plates-2-4.html` | **Plate 2** — the 800 MHz duplex band at true scale, with the two captured windows as magnified detail views. **Plate 3** — array geometry: plan, elevation, and the rejected vertical-plane arrangement. **Plate 4** — splitter placement and the Friis noise-figure case. | §3.3, §3.3.1, §5.1 |
 
 **Plate 1 (the §2 receive-architecture block diagram) has no source file here.**

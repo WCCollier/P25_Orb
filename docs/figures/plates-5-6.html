@@ -1,0 +1,445 @@
+<title>P25 Orb — Technical Plates 5–6</title>
+
+<style>
+  :root {
+    --paper: #F2F4F1; --surface: #FBFCFA; --ink: #14201C; --rule: #C3CCC5;
+    --muted: #6B7A73; --uplink: #B4571A; --downlink: #16746B;
+    --grid: rgba(20, 32, 28, .055);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0D1412; --surface: #131C19; --ink: #DFE7E2; --rule: #2A3833;
+      --muted: #8B9A93; --uplink: #E8934A; --downlink: #4FBFAF;
+      --grid: rgba(223, 231, 226, .05);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0D1412; --surface: #131C19; --ink: #DFE7E2; --rule: #2A3833;
+    --muted: #8B9A93; --uplink: #E8934A; --downlink: #4FBFAF;
+    --grid: rgba(223, 231, 226, .05);
+  }
+  :root[data-theme="light"] {
+    --paper: #F2F4F1; --surface: #FBFCFA; --ink: #14201C; --rule: #C3CCC5;
+    --muted: #6B7A73; --uplink: #B4571A; --downlink: #16746B;
+    --grid: rgba(20, 32, 28, .055);
+  }
+
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--serif); font-size: 17px; line-height: 1.62;
+    margin: 0; padding: 0 24px 96px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .prose { max-width: 65ch; }
+
+  header.masthead {
+    padding: 72px 0 40px; border-bottom: 1px solid var(--rule); margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--sans); font-size: 11px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--sans); font-size: clamp(30px, 4.4vw, 46px); font-weight: 640;
+    letter-spacing: -.02em; line-height: 1.08; text-wrap: balance; margin: 0 0 20px;
+  }
+  .standfirst { font-size: 19px; color: var(--muted); margin: 0; max-width: 62ch; }
+  h2 {
+    font-family: var(--sans); font-size: 22px; font-weight: 620;
+    letter-spacing: -.01em; text-wrap: balance; margin: 0 0 6px;
+  }
+  p { margin: 0 0 18px; }
+  p:last-child { margin-bottom: 0; }
+  section { margin-bottom: 64px; }
+  .section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .section-head p { margin: 0; color: var(--muted); font-size: 16px; max-width: 62ch; }
+  strong { font-weight: 600; }
+  code { font-family: var(--mono); font-size: .88em; }
+
+  .plate {
+    background: var(--surface);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--rule); padding: 18px; overflow-x: auto;
+  }
+  .plate svg { display: block; width: 100%; min-width: 720px; height: auto; }
+
+  .frame  { fill: none; stroke: var(--rule); stroke-width: 1.3; }
+  .bx     { fill: var(--surface); stroke: var(--ink); stroke-width: 1.3; }
+  .bx-ul  { fill: none; stroke: var(--uplink); stroke-width: 1.6; }
+  .bx-dl  { fill: none; stroke: var(--downlink); stroke-width: 1.6; }
+
+  .sig     { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+  .sig-thin{ fill: none; stroke: var(--ink); stroke-width: 1; }
+  .sig-ul  { fill: none; stroke: var(--uplink); stroke-width: 1.8; }
+  .sig-dl  { fill: none; stroke: var(--downlink); stroke-width: 1.8; }
+  .sig-cal { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 3.5; }
+
+  .a-ink { fill: var(--ink); }
+  .a-mut { fill: var(--muted); }
+
+  text { font-family: var(--mono); fill: var(--ink); }
+  .t-box   { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
+  .t-head  { font-size: 12px;   font-weight: 700; letter-spacing: .09em; }
+  .t-note  { font-size: 10px;   fill: var(--muted); }
+  .t-port  { font-size: 11px; }
+  .t-tiny  { font-size: 9px;    fill: var(--muted); letter-spacing: .06em; }
+  .t-ul    { fill: var(--uplink); }
+  .t-dl    { fill: var(--downlink); }
+
+  .dim     { fill: none; stroke: var(--muted); stroke-width: 1; }
+  .lead    { fill: none; stroke: var(--muted); stroke-width: .9; stroke-dasharray: 4 3; }
+  .wedge-ul{ fill: var(--uplink); opacity: .13; stroke: none; }
+  .wedge-dl{ fill: var(--downlink); opacity: .13; stroke: none; }
+  .face    { fill: var(--muted); opacity: .09; stroke: none; }
+  .face-lo { fill: var(--muted); opacity: .16; stroke: none; }
+  .elem    { fill: var(--ink); }
+  .fix     { fill: var(--ink); opacity: .18; stroke: var(--ink); stroke-width: 1.2; }
+
+  .notes { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid var(--rule); }
+  .note {
+    display: grid; grid-template-columns: 116px 1fr; gap: 24px;
+    padding: 18px 0; border-bottom: 1px solid var(--rule); align-items: start;
+  }
+  .note dt {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .04em; color: var(--muted); padding-top: 3px;
+  }
+  .note dd { margin: 0; font-size: 16px; }
+  @media (max-width: 620px) { .note { grid-template-columns: 1fr; gap: 6px; } }
+
+  .verdict { border-left: 3px solid var(--uplink); padding: 2px 0 2px 22px; margin: 0 0 18px; }
+  .verdict:last-child { margin-bottom: 0; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">ARC Edge · P25 Orb · Drawing set, plates 5–6</p>
+    <h1>The payoff, and the thing you put on a table</h1>
+    <p class="standfirst">
+      One drawing of what two units together produce that one cannot, and one
+      of the deployed product — the case open, the lid flat, the array up.
+    </p>
+  </header>
+
+  <!-- ===================== PLATE 5 ===================== -->
+  <section>
+    <div class="section-head">
+      <h2>Plate 5 — Two units, one fix, and the geometry that ruins it</h2>
+      <p>
+        A bearing from one Orb is a line. Two bearings are a position — but only
+        as good as the angle they cross at. The third panel is the honest one:
+        what three stations can and cannot tell you.
+      </p>
+    </div>
+
+    <div class="plate">
+      <svg viewBox="0 0 1040 620" role="img" aria-label="Three panels. Good crossing geometry produces a compact fix. Shallow crossing geometry produces a long thin error ellipse. Three stations produce a residual triangle that proves someone is wrong without identifying which one.">
+
+        <defs>
+          <marker id="p5-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+          </marker>
+          <marker id="p5-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+          </marker>
+        </defs>
+
+        <!-- ---------- PANEL A: good crossing ---------- -->
+        <rect class="frame" x="20" y="40" width="330" height="400"></rect>
+        <text class="t-head t-dl" x="34" y="64">A — GOOD GEOMETRY</text>
+        <text class="t-note" x="34" y="80">wide crossing angle · compact fix</text>
+
+        <polygon class="wedge-dl" points="70,365 228,130 158,96"></polygon>
+        <polygon class="wedge-dl" points="300,370 215,100 144,134"></polygon>
+        <path class="sig-thin" d="M70 365 L193 113"></path>
+        <path class="sig-thin" d="M300 370 L179 117"></path>
+
+        <ellipse class="fix" cx="185" cy="130" rx="27" ry="20" transform="rotate(-20 185 130)"></ellipse>
+        <circle class="elem" cx="185" cy="130" r="3"></circle>
+        <text class="t-tiny" x="218" y="126">THE FIX</text>
+
+        <circle class="elem" cx="70" cy="365" r="6"></circle>
+        <circle class="elem" cx="300" cy="370" r="6"></circle>
+        <text class="t-port" x="70" y="387" text-anchor="middle">ORB 1</text>
+        <text class="t-port" x="300" y="392" text-anchor="middle">ORB 2</text>
+
+        <path class="dim" d="M145 211 A 90 90 0 0 1 224 211"></path>
+        <text class="t-note" x="185" y="230" text-anchor="middle">≈ 74°</text>
+
+        <text class="t-note" x="34" y="422">Uncertainty in both bearings resolves to a small</text>
+        <text class="t-note t-dl" x="34" y="434">area. GDOP is low. The solver reports the fix.</text>
+
+        <!-- ---------- PANEL B: shallow crossing ---------- -->
+        <rect class="frame" x="370" y="40" width="330" height="400"></rect>
+        <text class="t-head t-ul" x="384" y="64">B — SHALLOW CROSSING</text>
+        <text class="t-note" x="384" y="80">same bearing quality · far worse position</text>
+
+        <polygon class="wedge-ul" points="400,375 653,151 581,90"></polygon>
+        <polygon class="wedge-ul" points="500,380 650,128 574,96"></polygon>
+        <path class="sig-thin" d="M400 375 L617 120"></path>
+        <path class="sig-thin" d="M500 380 L612 112"></path>
+
+        <ellipse class="fix" cx="600" cy="140" rx="62" ry="15" transform="rotate(-59 600 140)"></ellipse>
+        <circle class="elem" cx="600" cy="140" r="3"></circle>
+
+        <circle class="elem" cx="400" cy="375" r="6"></circle>
+        <circle class="elem" cx="500" cy="380" r="6"></circle>
+        <text class="t-port" x="400" y="397" text-anchor="middle">ORB 1</text>
+        <text class="t-port" x="500" y="402" text-anchor="middle">ORB 2</text>
+
+        <path class="dim" d="M529 224 A 110 110 0 0 1 558 242"></path>
+        <text class="t-note" x="512" y="262" text-anchor="middle">≈ 22°</text>
+
+        <text class="t-note" x="384" y="422">The error runs along the line of sight, not across</text>
+        <text class="t-note t-ul" x="384" y="434">it. GDOP is high, and the solver says so.</text>
+
+        <!-- ---------- PANEL C: three stations ---------- -->
+        <rect class="frame" x="720" y="40" width="300" height="400"></rect>
+        <text class="t-head" x="734" y="64">C — THREE STATIONS</text>
+        <text class="t-note" x="734" y="80">a residual appears, and it is not enough</text>
+
+        <path class="sig-thin" d="M770 385 L890 112"></path>
+        <path class="sig-thin" d="M900 392 L845 134"></path>
+        <path class="sig-thin" d="M985 300 L820 168"></path>
+
+        <circle class="elem" cx="770" cy="385" r="6"></circle>
+        <circle class="elem" cx="900" cy="392" r="6"></circle>
+        <circle class="elem" cx="985" cy="300" r="6"></circle>
+        <text class="t-port" x="758" y="389" text-anchor="end">ORB 1</text>
+        <text class="t-port" x="912" y="396">ORB 2</text>
+        <text class="t-port" x="972" y="290" text-anchor="end">ORB 3</text>
+
+        <circle class="sig-ul" cx="861" cy="182" r="26" fill="none"></circle>
+        <path class="lead" d="M835 182 L762 152"></path>
+        <text class="t-box t-ul" x="734" y="140">RESIDUAL</text>
+        <text class="t-box t-ul" x="734" y="152">TRIANGLE</text>
+
+        <text class="t-note" x="734" y="410">A large triangle proves someone is wrong.</text>
+        <text class="t-note" x="734" y="422">Remove any one ray and the other two meet</text>
+        <text class="t-note t-ul" x="734" y="434">exactly — so it cannot say which.</text>
+
+        <!-- ---------- what the solver will and will not claim ---------- -->
+        <path class="frame" d="M20 466 L1020 466"></path>
+        <text class="t-head" x="20" y="492">WHAT df/aoa_fix.py REPORTS, AND WHAT IT REFUSES TO</text>
+
+        <rect class="bx-dl" x="20" y="506" width="320" height="76"></rect>
+        <text class="t-box t-dl" x="36" y="528">REPORTED</text>
+        <text class="t-note" x="36" y="544">position · rms residual · GDOP</text>
+        <text class="t-note" x="36" y="558">forward consistency · a trust flag</text>
+        <text class="t-note" x="36" y="572">that requires GDOP below 10</text>
+
+        <rect class="bx-ul" x="360" y="506" width="320" height="76"></rect>
+        <text class="t-box t-ul" x="376" y="528">WITHHELD ON TWO STATIONS</text>
+        <text class="t-note" x="376" y="544">no residual claim is made at all,</text>
+        <text class="t-note" x="376" y="558">because two rays always meet —</text>
+        <text class="t-note" x="376" y="572">agreement there would be an artefact</text>
+
+        <rect class="bx" x="700" y="506" width="320" height="76"></rect>
+        <text class="t-box" x="716" y="528">STILL NOT ANSWERABLE</text>
+        <text class="t-note" x="716" y="544">which bearing is the bad one. That</text>
+        <text class="t-note" x="716" y="558">needs a fourth station, an independent</text>
+        <text class="t-note" x="716" y="572">quality metric, or outside knowledge</text>
+
+        <text class="t-tiny" x="1020" y="604" text-anchor="end">PLATE 5 · SOURCE §5.9, df/aoa_fix.py · REVISED 2026-08-01</text>
+      </svg>
+    </div>
+
+    <dl class="notes">
+      <div class="note">
+        <dt>GDOP</dt>
+        <dd>
+          Panels A and B use the <em>same</em> bearing uncertainty. Only the geometry
+          changes. That is the point worth making out loud: a fix can be bad without any
+          measurement being bad, and the operator needs to be told which situation they
+          are in. The solver's trust flag requires GDOP below 10 for exactly this reason.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>Two stations</dt>
+        <dd>
+          Two rays that are not parallel always intersect somewhere, so a two-station fix
+          is <em>always</em> perfectly self-consistent — including when one bearing is
+          corrupted. Reporting a residual there would invite the reader to treat silence
+          as corroboration, so the solver withholds it deliberately rather than reporting
+          a comfortable zero.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>Three stations</dt>
+        <dd>
+          A triangle finally makes disagreement visible, but it cannot attribute it.
+          Drop any one of the three and the remaining pair meets exactly, so three
+          mutually incompatible explanations each fit their own evidence perfectly.
+          This is a real limit of the method, not of the implementation.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ===================== PLATE 6 ===================== -->
+  <section>
+    <div class="section-head">
+      <h2>Plate 6 — The deployed configuration</h2>
+      <p>
+        The case open, the lid flat, the array upright. Every geometric claim
+        the direction-finding rests on is visible here as a physical arrangement.
+      </p>
+    </div>
+
+    <div class="plate">
+      <svg viewBox="0 0 1040 500" role="img" aria-label="Isometric line illustration of the P25 Orb deployed: a storm case with its lid opened flat to 180 degrees, three folding vertical dipoles standing upright on the lid's inner face in a horizontal triangle, and the processing body bolted to the ARC Edge unit in the case trunk.">
+
+        <defs>
+          <marker id="p6-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+          </marker>
+        </defs>
+
+        <text class="t-head" x="20" y="30">DEPLOYED CONFIGURATION — 700/800 MHz BAND MODULE</text>
+        <text class="t-note" x="20" y="46">isometric, illustrative proportions</text>
+
+        <!-- ===== case body ===== -->
+        <!-- right and front outer faces -->
+        <polygon class="face-lo" points="718,181 718,264 583,342 583,259"></polygon>
+        <polygon class="face" points="385,145 385,228 583,342 583,259"></polygon>
+        <!-- rim (top edge of the walls) -->
+        <polygon class="face" points="520,67 718,181 583,259 385,145"></polygon>
+        <path class="sig" d="M520 67 L718 181 L583 259 L385 145 Z"></path>
+        <path class="sig" d="M718 181 L718 264 L583 342 L385 228 L385 145"></path>
+        <path class="sig" d="M583 259 L583 342"></path>
+
+        <!-- interior: inner rim and floor -->
+        <path class="sig-thin" d="M520 82 L691 181 L583 244 L412 145 Z"></path>
+        <polygon class="face" points="520,134 691,233 583,296 412,197"></polygon>
+        <path class="sig-thin" d="M520 82 L520 134 M691 181 L691 233 M583 244 L583 296 M412 145 L412 197"></path>
+        <path class="sig-thin" d="M520 134 L691 233 L583 296 L412 197 Z"></path>
+
+        <!-- ===== the conjoined module in the trunk ===== -->
+        <polygon class="face-lo" points="651,194 651,231 579,272 579,236"></polygon>
+        <polygon class="face" points="452,163 452,199 579,272 579,236"></polygon>
+        <polygon class="face" points="525,121 651,194 579,236 452,163"></polygon>
+        <path class="sig-thin" d="M525 121 L651 194 L579 236 L452 163 Z"></path>
+        <path class="sig-thin" d="M651 194 L651 231 L579 272 L452 199 L452 163"></path>
+        <path class="sig-thin" d="M579 236 L579 272"></path>
+
+        <!-- ===== lid, opened flat ===== -->
+        <polygon class="face" points="385,137 583,251 439,335 241,220"></polygon>
+        <polygon class="face-lo" points="241,220 439,335 439,342 241,228"></polygon>
+        <polygon class="face-lo" points="439,335 583,251 583,259 439,342"></polygon>
+        <path class="sig" d="M385 137 L583 251 L439 335 L241 220 Z"></path>
+        <path class="sig" d="M241 220 L241 228 L439 342 L439 335"></path>
+        <path class="sig" d="M439 342 L583 259"></path>
+
+        <!-- hinge line -->
+        <path class="sig-cal" d="M385 145 L583 259"></path>
+
+        <!-- array triangle inscribed on the lid face -->
+        <path class="sig-cal" d="M322 225 L430 288 L457 210 Z"></path>
+
+        <!-- ===== three folding dipoles, upright ===== -->
+        <path class="sig" d="M322 225 L322 49"></path>
+        <path class="sig" d="M430 288 L430 111"></path>
+        <path class="sig" d="M457 210 L457 33"></path>
+        <path class="sig" d="M316 137 L328 137 M424 200 L436 200 M451 122 L463 122"></path>
+        <circle class="elem" cx="322" cy="225" r="4"></circle>
+        <circle class="elem" cx="430" cy="288" r="4"></circle>
+        <circle class="elem" cx="457" cy="210" r="4"></circle>
+        <text class="t-port" x="300" y="240" text-anchor="end">EL 1</text>
+        <text class="t-port" x="442" y="304" text-anchor="end">EL 2</text>
+        <text class="t-port" x="466" y="30">EL 3 — inboard</text>
+
+        <!-- baseline dimension across the two outboard elements -->
+        <path class="dim" d="M308 249 L416 312" marker-start="url(#p6-dim)" marker-end="url(#p6-dim)"></path>
+        <text class="t-note" x="348" y="304" text-anchor="middle">17.6 cm</text>
+
+        <!-- IMU and the two magnetometers -->
+        <circle class="elem" cx="475" cy="199" r="3.5"></circle>
+        <circle class="elem" cx="259" cy="220" r="3.5"></circle>
+        <circle class="elem" cx="439" cy="324" r="3.5"></circle>
+
+        <!-- ===== leaders and labels ===== -->
+        <path class="lead" d="M230 96 L314 60"></path>
+        <text class="t-box" x="20" y="86">THREE FOLDING DIPOLES</text>
+        <text class="t-note" x="20" y="102">half-wave sleeve, 16.6 cm, vertical —</text>
+        <text class="t-note" x="20" y="115">matching P25's vertical polarisation</text>
+
+        <path class="lead" d="M230 262 L256 224"></path>
+        <text class="t-box" x="20" y="252">2× MAGNETOMETER</text>
+        <text class="t-note" x="20" y="268">at the outboard lid corners, with the</text>
+        <text class="t-note" x="20" y="281">IMU inboard at the hinge (§5.8)</text>
+
+        <path class="lead" d="M230 372 L300 300"></path>
+        <text class="t-box" x="20" y="362">LID OPENS TO 180°, FLAT</text>
+        <text class="t-note" x="20" y="378">so the three elements form a HORIZONTAL</text>
+        <text class="t-note" x="20" y="391">triangle. A vertical plane would make</text>
+        <text class="t-note" x="20" y="404">mirrored azimuths indistinguishable (§5.1)</text>
+
+        <path class="lead" d="M736 214 L655 212"></path>
+        <text class="t-box" x="742" y="204">PROCESSING BODY + ARC EDGE</text>
+        <text class="t-note" x="742" y="220">a factory-assembled bolt-on riding in the</text>
+        <text class="t-note" x="742" y="233">trunk. Band-agnostic — identical for every</text>
+        <text class="t-note" x="742" y="246">module (§7.2 item E)</text>
+
+        <path class="lead" d="M736 300 L600 300"></path>
+        <text class="t-box" x="742" y="290">APEX TOWARD THE BODY</text>
+        <text class="t-note" x="742" y="306">Two elements outboard, one inboard. Only</text>
+        <text class="t-note" x="742" y="319">ONE element sits in the case's shadowed</text>
+        <text class="t-note" x="742" y="332">sector; the reverse orientation puts two</text>
+        <text class="t-note" x="742" y="345">there. The outboard feeds also leave as</text>
+        <text class="t-note" x="742" y="358">mirror images, so they are naturally</text>
+        <text class="t-note" x="742" y="371">length-matched (§5.1, §5.3)</text>
+
+        <text class="t-note" x="20" y="452">700/800 MHz only. At UHF the triangle needs a larger case; at VHF, a mast or vehicle mount.</text>
+        <text class="t-tiny" x="1020" y="452" text-anchor="end">PLATE 6 · SOURCE §5.1, §5.6, §7.2 · REVISED 2026-08-01</text>
+      </svg>
+    </div>
+
+    <dl class="notes">
+      <div class="note">
+        <dt>§5.1</dt>
+        <dd>
+          This drawing is the answer to "why is it a case with a lid that opens flat?"
+          The flat lid is not packaging convenience — it is what puts the three elements
+          in a horizontal plane, and a horizontal plane is what makes azimuth unambiguous.
+          The enclosure follows from the physics rather than the other way round.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>Orientation</dt>
+        <dd>
+          The apex pointing at the body rather than away from it buys two things at once,
+          and neither was luck: one element in the case's shadow instead of two, and two
+          outboard feed runs that are mirror images of each other and therefore matched
+          in electrical length without trimming — which is what the roughly 6 mm
+          phase-match constraint needs.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>Scope</dt>
+        <dd>
+          Proportions are illustrative, not dimensioned. The 17.6 cm baseline is the real
+          design value at 851 MHz; everything else on the plate is drawn for legibility.
+          This is a 700/800 MHz configuration and the plate says so on its face.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <div class="prose">
+      <p class="verdict">
+        Conceptual and pitch-quality, not procurement-ready. Plate 6 in particular is an
+        illustration of an arrangement, not a mechanical drawing of a product — no case
+        has been selected, measured, or fitted.
+      </p>
+    </div>
+  </section>
+
+</div>
