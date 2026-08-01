@@ -355,16 +355,16 @@
   <!-- ===================== PLATE 3 ===================== -->
   <section>
     <div class="section-head">
-      <h2>Plate 3 — Array geometry, and the arrangement that fails</h2>
+      <h2>Plate 3 — Array geometry</h2>
       <p>
-        Three views: the triangle that works, how it sits on the opened lid, and
-        the vertical-plane arrangement an earlier revision specified — drawn
-        alongside so the failure is visible rather than described.
+        Two views: the triangle the direction finding depends on, and how it
+        sits on the lid once the case is open. The band strip underneath is the
+        constraint that decides the enclosure.
       </p>
     </div>
 
     <div class="plate">
-      <svg viewBox="0 0 1040 634" role="img" aria-label="Three views of the antenna array: a plan view of the horizontal triangle with an arriving wavefront, an elevation showing three dipoles on the flat-opened lid, and the rejected vertical-plane arrangement which cannot distinguish mirrored azimuths.">
+      <svg viewBox="0 0 1040 634" role="img" aria-label="Two views of the antenna array: a plan view of the horizontal triangle with an arriving wavefront, and an elevation showing three dipoles standing on the flat-opened lid.">
 
         <defs>
           <marker id="p3-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -379,6 +379,7 @@
         </defs>
 
         <!-- ---------- VIEW A: plan ---------- -->
+        <g transform="translate(125 0)">
         <rect class="frame" x="20" y="46" width="410" height="420"></rect>
         <text class="t-head" x="34" y="70">VIEW A — PLAN, LOOKING DOWN</text>
         <text class="t-note" x="34" y="86">the three elements as the incoming wave sees them</text>
@@ -442,28 +443,7 @@
         <text class="t-note" x="464" y="448">A sleeve dipole needs no ground plane: its lower</text>
         <text class="t-note" x="464" y="462">arm is the standoff — no counterpoise per element.</text>
 
-        <!-- ---------- VIEW C: the rejected arrangement ---------- -->
-        <rect class="frame" x="790" y="46" width="230" height="420"></rect>
-        <text class="t-head t-ul" x="802" y="70">VIEW C — REJECTED</text>
-        <text class="t-note" x="802" y="86">all three in ONE VERTICAL PLANE</text>
-
-        <!-- the offending plane, drawn edge-on in perspective -->
-        <path class="fill-ul" d="M822 180 L992 150 L992 320 L822 350 Z"></path>
-        <path class="stamp" d="M822 180 L992 150 L992 320 L822 350 Z"></path>
-        <circle class="elem" cx="862" cy="240" r="5"></circle>
-        <circle class="elem" cx="912" cy="255" r="5"></circle>
-        <circle class="elem" cx="957" cy="222" r="5"></circle>
-
-        <!-- two mirrored azimuths arriving -->
-        <path class="sig-ul" d="M812 130 L890 232" marker-end="url(#p3-ul)"></path>
-        <path class="sig-ul" d="M812 380 L890 268" marker-end="url(#p3-ul)"></path>
-        <text class="t-tiny t-ul" x="796" y="124">+φ</text>
-        <text class="t-tiny t-ul" x="796" y="396">−φ</text>
-
-        <text class="t-box t-ul" x="802" y="418">cos φ = cos(−φ)</text>
-        <text class="t-note" x="802" y="434">Mirrored azimuths give IDENTICAL</text>
-        <text class="t-note" x="802" y="448">phase on every baseline. A fourth or</text>
-        <text class="t-note" x="802" y="462">tenth element changes nothing.</text>
+        </g>
 
         <!-- ---------- per-band feasibility strip ---------- -->
         <path class="frame" d="M20 492 L1020 492"></path>
@@ -485,7 +465,7 @@
 
         <text class="t-note" x="20" y="600">The receive-only base unit is genuinely all-band. DF is a 700/800 MHz capability, and that distinction must not be blurred.</text>
 
-        <text class="t-tiny" x="1020" y="622" text-anchor="end">PLATE 3 · SOURCE §5.1 · REVISED 2026-07-31</text>
+        <text class="t-tiny" x="1020" y="622" text-anchor="end">PLATE 3 · SOURCE §5.1 · REVISED 2026-08-01</text>
       </svg>
     </div>
 
@@ -493,11 +473,11 @@
       <div class="note">
         <dt>§5.1</dt>
         <dd>
-          Views A and C are the same three elements. The only difference is whether the
-          plane they occupy is horizontal or vertical, and that difference is the whole
-          capability. Keeping the rejected arrangement on the plate is deliberate: an
-          earlier revision of the document specified it, and being able to show why it
-          fails is stronger than never having considered it.
+          The three elements must be non-collinear <em>in the horizontal plane</em>, not
+          merely non-collinear in space. Put all three in a vertical plane and azimuth
+          enters the phase measurement only through cos φ — and cos φ equals cos(−φ), so
+          two signals arriving from mirrored azimuths produce identical phase on every
+          baseline. Adding elements does not help; the ambiguity belongs to the plane.
         </dd>
       </div>
       <div class="note">

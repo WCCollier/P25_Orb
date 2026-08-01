@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 1040 634" role="img" aria-label="Three views of the antenna array: a plan view of the horizontal triangle with an arriving wavefront, an elevation showing three dipoles on the flat-opened lid, and the rejected vertical-plane arrangement which cannot distinguish mirrored azimuths." xmlns="http://www.w3.org/2000/svg" width="1040" height="634">
+<svg viewBox="0 0 1040 634" role="img" aria-label="Two views of the antenna array: a plan view of the horizontal triangle with an arriving wavefront, and an elevation showing three dipoles standing on the flat-opened lid." xmlns="http://www.w3.org/2000/svg" width="1040" height="634">
 <rect x="0" y="0" width="1040" height="634" fill="#FBFCFA"/>
 
         <defs>
@@ -15,6 +15,7 @@
         </defs>
 
         
+        <g transform="translate(125 0)">
         <rect x="20" y="46" width="410" height="420" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
         <text x="34" y="70" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="12px" font-weight="700" letter-spacing=".09em">VIEW A — PLAN, LOOKING DOWN</text>
         <text x="34" y="86" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">the three elements as the incoming wave sees them</text>
@@ -78,28 +79,7 @@
         <text x="464" y="448" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">A sleeve dipole needs no ground plane: its lower</text>
         <text x="464" y="462" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">arm is the standoff — no counterpoise per element.</text>
 
-        
-        <rect x="790" y="46" width="230" height="420" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
-        <text x="802" y="70" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="12px" font-weight="700" letter-spacing=".09em">VIEW C — REJECTED</text>
-        <text x="802" y="86" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">all three in ONE VERTICAL PLANE</text>
-
-        
-        <path d="M822 180 L992 150 L992 320 L822 350 Z" fill="#F0E3D8"></path>
-        <path d="M822 180 L992 150 L992 320 L822 350 Z" fill="none" stroke="#B4571A" stroke-width="1.8"></path>
-        <circle cx="862" cy="240" r="5" fill="#14201C"></circle>
-        <circle cx="912" cy="255" r="5" fill="#14201C"></circle>
-        <circle cx="957" cy="222" r="5" fill="#14201C"></circle>
-
-        
-        <path d="M812 130 L890 232" marker-end="url(#p3-ul)" fill="none" stroke="#B4571A" stroke-width="2.2"></path>
-        <path d="M812 380 L890 268" marker-end="url(#p3-ul)" fill="none" stroke="#B4571A" stroke-width="2.2"></path>
-        <text x="796" y="124" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="9px" letter-spacing=".06em">+φ</text>
-        <text x="796" y="396" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="9px" letter-spacing=".06em">−φ</text>
-
-        <text x="802" y="418" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="11.5px" font-weight="600" letter-spacing=".02em">cos φ = cos(−φ)</text>
-        <text x="802" y="434" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">Mirrored azimuths give IDENTICAL</text>
-        <text x="802" y="448" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">phase on every baseline. A fourth or</text>
-        <text x="802" y="462" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">tenth element changes nothing.</text>
+        </g>
 
         
         <path d="M20 492 L1020 492" fill="none" stroke="#C3CCC5" stroke-width="1.3"></path>
@@ -121,5 +101,5 @@
 
         <text x="20" y="600" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">The receive-only base unit is genuinely all-band. DF is a 700/800 MHz capability, and that distinction must not be blurred.</text>
 
-        <text x="1020" y="622" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">PLATE 3 · SOURCE §5.1 · REVISED 2026-07-31</text>
+        <text x="1020" y="622" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">PLATE 3 · SOURCE §5.1 · REVISED 2026-08-01</text>
       </svg>
