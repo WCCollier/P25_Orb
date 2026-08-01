@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>P25 Orb — Presenter View</title>
+<link rel="stylesheet" href="css/base.css">
+<style>
+  /*
+   * Built for one job: a remote screen share, where the audience sees a
+   * compressed video stream of a 16:9 display and cannot alt-tab with us.
+   * The RF Environment drives the timeline and the Command Feed reacts to it,
+   * so showing them one at a time loses the only thing worth demonstrating —
+   * that the reaction is immediate. Same origin, so the BroadcastChannel the
+   * two pages already use to talk to each other works unchanged through the
+   * frames; this file adds no logic of its own.
+   */
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .stage {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 6px 14px;
+    border-bottom: 1px solid var(--rule, #2a3630);
+    font: 600 11px/1 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  .bar .spacer { flex: 1; }
+
+  .bar a {
+    color: inherit;
+    opacity: .6;
+    text-decoration: none;
+    letter-spacing: .1em;
+  }
+
+  .bar a:hover, .bar a:focus-visible { opacity: 1; }
+
+  .panes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 0;
+  }
+
+  .pane {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .pane + .pane { border-left: 1px solid var(--rule, #2a3630); }
+
+  .pane h2 {
+    margin: 0;
+    padding: 5px 12px;
+    font: 600 10px/1.6 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    opacity: .55;
+  }
+
+  .pane iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /*
+   * Screen-share codecs punish fine detail far harder than a local display
+   * does. Zooming the framed pages trades visible area for stroke weight,
+   * which is the right trade when the audience is watching 1080p video of a
+   * 1080p screen. Adjust with the buttons; 110% is a sane starting point.
+   */
+  .zoom { display: flex; gap: 6px; align-items: center; opacity: .75; }
+
+  .zoom button {
+    font: 600 11px ui-monospace, monospace;
+    padding: 3px 9px;
+    cursor: pointer;
+    color: inherit;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    opacity: .7;
+  }
+
+  .zoom button:hover, .zoom button:focus-visible { opacity: 1; }
+
+  /* Stacked panes below a laptop-ish width, so this stays usable if the
+     presenting machine is not the one it was laid out for. */
+  @media (max-width: 1100px) {
+    .panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    .pane + .pane { border-left: 0; border-top: 1px solid var(--rule, #2a3630); }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="bar">
+    <span>P25 Orb — Presenter View</span>
+    <span class="spacer"></span>
+    <span class="zoom">
+      <button type="button" id="zoom-out" aria-label="Decrease panel zoom">−</button>
+      <span id="zoom-level">110%</span>
+      <button type="button" id="zoom-in" aria-label="Increase panel zoom">+</button>
+    </span>
+    <a href="index.html">All pages</a>
+  </div>
+
+  <div class="panes">
+    <section class="pane">
+      <h2>RF Environment — the radio traffic</h2>
+      <iframe id="left" src="rf-environment.html" title="RF Environment"></iframe>
+    </section>
+    <section class="pane">
+      <h2>Command Feed — what the operator sees</h2>
+      <iframe id="right" src="command-feed.html" title="Command Feed"></iframe>
+    </section>
+  </div>
+</div>
+
+<script>
+  // Zoom is applied inside each frame rather than to this page, so the split
+  // stays exactly 50/50 and only the content scales.
+  const frames = [document.getElementById('left'), document.getElementById('right')];
+  const label = document.getElementById('zoom-level');
+  let zoom = 110;
+
+  function apply() {
+    label.textContent = zoom + '%';
+    for (const frame of frames) {
+      const doc = frame.contentDocument;
+      if (doc) doc.documentElement.style.zoom = zoom + '%';
+    }
+  }
+
+  for (const frame of frames) frame.addEventListener('load', apply);
+  document.getElementById('zoom-in').addEventListener('click', () => {
+    zoom = Math.min(200, zoom + 10);
+    apply();
+  });
+  document.getElementById('zoom-out').addEventListener('click', () => {
+    zoom = Math.max(70, zoom - 10);
+    apply();
+  });
+</script>
+
+</body>
+</html>
