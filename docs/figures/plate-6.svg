@@ -1,183 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 1040 500" role="img" aria-label="Isometric line illustration of the P25 Orb deployed: a storm case with its lid opened flat to 180 degrees, three folding vertical dipoles standing upright on the lid's inner face in a horizontal triangle, and the processing body bolted to the ARC Edge unit in the case trunk." xmlns="http://www.w3.org/2000/svg" width="1040" height="500">
-<style>
-body {
-    background: #F2F4F1; color: #14201C;
-    font-family: #000; font-size: 17px; line-height: 1.62;
-    margin: 0; padding: 0 24px 96px;
-  }
-.wrap { max-width: 1120px; margin: 0 auto; }
-.prose { max-width: 65ch; }
-header.masthead {
-    padding: 72px 0 40px; border-bottom: 1px solid #C3CCC5; margin-bottom: 48px;
-  }
-.eyebrow {
-    font-family: #000; font-size: 11px; font-weight: 600;
-    letter-spacing: .16em; text-transform: uppercase; color: #6B7A73; margin: 0 0 18px;
-  }
-h1 {
-    font-family: #000; font-size: clamp(30px, 4.4vw, 46px); font-weight: 640;
-    letter-spacing: -.02em; line-height: 1.08; text-wrap: balance; margin: 0 0 20px;
-  }
-.standfirst { font-size: 19px; color: #6B7A73; margin: 0; max-width: 62ch; }
-h2 {
-    font-family: #000; font-size: 22px; font-weight: 620;
-    letter-spacing: -.01em; text-wrap: balance; margin: 0 0 6px;
-  }
-p { margin: 0 0 18px; }
-section { margin-bottom: 64px; }
-.section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
-.section-head p { margin: 0; color: #6B7A73; font-size: 16px; max-width: 62ch; }
-strong { font-weight: 600; }
-code { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: .88em; }
-.plate {
-    background: #FBFCFA;
-    background-image:
-      linear-gradient(#000 1px, transparent 1px),
-      linear-gradient(90deg, #000 1px, transparent 1px);
-    background-size: 20px 20px;
-    border: 1px solid #C3CCC5; padding: 18px; overflow-x: auto;
-  }
-.plate svg { display: block; width: 100%; min-width: 720px; height: auto; }
-.frame { fill: none; stroke: #C3CCC5; stroke-width: 1.3; }
-.bx { fill: #FBFCFA; stroke: #14201C; stroke-width: 1.3; }
-.bx-ul { fill: none; stroke: #B4571A; stroke-width: 1.6; }
-.bx-dl { fill: none; stroke: #16746B; stroke-width: 1.6; }
-.bx-q { fill: #FBFCFA; stroke: #6B7A73; stroke-width: 1.2; }
-.sig { fill: none; stroke: #14201C; stroke-width: 1.4; }
-.sig-ul { fill: none; stroke: #B4571A; stroke-width: 2.2; }
-.sig-dl { fill: none; stroke: #16746B; stroke-width: 2.2; }
-.sig-cal { fill: none; stroke: #6B7A73; stroke-width: 1.2; stroke-dasharray: 5 3.5; }
-.sig-dig { fill: none; stroke: #6B7A73; stroke-width: 1.6; }
-.dock { fill: none; stroke: #14201C; stroke-width: 2; stroke-dasharray: 12 5; opacity: .55; }
-.pill { fill: #FBFCFA; stroke: none; }
-.a-ink { fill: #14201C; }
-.a-ul { fill: #B4571A; }
-.a-dl { fill: #16746B; }
-.a-mut { fill: #6B7A73; }
-text { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; fill: #14201C; }
-.t-box { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
-.t-head { font-size: 12px;   font-weight: 700; letter-spacing: .09em; }
-.t-note { font-size: 10px;   fill: #6B7A73; }
-.t-port { font-size: 11px; }
-.t-tiny { font-size: 9px;    fill: #6B7A73; letter-spacing: .06em; }
-.t-ul { fill: #B4571A; }
-.t-dl { fill: #16746B; }
-.t-mut { fill: #6B7A73; }
-.notes { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid #C3CCC5; }
-.note {
-    display: grid; grid-template-columns: 116px 1fr; gap: 24px;
-    padding: 18px 0; border-bottom: 1px solid #C3CCC5; align-items: start;
-  }
-.note dt {
-    font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: 12px; font-weight: 600;
-    letter-spacing: .04em; color: #6B7A73; padding-top: 3px;
-  }
-.note dd { margin: 0; font-size: 16px; }
-.verdict { border-left: 3px solid #B4571A; padding: 2px 0 2px 22px; margin: 0 0 18px; }
-</style>
 <rect x="0" y="0" width="1040" height="500" fill="#FBFCFA"/>
 
         <defs>
           <marker id="p6-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+            <path d="M0 0 L10 5 L0 10 z" fill="#6B7A73"></path>
           </marker>
         </defs>
 
-        <text class="t-head" x="20" y="30">DEPLOYED CONFIGURATION — 700/800 MHz BAND MODULE</text>
-        <text class="t-note" x="20" y="46">isometric, illustrative proportions</text>
+        <text x="20" y="30" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="12px" font-weight="700" letter-spacing=".09em">DEPLOYED CONFIGURATION — 700/800 MHz BAND MODULE</text>
+        <text x="20" y="46" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">isometric, illustrative proportions</text>
 
         
         
-        <polygon class="face-lo" points="718,181 718,264 583,342 583,259"></polygon>
-        <polygon class="face" points="385,145 385,228 583,342 583,259"></polygon>
+        <polygon points="718,181 718,264 583,342 583,259" fill="#E4E7E4" stroke="none"></polygon>
+        <polygon points="385,145 385,228 583,342 583,259" fill="#EEF0EE" stroke="none"></polygon>
         
-        <polygon class="face" points="520,67 718,181 583,259 385,145"></polygon>
-        <path class="sig" d="M520 67 L718 181 L583 259 L385 145 Z"></path>
-        <path class="sig" d="M718 181 L718 264 L583 342 L385 228 L385 145"></path>
-        <path class="sig" d="M583 259 L583 342"></path>
-
-        
-        <path class="sig-thin" d="M520 82 L691 181 L583 244 L412 145 Z"></path>
-        <polygon class="face" points="520,134 691,233 583,296 412,197"></polygon>
-        <path class="sig-thin" d="M520 82 L520 134 M691 181 L691 233 M583 244 L583 296 M412 145 L412 197"></path>
-        <path class="sig-thin" d="M520 134 L691 233 L583 296 L412 197 Z"></path>
+        <polygon points="520,67 718,181 583,259 385,145" fill="#EEF0EE" stroke="none"></polygon>
+        <path d="M520 67 L718 181 L583 259 L385 145 Z" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M718 181 L718 264 L583 342 L385 228 L385 145" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M583 259 L583 342" fill="none" stroke="#14201C" stroke-width="1.4"></path>
 
         
-        <polygon class="face-lo" points="651,194 651,231 579,272 579,236"></polygon>
-        <polygon class="face" points="452,163 452,199 579,272 579,236"></polygon>
-        <polygon class="face" points="525,121 651,194 579,236 452,163"></polygon>
-        <path class="sig-thin" d="M525 121 L651 194 L579 236 L452 163 Z"></path>
-        <path class="sig-thin" d="M651 194 L651 231 L579 272 L452 199 L452 163"></path>
-        <path class="sig-thin" d="M579 236 L579 272"></path>
+        <path d="M520 82 L691 181 L583 244 L412 145 Z" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <polygon points="520,134 691,233 583,296 412,197" fill="#EEF0EE" stroke="none"></polygon>
+        <path d="M520 82 L520 134 M691 181 L691 233 M583 244 L583 296 M412 145 L412 197" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <path d="M520 134 L691 233 L583 296 L412 197 Z" fill="none" stroke="#14201C" stroke-width="1"></path>
 
         
-        <polygon class="face" points="385,137 583,251 439,335 241,220"></polygon>
-        <polygon class="face-lo" points="241,220 439,335 439,342 241,228"></polygon>
-        <polygon class="face-lo" points="439,335 583,251 583,259 439,342"></polygon>
-        <path class="sig" d="M385 137 L583 251 L439 335 L241 220 Z"></path>
-        <path class="sig" d="M241 220 L241 228 L439 342 L439 335"></path>
-        <path class="sig" d="M439 342 L583 259"></path>
+        <polygon points="651,194 651,231 579,272 579,236" fill="#E4E7E4" stroke="none"></polygon>
+        <polygon points="452,163 452,199 579,272 579,236" fill="#EEF0EE" stroke="none"></polygon>
+        <polygon points="525,121 651,194 579,236 452,163" fill="#EEF0EE" stroke="none"></polygon>
+        <path d="M525 121 L651 194 L579 236 L452 163 Z" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <path d="M651 194 L651 231 L579 272 L452 199 L452 163" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <path d="M579 236 L579 272" fill="none" stroke="#14201C" stroke-width="1"></path>
 
         
-        <path class="sig-cal" d="M385 145 L583 259"></path>
+        <polygon points="385,137 583,251 439,335 241,220" fill="#EEF0EE" stroke="none"></polygon>
+        <polygon points="241,220 439,335 439,342 241,228" fill="#E4E7E4" stroke="none"></polygon>
+        <polygon points="439,335 583,251 583,259 439,342" fill="#E4E7E4" stroke="none"></polygon>
+        <path d="M385 137 L583 251 L439 335 L241 220 Z" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M241 220 L241 228 L439 342 L439 335" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M439 342 L583 259" fill="none" stroke="#14201C" stroke-width="1.4"></path>
 
         
-        <path class="sig-cal" d="M322 225 L430 288 L457 210 Z"></path>
+        <path d="M385 145 L583 259" fill="none" stroke="#6B7A73" stroke-width="1.2" stroke-dasharray="5 3.5"></path>
 
         
-        <path class="sig" d="M322 225 L322 49"></path>
-        <path class="sig" d="M430 288 L430 111"></path>
-        <path class="sig" d="M457 210 L457 33"></path>
-        <path class="sig" d="M316 137 L328 137 M424 200 L436 200 M451 122 L463 122"></path>
-        <circle class="elem" cx="322" cy="225" r="4"></circle>
-        <circle class="elem" cx="430" cy="288" r="4"></circle>
-        <circle class="elem" cx="457" cy="210" r="4"></circle>
-        <text class="t-port" x="300" y="240" text-anchor="end">EL 1</text>
-        <text class="t-port" x="442" y="304" text-anchor="end">EL 2</text>
-        <text class="t-port" x="466" y="30">EL 3 — inboard</text>
+        <path d="M322 225 L430 288 L457 210 Z" fill="none" stroke="#6B7A73" stroke-width="1.2" stroke-dasharray="5 3.5"></path>
 
         
-        <path class="dim" d="M308 249 L416 312" marker-start="url(#p6-dim)" marker-end="url(#p6-dim)"></path>
-        <text class="t-note" x="348" y="304" text-anchor="middle">17.6 cm</text>
+        <path d="M322 225 L322 49" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M430 288 L430 111" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M457 210 L457 33" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M316 137 L328 137 M424 200 L436 200 M451 122 L463 122" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <circle cx="322" cy="225" r="4" fill="#14201C"></circle>
+        <circle cx="430" cy="288" r="4" fill="#14201C"></circle>
+        <circle cx="457" cy="210" r="4" fill="#14201C"></circle>
+        <text x="300" y="240" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">EL 1</text>
+        <text x="442" y="304" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">EL 2</text>
+        <text x="466" y="30" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">EL 3 — inboard</text>
 
         
-        <circle class="elem" cx="475" cy="199" r="3.5"></circle>
-        <circle class="elem" cx="259" cy="220" r="3.5"></circle>
-        <circle class="elem" cx="439" cy="324" r="3.5"></circle>
+        <path d="M308 249 L416 312" marker-start="url(#p6-dim)" marker-end="url(#p6-dim)" fill="none" stroke="#6B7A73" stroke-width="1"></path>
+        <text x="348" y="304" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">17.6 cm</text>
 
         
-        <path class="lead" d="M230 96 L314 60"></path>
-        <text class="t-box" x="20" y="86">THREE FOLDING DIPOLES</text>
-        <text class="t-note" x="20" y="102">half-wave sleeve, 16.6 cm, vertical —</text>
-        <text class="t-note" x="20" y="115">matching P25's vertical polarisation</text>
+        <circle cx="475" cy="199" r="3.5" fill="#14201C"></circle>
+        <circle cx="259" cy="220" r="3.5" fill="#14201C"></circle>
+        <circle cx="439" cy="324" r="3.5" fill="#14201C"></circle>
 
-        <path class="lead" d="M230 262 L256 224"></path>
-        <text class="t-box" x="20" y="252">2× MAGNETOMETER</text>
-        <text class="t-note" x="20" y="268">at the outboard lid corners, with the</text>
-        <text class="t-note" x="20" y="281">IMU inboard at the hinge (§5.8)</text>
+        
+        <path d="M230 96 L314 60" fill="none" stroke="#6B7A73" stroke-width=".9" stroke-dasharray="4 3"></path>
+        <text x="20" y="86" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">THREE FOLDING DIPOLES</text>
+        <text x="20" y="102" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">half-wave sleeve, 16.6 cm, vertical —</text>
+        <text x="20" y="115" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">matching P25's vertical polarisation</text>
 
-        <path class="lead" d="M230 372 L300 300"></path>
-        <text class="t-box" x="20" y="362">LID OPENS TO 180°, FLAT</text>
-        <text class="t-note" x="20" y="378">so the three elements form a HORIZONTAL</text>
-        <text class="t-note" x="20" y="391">triangle. A vertical plane would make</text>
-        <text class="t-note" x="20" y="404">mirrored azimuths indistinguishable (§5.1)</text>
+        <path d="M230 262 L256 224" fill="none" stroke="#6B7A73" stroke-width=".9" stroke-dasharray="4 3"></path>
+        <text x="20" y="252" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">2× MAGNETOMETER</text>
+        <text x="20" y="268" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">at the outboard lid corners, with the</text>
+        <text x="20" y="281" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">IMU inboard at the hinge (§5.8)</text>
 
-        <path class="lead" d="M736 214 L655 212"></path>
-        <text class="t-box" x="742" y="204">PROCESSING BODY + ARC EDGE</text>
-        <text class="t-note" x="742" y="220">a factory-assembled bolt-on riding in the</text>
-        <text class="t-note" x="742" y="233">trunk. Band-agnostic — identical for every</text>
-        <text class="t-note" x="742" y="246">module (§7.2 item E)</text>
+        <path d="M230 372 L300 300" fill="none" stroke="#6B7A73" stroke-width=".9" stroke-dasharray="4 3"></path>
+        <text x="20" y="362" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">LID OPENS TO 180°, FLAT</text>
+        <text x="20" y="378" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">so the three elements form a HORIZONTAL</text>
+        <text x="20" y="391" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">triangle. A vertical plane would make</text>
+        <text x="20" y="404" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">mirrored azimuths indistinguishable (§5.1)</text>
 
-        <path class="lead" d="M736 300 L600 300"></path>
-        <text class="t-box" x="742" y="290">APEX TOWARD THE BODY</text>
-        <text class="t-note" x="742" y="306">Two elements outboard, one inboard. Only</text>
-        <text class="t-note" x="742" y="319">ONE element sits in the case's shadowed</text>
-        <text class="t-note" x="742" y="332">sector; the reverse orientation puts two</text>
-        <text class="t-note" x="742" y="345">there. The outboard feeds also leave as</text>
-        <text class="t-note" x="742" y="358">mirror images, so they are naturally</text>
-        <text class="t-note" x="742" y="371">length-matched (§5.1, §5.3)</text>
+        <path d="M736 214 L655 212" fill="none" stroke="#6B7A73" stroke-width=".9" stroke-dasharray="4 3"></path>
+        <text x="742" y="204" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">PROCESSING BODY + ARC EDGE</text>
+        <text x="742" y="220" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">a factory-assembled bolt-on riding in the</text>
+        <text x="742" y="233" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">trunk. Band-agnostic — identical for every</text>
+        <text x="742" y="246" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">module (§7.2 item E)</text>
 
-        <text class="t-note" x="20" y="452">700/800 MHz only. At UHF the triangle needs a larger case; at VHF, a mast or vehicle mount.</text>
-        <text class="t-tiny" x="1020" y="452" text-anchor="end">PLATE 6 · SOURCE §5.1, §5.6, §7.2 · REVISED 2026-08-01</text>
+        <path d="M736 300 L600 300" fill="none" stroke="#6B7A73" stroke-width=".9" stroke-dasharray="4 3"></path>
+        <text x="742" y="290" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">APEX TOWARD THE BODY</text>
+        <text x="742" y="306" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">Two elements outboard, one inboard. Only</text>
+        <text x="742" y="319" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">ONE element sits in the case's shadowed</text>
+        <text x="742" y="332" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">sector; the reverse orientation puts two</text>
+        <text x="742" y="345" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">there. The outboard feeds also leave as</text>
+        <text x="742" y="358" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">mirror images, so they are naturally</text>
+        <text x="742" y="371" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">length-matched (§5.1, §5.3)</text>
+
+        <text x="20" y="452" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">700/800 MHz only. At UHF the triangle needs a larger case; at VHF, a mast or vehicle mount.</text>
+        <text x="1020" y="452" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">PLATE 6 · SOURCE §5.1, §5.6, §7.2 · REVISED 2026-08-01</text>
       </svg>

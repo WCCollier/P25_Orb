@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
 """Export each plate as a standalone .svg for PowerPoint.
 
-The plates live as inline SVG inside HTML pages, styled by CSS classes that sit
-in the page's <style> block and resolve their colours through custom properties.
-PowerPoint gets none of that: it needs a self-contained file. So this lifts each
-<svg> out, resolves the light-theme palette to literal hex, folds the stylesheet
-in as a child <style>, and lays a paper-coloured background rect underneath so
-the drawing stays legible on a dark slide master.
+The plates live as inline SVG inside HTML pages, styled by CSS classes in the
+page's <style> block that resolve their colours through custom properties.
+**PowerPoint ignores <style> entirely.** It reads only presentation attributes,
+so a file that relies on a stylesheet imports with every element at the SVG
+defaults - fill black above all - which turns each tinted face into a solid slab
+and lets PowerPoint's own Graphics Style recolour the text.
 
-Vector matters here. PowerPoint renders SVG natively and will scale it to any
+So this does not merely inline the stylesheet, it dissolves it: every rule is
+resolved per element and written onto that element as attributes, the class
+attributes and the <style> element are dropped, and the file no longer depends
+on a cascade at all.
+
+Opacity gets the same treatment. Office's support for it is unreliable, and
+every translucent fill here is a flat tint over a known background, so each one
+is pre-blended to an opaque hex and the opacity is discarded.
+
+Vector still matters: PowerPoint renders SVG natively and scales it to any
 projector without softening the 9px annotation text, which is where a PNG of the
 same drawing falls apart.
 
@@ -52,36 +61,100 @@ def resolve_vars(css):
     return css
 
 
-def drawing_rules(style_text):
-    """Keep the top-level rules that can apply inside an SVG.
+def parse_rules(style_text):
+    """Return [(selector, {property: value})] for top-level rules, in source order.
 
-    Everything themed lives in :root and @media blocks we do not want, and
-    everything else is either a page-layout rule (harmless but useless) or a
-    class the drawings actually use. Filtering to plain class and element
-    selectors drops the theming without needing to understand it.
+    Source order is load-bearing: every selector here has equal specificity, so
+    a later rule beats an earlier one, which is how `.t-ul` recolours `.t-box`.
     """
-    kept, depth, start = [], 0, 0
+    # A selector is read as everything since the previous rule closed, so a
+    # comment sitting above a rule becomes part of its selector and the rule is
+    # silently dropped. That cost plate 2 its panel borders once already.
+    style_text = re.sub(r"/\*.*?\*/", "", style_text, flags=re.S)
+
+    rules, depth, start = [], 0, 0
     for i, ch in enumerate(style_text):
         if ch == "{":
             if depth == 0:
                 selector = style_text[start:i].strip()
+                open_at = i
             depth += 1
         elif ch == "}":
             depth -= 1
             if depth == 0:
-                body = style_text[style_text.index("{", start) + 1:i]
+                body = style_text[open_at + 1:i]
                 if re.fullmatch(r"[.\w\s,>-]+", selector) and not selector.startswith("@"):
-                    kept.append(f"{selector} {{{body}}}")
+                    decls = {}
+                    for piece in body.split(";"):
+                        if ":" in piece:
+                            prop, value = piece.split(":", 1)
+                            decls[prop.strip()] = value.strip()
+                    for name in (part.strip() for part in selector.split(",")):
+                        rules.append((name, decls))
                 start = i + 1
-    return "\n".join(kept)
+    return rules
+
+
+def blend(colour, alpha, background):
+    """Flatten a translucent fill onto a known background."""
+    fg = [int(colour[i:i + 2], 16) for i in (1, 3, 5)]
+    bg = [int(background[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(f"{round(f * alpha + b * (1 - alpha)):02X}" for f, b in zip(fg, bg))
+
+
+# Only these reach the drawing. Anything else in the stylesheet is page layout.
+PAINT = ("fill", "stroke", "stroke-width", "stroke-dasharray", "stroke-linejoin",
+         "font-size", "font-weight", "font-family", "letter-spacing")
+
+
+def attributes_for(names, rules):
+    """Collapse every rule matching these selector names into flat attributes."""
+    decls = {}
+    for selector, properties in rules:
+        if selector in names:
+            decls.update(properties)
+
+    opacity = decls.pop("opacity", None)
+    if opacity is not None:
+        alpha = float(opacity)
+        for prop in ("fill", "stroke"):
+            value = decls.get(prop)
+            if value and value.startswith("#"):
+                decls[prop] = blend(value, alpha, PALETTE["surface"])
+
+    return {k: v for k, v in decls.items() if k in PAINT}
+
+
+def flatten(svg, rules):
+    """Rewrite every styled element with presentation attributes instead."""
+    def one(match):
+        tag, attrs = match.group(1), match.group(2)
+        classes = re.search(r'class="([^"]*)"', attrs)
+        names = [tag] + [f".{c}" for c in (classes.group(1).split() if classes else [])]
+        resolved = attributes_for(names, rules)
+        if not resolved:
+            return match.group(0)
+
+        attrs = re.sub(r'\s*class="[^"]*"', "", attrs)
+        # An attribute already written on the element was a deliberate override
+        # in the source drawing, so it outranks anything the stylesheet says.
+        existing = set(re.findall(r'([\w-]+)=', attrs))
+        added = "".join(f' {k}="{v}"' for k, v in resolved.items() if k not in existing)
+        return f"<{tag}{attrs}{added}"
+
+    return re.sub(r'<(\w+)((?:\s+[\w:-]+="[^"]*")*)', one, svg)
 
 
 def main():
-    style_source = (HERE / "plate-1.html").read_text()
-    css = resolve_vars(drawing_rules(re.search(r"<style>(.*?)</style>", style_source, re.S).group(1)))
-
     for filename, numbers in SOURCES:
         html = (HERE / filename).read_text()
+
+        # Each page carries its own stylesheet, and they are not interchangeable:
+        # .sig-ul is 2.2 wide on plate 1 and 1.8 on plates 5-6, and only the
+        # later pages define the fills and wedges at all. Read per file.
+        stylesheet = re.search(r"<style>(.*?)</style>", html, re.S).group(1)
+        rules = parse_rules(resolve_vars(stylesheet))
+
         svgs = re.findall(r"<svg\b.*?</svg>", html, re.S)
         if len(svgs) != len(numbers):
             raise SystemExit(f"{filename}: expected {len(numbers)} drawings, found {len(svgs)}")
@@ -92,6 +165,7 @@ def main():
             # separators, so stripping comments outright is both the fix and
             # the right call: they document the source, not the export.
             svg = re.sub(r"<!--.*?-->", "", svg, flags=re.S)
+            svg = flatten(svg, rules)
             width, height = re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups()
             head, rest = svg.split(">", 1)
             head += (
@@ -101,7 +175,7 @@ def main():
             background = f'<rect x="0" y="0" width="{width}" height="{height}" fill="{PALETTE["surface"]}"/>'
             out = (
                 '<?xml version="1.0" encoding="UTF-8"?>\n'
-                f"{head}>\n<style>\n{css}\n</style>\n{background}{rest}"
+                f"{head}>\n{background}{rest}"
             )
             target = HERE / f"plate-{number}.svg"
             target.write_text(out)

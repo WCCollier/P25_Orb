@@ -1,201 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 1040 634" role="img" aria-label="Three views of the antenna array: a plan view of the horizontal triangle with an arriving wavefront, an elevation showing three dipoles on the flat-opened lid, and the rejected vertical-plane arrangement which cannot distinguish mirrored azimuths." xmlns="http://www.w3.org/2000/svg" width="1040" height="634">
-<style>
-body {
-    background: #F2F4F1; color: #14201C;
-    font-family: #000; font-size: 17px; line-height: 1.62;
-    margin: 0; padding: 0 24px 96px;
-  }
-.wrap { max-width: 1120px; margin: 0 auto; }
-.prose { max-width: 65ch; }
-header.masthead {
-    padding: 72px 0 40px; border-bottom: 1px solid #C3CCC5; margin-bottom: 48px;
-  }
-.eyebrow {
-    font-family: #000; font-size: 11px; font-weight: 600;
-    letter-spacing: .16em; text-transform: uppercase; color: #6B7A73; margin: 0 0 18px;
-  }
-h1 {
-    font-family: #000; font-size: clamp(30px, 4.4vw, 46px); font-weight: 640;
-    letter-spacing: -.02em; line-height: 1.08; text-wrap: balance; margin: 0 0 20px;
-  }
-.standfirst { font-size: 19px; color: #6B7A73; margin: 0; max-width: 62ch; }
-h2 {
-    font-family: #000; font-size: 22px; font-weight: 620;
-    letter-spacing: -.01em; text-wrap: balance; margin: 0 0 6px;
-  }
-p { margin: 0 0 18px; }
-section { margin-bottom: 64px; }
-.section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
-.section-head p { margin: 0; color: #6B7A73; font-size: 16px; max-width: 62ch; }
-strong { font-weight: 600; }
-code { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: .88em; }
-.plate {
-    background: #FBFCFA;
-    background-image:
-      linear-gradient(#000 1px, transparent 1px),
-      linear-gradient(90deg, #000 1px, transparent 1px);
-    background-size: 20px 20px;
-    border: 1px solid #C3CCC5; padding: 18px; overflow-x: auto;
-  }
-.plate svg { display: block; width: 100%; min-width: 720px; height: auto; }
-.frame { fill: none; stroke: #C3CCC5; stroke-width: 1.3; }
-.bx { fill: #FBFCFA; stroke: #14201C; stroke-width: 1.3; }
-.bx-ul { fill: none; stroke: #B4571A; stroke-width: 1.6; }
-.bx-dl { fill: none; stroke: #16746B; stroke-width: 1.6; }
-.bx-q { fill: #FBFCFA; stroke: #6B7A73; stroke-width: 1.2; }
-.sig { fill: none; stroke: #14201C; stroke-width: 1.4; }
-.sig-ul { fill: none; stroke: #B4571A; stroke-width: 2.2; }
-.sig-dl { fill: none; stroke: #16746B; stroke-width: 2.2; }
-.sig-cal { fill: none; stroke: #6B7A73; stroke-width: 1.2; stroke-dasharray: 5 3.5; }
-.sig-dig { fill: none; stroke: #6B7A73; stroke-width: 1.6; }
-.dock { fill: none; stroke: #14201C; stroke-width: 2; stroke-dasharray: 12 5; opacity: .55; }
-.pill { fill: #FBFCFA; stroke: none; }
-.a-ink { fill: #14201C; }
-.a-ul { fill: #B4571A; }
-.a-dl { fill: #16746B; }
-.a-mut { fill: #6B7A73; }
-text { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; fill: #14201C; }
-.t-box { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
-.t-head { font-size: 12px;   font-weight: 700; letter-spacing: .09em; }
-.t-note { font-size: 10px;   fill: #6B7A73; }
-.t-port { font-size: 11px; }
-.t-tiny { font-size: 9px;    fill: #6B7A73; letter-spacing: .06em; }
-.t-ul { fill: #B4571A; }
-.t-dl { fill: #16746B; }
-.t-mut { fill: #6B7A73; }
-.notes { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid #C3CCC5; }
-.note {
-    display: grid; grid-template-columns: 116px 1fr; gap: 24px;
-    padding: 18px 0; border-bottom: 1px solid #C3CCC5; align-items: start;
-  }
-.note dt {
-    font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: 12px; font-weight: 600;
-    letter-spacing: .04em; color: #6B7A73; padding-top: 3px;
-  }
-.note dd { margin: 0; font-size: 16px; }
-.verdict { border-left: 3px solid #B4571A; padding: 2px 0 2px 22px; margin: 0 0 18px; }
-</style>
 <rect x="0" y="0" width="1040" height="634" fill="#FBFCFA"/>
 
         <defs>
           <marker id="p3-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+            <path d="M0 0 L10 5 L0 10 z" fill="#14201C"></path>
           </marker>
           <marker id="p3-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+            <path d="M0 0 L10 5 L0 10 z" fill="#6B7A73"></path>
           </marker>
           <marker id="p3-ul" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" class="a-ul"></path>
+            <path d="M0 0 L10 5 L0 10 z" fill="#B4571A"></path>
           </marker>
         </defs>
 
         
-        <rect class="frame" x="20" y="46" width="410" height="420"></rect>
-        <text class="t-head" x="34" y="70">VIEW A — PLAN, LOOKING DOWN</text>
-        <text class="t-note" x="34" y="86">the three elements as the incoming wave sees them</text>
+        <rect x="20" y="46" width="410" height="420" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
+        <text x="34" y="70" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="12px" font-weight="700" letter-spacing=".09em">VIEW A — PLAN, LOOKING DOWN</text>
+        <text x="34" y="86" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">the three elements as the incoming wave sees them</text>
 
         
-        <path class="sig-cal" d="M141 116 L49 194"></path>
-        <path class="sig-cal" d="M165 145 L73 223"></path>
-        <path class="sig-cal" d="M190 174 L98 252"></path>
-        <path class="sig" d="M168 106 L200 144" marker-end="url(#p3-ink)"></path>
-        <text class="t-box" x="206" y="140">θ</text>
-        <text class="t-note" x="206" y="154">arriving wavefront</text>
+        <path d="M141 116 L49 194" fill="none" stroke="#6B7A73" stroke-width="1.2" stroke-dasharray="5 3.5"></path>
+        <path d="M165 145 L73 223" fill="none" stroke="#6B7A73" stroke-width="1.2" stroke-dasharray="5 3.5"></path>
+        <path d="M190 174 L98 252" fill="none" stroke="#6B7A73" stroke-width="1.2" stroke-dasharray="5 3.5"></path>
+        <path d="M168 106 L200 144" marker-end="url(#p3-ink)" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <text x="206" y="140" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">θ</text>
+        <text x="206" y="154" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">arriving wavefront</text>
 
         
-        <path class="sig" d="M130 350 L330 350 L230 177 Z"></path>
-        <circle class="elem" cx="130" cy="350" r="5.5"></circle>
-        <circle class="elem" cx="330" cy="350" r="5.5"></circle>
-        <circle class="elem" cx="230" cy="177" r="5.5"></circle>
-        <text class="t-port" x="110" y="368" text-anchor="end">EL 1</text>
-        <text class="t-port" x="350" y="368">EL 2</text>
-        <text class="t-port" x="230" y="167" text-anchor="middle">EL 3</text>
+        <path d="M130 350 L330 350 L230 177 Z" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <circle cx="130" cy="350" r="5.5" fill="#14201C"></circle>
+        <circle cx="330" cy="350" r="5.5" fill="#14201C"></circle>
+        <circle cx="230" cy="177" r="5.5" fill="#14201C"></circle>
+        <text x="110" y="368" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">EL 1</text>
+        <text x="350" y="368" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">EL 2</text>
+        <text x="230" y="167" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">EL 3</text>
 
         
-        <path class="dim" d="M130 386 L330 386" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)"></path>
-        <text class="t-note" x="230" y="404" text-anchor="middle">d ≈ λ/2 = 17.6 cm at 851 MHz</text>
+        <path d="M130 386 L330 386" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)" fill="none" stroke="#6B7A73" stroke-width="1"></path>
+        <text x="230" y="404" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">d ≈ λ/2 = 17.6 cm at 851 MHz</text>
 
-        <text class="t-box" x="34" y="432">Δ = d · sin θ        φ = 2π Δ / λ</text>
-        <text class="t-note" x="34" y="450">three elements → three baselines → one over-determined azimuth</text>
-
-        
-        <path class="sig" d="M392 160 L392 110" marker-end="url(#p3-ink)"></path>
-        <text class="t-tiny" x="392" y="176" text-anchor="middle">N</text>
+        <text x="34" y="432" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">Δ = d · sin θ        φ = 2π Δ / λ</text>
+        <text x="34" y="450" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">three elements → three baselines → one over-determined azimuth</text>
 
         
-        <rect class="frame" x="450" y="46" width="320" height="420"></rect>
-        <text class="t-head" x="464" y="70">VIEW B — ELEVATION</text>
-        <text class="t-note" x="464" y="86">lid opened to 180°, flat · half-wave sleeve dipoles</text>
+        <path d="M392 160 L392 110" marker-end="url(#p3-ink)" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <text x="392" y="176" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">N</text>
 
         
-        <path class="sig" d="M540 330 L540 190 M596 330 L596 190 M652 330 L652 190"></path>
-        <path class="sig" d="M534 260 L546 260 M590 260 L602 260 M646 260 L652 260"></path>
-        <circle class="elem" cx="540" cy="260" r="3"></circle>
-        <circle class="elem" cx="596" cy="260" r="3"></circle>
-        <circle class="elem" cx="652" cy="260" r="3"></circle>
+        <rect x="450" y="46" width="320" height="420" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
+        <text x="464" y="70" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="12px" font-weight="700" letter-spacing=".09em">VIEW B — ELEVATION</text>
+        <text x="464" y="86" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">lid opened to 180°, flat · half-wave sleeve dipoles</text>
 
         
-        <rect class="bx" x="500" y="330" width="220" height="14"></rect>
-        <text class="t-tiny" x="610" y="341" text-anchor="middle">LID, INNER FACE</text>
-        <rect class="bx" x="464" y="344" width="150" height="76"></rect>
-        <text class="t-box" x="539" y="378" text-anchor="middle">CASE BODY</text>
-        <text class="t-note" x="539" y="394" text-anchor="middle">processing body</text>
+        <path d="M540 330 L540 190 M596 330 L596 190 M652 330 L652 190" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <path d="M534 260 L546 260 M590 260 L602 260 M646 260 L652 260" fill="none" stroke="#14201C" stroke-width="1.4"></path>
+        <circle cx="540" cy="260" r="3" fill="#14201C"></circle>
+        <circle cx="596" cy="260" r="3" fill="#14201C"></circle>
+        <circle cx="652" cy="260" r="3" fill="#14201C"></circle>
 
         
-        <path class="dim" d="M700 190 L700 330" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)"></path>
-        <text class="t-note" x="708" y="262">16.6 cm</text>
-        <path class="sig-cal" d="M528 260 L536 260"></path>
-        <path class="dim" d="M528 260 L528 330" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)"></path>
-        <text class="t-tiny" x="522" y="292" text-anchor="end">8.5 cm</text>
-        <text class="t-tiny" x="522" y="304" text-anchor="end">phase centre</text>
-
-        <text class="t-note" x="464" y="434">Vertical elements match P25's vertical polarisation.</text>
-        <text class="t-note" x="464" y="448">A sleeve dipole needs no ground plane: its lower</text>
-        <text class="t-note" x="464" y="462">arm is the standoff — no counterpoise per element.</text>
+        <rect x="500" y="330" width="220" height="14" fill="#FBFCFA" stroke="#14201C" stroke-width="1.3"></rect>
+        <text x="610" y="341" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">LID, INNER FACE</text>
+        <rect x="464" y="344" width="150" height="76" fill="#FBFCFA" stroke="#14201C" stroke-width="1.3"></rect>
+        <text x="539" y="378" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">CASE BODY</text>
+        <text x="539" y="394" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">processing body</text>
 
         
-        <rect class="frame" x="790" y="46" width="230" height="420"></rect>
-        <text class="t-head t-ul" x="802" y="70">VIEW C — REJECTED</text>
-        <text class="t-note" x="802" y="86">all three in ONE VERTICAL PLANE</text>
+        <path d="M700 190 L700 330" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)" fill="none" stroke="#6B7A73" stroke-width="1"></path>
+        <text x="708" y="262" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">16.6 cm</text>
+        <path d="M528 260 L536 260" fill="none" stroke="#6B7A73" stroke-width="1.2" stroke-dasharray="5 3.5"></path>
+        <path d="M528 260 L528 330" marker-start="url(#p3-dim)" marker-end="url(#p3-dim)" fill="none" stroke="#6B7A73" stroke-width="1"></path>
+        <text x="522" y="292" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">8.5 cm</text>
+        <text x="522" y="304" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">phase centre</text>
+
+        <text x="464" y="434" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">Vertical elements match P25's vertical polarisation.</text>
+        <text x="464" y="448" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">A sleeve dipole needs no ground plane: its lower</text>
+        <text x="464" y="462" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">arm is the standoff — no counterpoise per element.</text>
 
         
-        <path class="fill-ul" d="M822 180 L992 150 L992 320 L822 350 Z"></path>
-        <path class="stamp" d="M822 180 L992 150 L992 320 L822 350 Z"></path>
-        <circle class="elem" cx="862" cy="240" r="5"></circle>
-        <circle class="elem" cx="912" cy="255" r="5"></circle>
-        <circle class="elem" cx="957" cy="222" r="5"></circle>
+        <rect x="790" y="46" width="230" height="420" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
+        <text x="802" y="70" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="12px" font-weight="700" letter-spacing=".09em">VIEW C — REJECTED</text>
+        <text x="802" y="86" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">all three in ONE VERTICAL PLANE</text>
 
         
-        <path class="sig-ul" d="M812 130 L890 232" marker-end="url(#p3-ul)"></path>
-        <path class="sig-ul" d="M812 380 L890 268" marker-end="url(#p3-ul)"></path>
-        <text class="t-tiny t-ul" x="796" y="124">+φ</text>
-        <text class="t-tiny t-ul" x="796" y="396">−φ</text>
-
-        <text class="t-box t-ul" x="802" y="418">cos φ = cos(−φ)</text>
-        <text class="t-note" x="802" y="434">Mirrored azimuths give IDENTICAL</text>
-        <text class="t-note" x="802" y="448">phase on every baseline. A fourth or</text>
-        <text class="t-note" x="802" y="462">tenth element changes nothing.</text>
+        <path d="M822 180 L992 150 L992 320 L822 350 Z" fill="#F0E3D8"></path>
+        <path d="M822 180 L992 150 L992 320 L822 350 Z" fill="none" stroke="#B4571A" stroke-width="1.8"></path>
+        <circle cx="862" cy="240" r="5" fill="#14201C"></circle>
+        <circle cx="912" cy="255" r="5" fill="#14201C"></circle>
+        <circle cx="957" cy="222" r="5" fill="#14201C"></circle>
 
         
-        <path class="frame" d="M20 492 L1020 492"></path>
-        <text class="t-head" x="20" y="516">THE ARRAY IS THE ONLY PART WHOSE SIZE IS SET BY THE BAND</text>
+        <path d="M812 130 L890 232" marker-end="url(#p3-ul)" fill="none" stroke="#B4571A" stroke-width="2.2"></path>
+        <path d="M812 380 L890 268" marker-end="url(#p3-ul)" fill="none" stroke="#B4571A" stroke-width="2.2"></path>
+        <text x="796" y="124" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="9px" letter-spacing=".06em">+φ</text>
+        <text x="796" y="396" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="9px" letter-spacing=".06em">−φ</text>
 
-        <rect class="bx" x="20" y="528" width="240" height="52"></rect>
-        <rect class="bx" x="272" y="528" width="240" height="52"></rect>
-        <rect class="bx" x="524" y="528" width="240" height="52"></rect>
-        <rect class="bx-ul" x="776" y="528" width="244" height="52"></rect>
+        <text x="802" y="418" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="11.5px" font-weight="600" letter-spacing=".02em">cos φ = cos(−φ)</text>
+        <text x="802" y="434" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">Mirrored azimuths give IDENTICAL</text>
+        <text x="802" y="448" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">phase on every baseline. A fourth or</text>
+        <text x="802" y="462" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">tenth element changes nothing.</text>
 
-        <text class="t-box" x="140" y="548" text-anchor="middle">800 MHz — 17.6 cm</text>
-        <text class="t-note" x="140" y="564" text-anchor="middle">18 × 15 cm · 1500-class lid</text>
-        <text class="t-box" x="392" y="548" text-anchor="middle">700 MHz — 19.5 cm</text>
-        <text class="t-note" x="392" y="564" text-anchor="middle">20 × 17 cm · same case</text>
-        <text class="t-box" x="644" y="548" text-anchor="middle">UHF 450 — 33.3 cm</text>
-        <text class="t-note" x="644" y="564" text-anchor="middle">33 × 29 cm · 1600-class, ≈0.27λ</text>
-        <text class="t-box t-ul" x="898" y="548" text-anchor="middle">VHF 155 — 96.7 cm</text>
-        <text class="t-note t-ul" x="898" y="564" text-anchor="middle">NO CASE. Mast or vehicle.</text>
+        
+        <path d="M20 492 L1020 492" fill="none" stroke="#C3CCC5" stroke-width="1.3"></path>
+        <text x="20" y="516" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="12px" font-weight="700" letter-spacing=".09em">THE ARRAY IS THE ONLY PART WHOSE SIZE IS SET BY THE BAND</text>
 
-        <text class="t-note" x="20" y="600">The receive-only base unit is genuinely all-band. DF is a 700/800 MHz capability, and that distinction must not be blurred.</text>
+        <rect x="20" y="528" width="240" height="52" fill="#FBFCFA" stroke="#14201C" stroke-width="1.3"></rect>
+        <rect x="272" y="528" width="240" height="52" fill="#FBFCFA" stroke="#14201C" stroke-width="1.3"></rect>
+        <rect x="524" y="528" width="240" height="52" fill="#FBFCFA" stroke="#14201C" stroke-width="1.3"></rect>
+        <rect x="776" y="528" width="244" height="52" fill="none" stroke="#B4571A" stroke-width="1.6"></rect>
 
-        <text class="t-tiny" x="1020" y="622" text-anchor="end">PLATE 3 · SOURCE §5.1 · REVISED 2026-07-31</text>
+        <text x="140" y="548" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">800 MHz — 17.6 cm</text>
+        <text x="140" y="564" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">18 × 15 cm · 1500-class lid</text>
+        <text x="392" y="548" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">700 MHz — 19.5 cm</text>
+        <text x="392" y="564" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">20 × 17 cm · same case</text>
+        <text x="644" y="548" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">UHF 450 — 33.3 cm</text>
+        <text x="644" y="564" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">33 × 29 cm · 1600-class, ≈0.27λ</text>
+        <text x="898" y="548" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="11.5px" font-weight="600" letter-spacing=".02em">VHF 155 — 96.7 cm</text>
+        <text x="898" y="564" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="10px">NO CASE. Mast or vehicle.</text>
+
+        <text x="20" y="600" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">The receive-only base unit is genuinely all-band. DF is a 700/800 MHz capability, and that distinction must not be blurred.</text>
+
+        <text x="1020" y="622" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">PLATE 3 · SOURCE §5.1 · REVISED 2026-07-31</text>
       </svg>

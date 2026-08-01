@@ -1,187 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 1040 620" role="img" aria-label="Three panels. Good crossing geometry produces a compact fix. Shallow crossing geometry produces a long thin error ellipse. Three stations produce a residual triangle that proves someone is wrong without identifying which one." xmlns="http://www.w3.org/2000/svg" width="1040" height="620">
-<style>
-body {
-    background: #F2F4F1; color: #14201C;
-    font-family: #000; font-size: 17px; line-height: 1.62;
-    margin: 0; padding: 0 24px 96px;
-  }
-.wrap { max-width: 1120px; margin: 0 auto; }
-.prose { max-width: 65ch; }
-header.masthead {
-    padding: 72px 0 40px; border-bottom: 1px solid #C3CCC5; margin-bottom: 48px;
-  }
-.eyebrow {
-    font-family: #000; font-size: 11px; font-weight: 600;
-    letter-spacing: .16em; text-transform: uppercase; color: #6B7A73; margin: 0 0 18px;
-  }
-h1 {
-    font-family: #000; font-size: clamp(30px, 4.4vw, 46px); font-weight: 640;
-    letter-spacing: -.02em; line-height: 1.08; text-wrap: balance; margin: 0 0 20px;
-  }
-.standfirst { font-size: 19px; color: #6B7A73; margin: 0; max-width: 62ch; }
-h2 {
-    font-family: #000; font-size: 22px; font-weight: 620;
-    letter-spacing: -.01em; text-wrap: balance; margin: 0 0 6px;
-  }
-p { margin: 0 0 18px; }
-section { margin-bottom: 64px; }
-.section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
-.section-head p { margin: 0; color: #6B7A73; font-size: 16px; max-width: 62ch; }
-strong { font-weight: 600; }
-code { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: .88em; }
-.plate {
-    background: #FBFCFA;
-    background-image:
-      linear-gradient(#000 1px, transparent 1px),
-      linear-gradient(90deg, #000 1px, transparent 1px);
-    background-size: 20px 20px;
-    border: 1px solid #C3CCC5; padding: 18px; overflow-x: auto;
-  }
-.plate svg { display: block; width: 100%; min-width: 720px; height: auto; }
-.frame { fill: none; stroke: #C3CCC5; stroke-width: 1.3; }
-.bx { fill: #FBFCFA; stroke: #14201C; stroke-width: 1.3; }
-.bx-ul { fill: none; stroke: #B4571A; stroke-width: 1.6; }
-.bx-dl { fill: none; stroke: #16746B; stroke-width: 1.6; }
-.bx-q { fill: #FBFCFA; stroke: #6B7A73; stroke-width: 1.2; }
-.sig { fill: none; stroke: #14201C; stroke-width: 1.4; }
-.sig-ul { fill: none; stroke: #B4571A; stroke-width: 2.2; }
-.sig-dl { fill: none; stroke: #16746B; stroke-width: 2.2; }
-.sig-cal { fill: none; stroke: #6B7A73; stroke-width: 1.2; stroke-dasharray: 5 3.5; }
-.sig-dig { fill: none; stroke: #6B7A73; stroke-width: 1.6; }
-.dock { fill: none; stroke: #14201C; stroke-width: 2; stroke-dasharray: 12 5; opacity: .55; }
-.pill { fill: #FBFCFA; stroke: none; }
-.a-ink { fill: #14201C; }
-.a-ul { fill: #B4571A; }
-.a-dl { fill: #16746B; }
-.a-mut { fill: #6B7A73; }
-text { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; fill: #14201C; }
-.t-box { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
-.t-head { font-size: 12px;   font-weight: 700; letter-spacing: .09em; }
-.t-note { font-size: 10px;   fill: #6B7A73; }
-.t-port { font-size: 11px; }
-.t-tiny { font-size: 9px;    fill: #6B7A73; letter-spacing: .06em; }
-.t-ul { fill: #B4571A; }
-.t-dl { fill: #16746B; }
-.t-mut { fill: #6B7A73; }
-.notes { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid #C3CCC5; }
-.note {
-    display: grid; grid-template-columns: 116px 1fr; gap: 24px;
-    padding: 18px 0; border-bottom: 1px solid #C3CCC5; align-items: start;
-  }
-.note dt {
-    font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: 12px; font-weight: 600;
-    letter-spacing: .04em; color: #6B7A73; padding-top: 3px;
-  }
-.note dd { margin: 0; font-size: 16px; }
-.verdict { border-left: 3px solid #B4571A; padding: 2px 0 2px 22px; margin: 0 0 18px; }
-</style>
 <rect x="0" y="0" width="1040" height="620" fill="#FBFCFA"/>
 
         <defs>
           <marker id="p5-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+            <path d="M0 0 L10 5 L0 10 z" fill="#14201C"></path>
           </marker>
           <marker id="p5-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+            <path d="M0 0 L10 5 L0 10 z" fill="#6B7A73"></path>
           </marker>
         </defs>
 
         
-        <rect class="frame" x="20" y="40" width="330" height="400"></rect>
-        <text class="t-head t-dl" x="34" y="64">A — GOOD GEOMETRY</text>
-        <text class="t-note" x="34" y="80">wide crossing angle · compact fix</text>
+        <rect x="20" y="40" width="330" height="400" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
+        <text x="34" y="64" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#16746B" font-size="12px" font-weight="700" letter-spacing=".09em">A — GOOD GEOMETRY</text>
+        <text x="34" y="80" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">wide crossing angle · compact fix</text>
 
-        <polygon class="wedge-dl" points="70,365 228,130 158,96"></polygon>
-        <polygon class="wedge-dl" points="300,370 215,100 144,134"></polygon>
-        <path class="sig-thin" d="M70 365 L193 113"></path>
-        <path class="sig-thin" d="M300 370 L179 117"></path>
+        <polygon points="70,365 228,130 158,96" fill="#DDEAE7" stroke="none"></polygon>
+        <polygon points="300,370 215,100 144,134" fill="#DDEAE7" stroke="none"></polygon>
+        <path d="M70 365 L193 113" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <path d="M300 370 L179 117" fill="none" stroke="#14201C" stroke-width="1"></path>
 
-        <ellipse class="fix" cx="185" cy="130" rx="27" ry="20" transform="rotate(-20 185 130)"></ellipse>
-        <circle class="elem" cx="185" cy="130" r="3"></circle>
-        <text class="t-tiny" x="218" y="126">THE FIX</text>
+        <ellipse cx="185" cy="130" rx="27" ry="20" transform="rotate(-20 185 130)" fill="#D1D4D2" stroke="#D1D4D2" stroke-width="1.2"></ellipse>
+        <circle cx="185" cy="130" r="3" fill="#14201C"></circle>
+        <text x="218" y="126" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">THE FIX</text>
 
-        <circle class="elem" cx="70" cy="365" r="6"></circle>
-        <circle class="elem" cx="300" cy="370" r="6"></circle>
-        <text class="t-port" x="70" y="387" text-anchor="middle">ORB 1</text>
-        <text class="t-port" x="300" y="392" text-anchor="middle">ORB 2</text>
+        <circle cx="70" cy="365" r="6" fill="#14201C"></circle>
+        <circle cx="300" cy="370" r="6" fill="#14201C"></circle>
+        <text x="70" y="387" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">ORB 1</text>
+        <text x="300" y="392" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">ORB 2</text>
 
-        <path class="dim" d="M145 211 A 90 90 0 0 1 224 211"></path>
-        <text class="t-note" x="185" y="230" text-anchor="middle">≈ 74°</text>
+        <path d="M145 211 A 90 90 0 0 1 224 211" fill="none" stroke="#6B7A73" stroke-width="1"></path>
+        <text x="185" y="230" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">≈ 74°</text>
 
-        <text class="t-note" x="34" y="422">Uncertainty in both bearings resolves to a small</text>
-        <text class="t-note t-dl" x="34" y="434">area. GDOP is low. The solver reports the fix.</text>
-
-        
-        <rect class="frame" x="370" y="40" width="330" height="400"></rect>
-        <text class="t-head t-ul" x="384" y="64">B — SHALLOW CROSSING</text>
-        <text class="t-note" x="384" y="80">same bearing quality · far worse position</text>
-
-        <polygon class="wedge-ul" points="400,375 653,151 581,90"></polygon>
-        <polygon class="wedge-ul" points="500,380 650,128 574,96"></polygon>
-        <path class="sig-thin" d="M400 375 L617 120"></path>
-        <path class="sig-thin" d="M500 380 L612 112"></path>
-
-        <ellipse class="fix" cx="600" cy="140" rx="62" ry="15" transform="rotate(-59 600 140)"></ellipse>
-        <circle class="elem" cx="600" cy="140" r="3"></circle>
-
-        <circle class="elem" cx="400" cy="375" r="6"></circle>
-        <circle class="elem" cx="500" cy="380" r="6"></circle>
-        <text class="t-port" x="400" y="397" text-anchor="middle">ORB 1</text>
-        <text class="t-port" x="500" y="402" text-anchor="middle">ORB 2</text>
-
-        <path class="dim" d="M529 224 A 110 110 0 0 1 558 242"></path>
-        <text class="t-note" x="512" y="262" text-anchor="middle">≈ 22°</text>
-
-        <text class="t-note" x="384" y="422">The error runs along the line of sight, not across</text>
-        <text class="t-note t-ul" x="384" y="434">it. GDOP is high, and the solver says so.</text>
+        <text x="34" y="422" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">Uncertainty in both bearings resolves to a small</text>
+        <text x="34" y="434" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#16746B" font-size="10px">area. GDOP is low. The solver reports the fix.</text>
 
         
-        <rect class="frame" x="720" y="40" width="300" height="400"></rect>
-        <text class="t-head" x="734" y="64">C — THREE STATIONS</text>
-        <text class="t-note" x="734" y="80">a residual appears, and it is not enough</text>
+        <rect x="370" y="40" width="330" height="400" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
+        <text x="384" y="64" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="12px" font-weight="700" letter-spacing=".09em">B — SHALLOW CROSSING</text>
+        <text x="384" y="80" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">same bearing quality · far worse position</text>
 
-        <path class="sig-thin" d="M770 385 L890 112"></path>
-        <path class="sig-thin" d="M900 392 L845 134"></path>
-        <path class="sig-thin" d="M985 300 L820 168"></path>
+        <polygon points="400,375 653,151 581,90" fill="#F2E7DD" stroke="none"></polygon>
+        <polygon points="500,380 650,128 574,96" fill="#F2E7DD" stroke="none"></polygon>
+        <path d="M400 375 L617 120" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <path d="M500 380 L612 112" fill="none" stroke="#14201C" stroke-width="1"></path>
 
-        <circle class="elem" cx="770" cy="385" r="6"></circle>
-        <circle class="elem" cx="900" cy="392" r="6"></circle>
-        <circle class="elem" cx="985" cy="300" r="6"></circle>
-        <text class="t-port" x="758" y="389" text-anchor="end">ORB 1</text>
-        <text class="t-port" x="912" y="396">ORB 2</text>
-        <text class="t-port" x="972" y="290" text-anchor="end">ORB 3</text>
+        <ellipse cx="600" cy="140" rx="62" ry="15" transform="rotate(-59 600 140)" fill="#D1D4D2" stroke="#D1D4D2" stroke-width="1.2"></ellipse>
+        <circle cx="600" cy="140" r="3" fill="#14201C"></circle>
 
-        <circle class="sig-ul" cx="861" cy="182" r="26" fill="none"></circle>
-        <path class="lead" d="M835 182 L762 152"></path>
-        <text class="t-box t-ul" x="734" y="140">RESIDUAL</text>
-        <text class="t-box t-ul" x="734" y="152">TRIANGLE</text>
+        <circle cx="400" cy="375" r="6" fill="#14201C"></circle>
+        <circle cx="500" cy="380" r="6" fill="#14201C"></circle>
+        <text x="400" y="397" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">ORB 1</text>
+        <text x="500" y="402" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">ORB 2</text>
 
-        <text class="t-note" x="734" y="410">A large triangle proves someone is wrong.</text>
-        <text class="t-note" x="734" y="422">Remove any one ray and the other two meet</text>
-        <text class="t-note t-ul" x="734" y="434">exactly — so it cannot say which.</text>
+        <path d="M529 224 A 110 110 0 0 1 558 242" fill="none" stroke="#6B7A73" stroke-width="1"></path>
+        <text x="512" y="262" text-anchor="middle" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">≈ 22°</text>
+
+        <text x="384" y="422" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">The error runs along the line of sight, not across</text>
+        <text x="384" y="434" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="10px">it. GDOP is high, and the solver says so.</text>
 
         
-        <path class="frame" d="M20 466 L1020 466"></path>
-        <text class="t-head" x="20" y="492">WHAT df/aoa_fix.py REPORTS, AND WHAT IT REFUSES TO</text>
+        <rect x="720" y="40" width="300" height="400" fill="none" stroke="#C3CCC5" stroke-width="1.3"></rect>
+        <text x="734" y="64" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="12px" font-weight="700" letter-spacing=".09em">C — THREE STATIONS</text>
+        <text x="734" y="80" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">a residual appears, and it is not enough</text>
 
-        <rect class="bx-dl" x="20" y="506" width="320" height="76"></rect>
-        <text class="t-box t-dl" x="36" y="528">REPORTED</text>
-        <text class="t-note" x="36" y="544">position · rms residual · GDOP</text>
-        <text class="t-note" x="36" y="558">forward consistency · a trust flag</text>
-        <text class="t-note" x="36" y="572">that requires GDOP below 10</text>
+        <path d="M770 385 L890 112" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <path d="M900 392 L845 134" fill="none" stroke="#14201C" stroke-width="1"></path>
+        <path d="M985 300 L820 168" fill="none" stroke="#14201C" stroke-width="1"></path>
 
-        <rect class="bx-ul" x="360" y="506" width="320" height="76"></rect>
-        <text class="t-box t-ul" x="376" y="528">WITHHELD ON TWO STATIONS</text>
-        <text class="t-note" x="376" y="544">no residual claim is made at all,</text>
-        <text class="t-note" x="376" y="558">because two rays always meet —</text>
-        <text class="t-note" x="376" y="572">agreement there would be an artefact</text>
+        <circle cx="770" cy="385" r="6" fill="#14201C"></circle>
+        <circle cx="900" cy="392" r="6" fill="#14201C"></circle>
+        <circle cx="985" cy="300" r="6" fill="#14201C"></circle>
+        <text x="758" y="389" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">ORB 1</text>
+        <text x="912" y="396" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">ORB 2</text>
+        <text x="972" y="290" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11px">ORB 3</text>
 
-        <rect class="bx" x="700" y="506" width="320" height="76"></rect>
-        <text class="t-box" x="716" y="528">STILL NOT ANSWERABLE</text>
-        <text class="t-note" x="716" y="544">which bearing is the bad one. That</text>
-        <text class="t-note" x="716" y="558">needs a fourth station, an independent</text>
-        <text class="t-note" x="716" y="572">quality metric, or outside knowledge</text>
+        <circle cx="861" cy="182" r="26" fill="none" stroke="#B4571A" stroke-width="1.8"></circle>
+        <path d="M835 182 L762 152" fill="none" stroke="#6B7A73" stroke-width=".9" stroke-dasharray="4 3"></path>
+        <text x="734" y="140" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="11.5px" font-weight="600" letter-spacing=".02em">RESIDUAL</text>
+        <text x="734" y="152" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="11.5px" font-weight="600" letter-spacing=".02em">TRIANGLE</text>
 
-        <text class="t-tiny" x="1020" y="604" text-anchor="end">PLATE 5 · SOURCE §5.9, df/aoa_fix.py · REVISED 2026-08-01</text>
+        <text x="734" y="410" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">A large triangle proves someone is wrong.</text>
+        <text x="734" y="422" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">Remove any one ray and the other two meet</text>
+        <text x="734" y="434" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="10px">exactly — so it cannot say which.</text>
+
+        
+        <path d="M20 466 L1020 466" fill="none" stroke="#C3CCC5" stroke-width="1.3"></path>
+        <text x="20" y="492" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="12px" font-weight="700" letter-spacing=".09em">WHAT df/aoa_fix.py REPORTS, AND WHAT IT REFUSES TO</text>
+
+        <rect x="20" y="506" width="320" height="76" fill="none" stroke="#16746B" stroke-width="1.6"></rect>
+        <text x="36" y="528" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#16746B" font-size="11.5px" font-weight="600" letter-spacing=".02em">REPORTED</text>
+        <text x="36" y="544" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">position · rms residual · GDOP</text>
+        <text x="36" y="558" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">forward consistency · a trust flag</text>
+        <text x="36" y="572" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">that requires GDOP below 10</text>
+
+        <rect x="360" y="506" width="320" height="76" fill="none" stroke="#B4571A" stroke-width="1.6"></rect>
+        <text x="376" y="528" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#B4571A" font-size="11.5px" font-weight="600" letter-spacing=".02em">WITHHELD ON TWO STATIONS</text>
+        <text x="376" y="544" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">no residual claim is made at all,</text>
+        <text x="376" y="558" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">because two rays always meet —</text>
+        <text x="376" y="572" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">agreement there would be an artefact</text>
+
+        <rect x="700" y="506" width="320" height="76" fill="#FBFCFA" stroke="#14201C" stroke-width="1.3"></rect>
+        <text x="716" y="528" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#14201C" font-size="11.5px" font-weight="600" letter-spacing=".02em">STILL NOT ANSWERABLE</text>
+        <text x="716" y="544" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">which bearing is the bad one. That</text>
+        <text x="716" y="558" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">needs a fourth station, an independent</text>
+        <text x="716" y="572" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="10px">quality metric, or outside knowledge</text>
+
+        <text x="1020" y="604" text-anchor="end" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" fill="#6B7A73" font-size="9px" letter-spacing=".06em">PLATE 5 · SOURCE §5.9, df/aoa_fix.py · REVISED 2026-08-01</text>
       </svg>
