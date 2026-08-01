@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1040 690" role="img" aria-label="The 800 MHz band drawn to scale, showing the uplink block from 806 to 824 megahertz, the downlink block from 851 to 869, the 45 megahertz duplex split, and detail views of the two roughly 2 megahertz windows the receiver actually captures." xmlns="http://www.w3.org/2000/svg" width="1040" height="690">
+<style>
+body {
+    background: #F2F4F1; color: #14201C;
+    font-family: #000; font-size: 17px; line-height: 1.62;
+    margin: 0; padding: 0 24px 96px;
+  }
+.wrap { max-width: 1120px; margin: 0 auto; }
+.prose { max-width: 65ch; }
+header.masthead {
+    padding: 72px 0 40px; border-bottom: 1px solid #C3CCC5; margin-bottom: 48px;
+  }
+.eyebrow {
+    font-family: #000; font-size: 11px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: #6B7A73; margin: 0 0 18px;
+  }
+h1 {
+    font-family: #000; font-size: clamp(30px, 4.4vw, 46px); font-weight: 640;
+    letter-spacing: -.02em; line-height: 1.08; text-wrap: balance; margin: 0 0 20px;
+  }
+.standfirst { font-size: 19px; color: #6B7A73; margin: 0; max-width: 62ch; }
+h2 {
+    font-family: #000; font-size: 22px; font-weight: 620;
+    letter-spacing: -.01em; text-wrap: balance; margin: 0 0 6px;
+  }
+p { margin: 0 0 18px; }
+section { margin-bottom: 64px; }
+.section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.section-head p { margin: 0; color: #6B7A73; font-size: 16px; max-width: 62ch; }
+strong { font-weight: 600; }
+code { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: .88em; }
+.plate {
+    background: #FBFCFA;
+    background-image:
+      linear-gradient(#000 1px, transparent 1px),
+      linear-gradient(90deg, #000 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid #C3CCC5; padding: 18px; overflow-x: auto;
+  }
+.plate svg { display: block; width: 100%; min-width: 720px; height: auto; }
+.frame { fill: none; stroke: #C3CCC5; stroke-width: 1.3; }
+.bx { fill: #FBFCFA; stroke: #14201C; stroke-width: 1.3; }
+.bx-ul { fill: none; stroke: #B4571A; stroke-width: 1.6; }
+.bx-dl { fill: none; stroke: #16746B; stroke-width: 1.6; }
+.bx-q { fill: #FBFCFA; stroke: #6B7A73; stroke-width: 1.2; }
+.sig { fill: none; stroke: #14201C; stroke-width: 1.4; }
+.sig-ul { fill: none; stroke: #B4571A; stroke-width: 2.2; }
+.sig-dl { fill: none; stroke: #16746B; stroke-width: 2.2; }
+.sig-cal { fill: none; stroke: #6B7A73; stroke-width: 1.2; stroke-dasharray: 5 3.5; }
+.sig-dig { fill: none; stroke: #6B7A73; stroke-width: 1.6; }
+.dock { fill: none; stroke: #14201C; stroke-width: 2; stroke-dasharray: 12 5; opacity: .55; }
+.pill { fill: #FBFCFA; stroke: none; }
+.a-ink { fill: #14201C; }
+.a-ul { fill: #B4571A; }
+.a-dl { fill: #16746B; }
+.a-mut { fill: #6B7A73; }
+text { font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; fill: #14201C; }
+.t-box { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
+.t-head { font-size: 12px;   font-weight: 700; letter-spacing: .09em; }
+.t-note { font-size: 10px;   fill: #6B7A73; }
+.t-port { font-size: 11px; }
+.t-tiny { font-size: 9px;    fill: #6B7A73; letter-spacing: .06em; }
+.t-ul { fill: #B4571A; }
+.t-dl { fill: #16746B; }
+.t-mut { fill: #6B7A73; }
+.notes { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid #C3CCC5; }
+.note {
+    display: grid; grid-template-columns: 116px 1fr; gap: 24px;
+    padding: 18px 0; border-bottom: 1px solid #C3CCC5; align-items: start;
+  }
+.note dt {
+    font-family: Consolas, 'DejaVu Sans Mono', 'Courier New', monospace; font-size: 12px; font-weight: 600;
+    letter-spacing: .04em; color: #6B7A73; padding-top: 3px;
+  }
+.note dd { margin: 0; font-size: 16px; }
+.verdict { border-left: 3px solid #B4571A; padding: 2px 0 2px 22px; margin: 0 0 18px; }
+</style>
+<rect x="0" y="0" width="1040" height="690" fill="#FBFCFA"/>
+
+        <defs>
+          <marker id="p2-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+          </marker>
+          <marker id="p2-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+          </marker>
+        </defs>
+
+        <text class="t-head" x="30" y="34">THE BAND AT TRUE SCALE — 804 to 871 MHz</text>
+
+        
+        <rect class="fill-ul" x="107" y="62" width="242" height="42"></rect>
+        <rect class="bx-ul"   x="107" y="62" width="242" height="42"></rect>
+        <rect class="fill-q"  x="349" y="62" width="362" height="42"></rect>
+        <rect class="fill-dl" x="711" y="62" width="242" height="42"></rect>
+        <rect class="bx-dl"   x="711" y="62" width="242" height="42"></rect>
+
+        <text class="t-box t-ul" x="228" y="80" text-anchor="middle">UPLINK — 806–824</text>
+        <text class="t-note"     x="228" y="95" text-anchor="middle">handsets transmit</text>
+        <text class="t-note"     x="530" y="80" text-anchor="middle">824 – 851 MHz</text>
+        <text class="t-note"     x="530" y="95" text-anchor="middle">other allocations</text>
+        <text class="t-box t-dl" x="832" y="80" text-anchor="middle">DOWNLINK — 851–869</text>
+        <text class="t-note"     x="832" y="95" text-anchor="middle">the tower transmits</text>
+
+        
+        <rect class="sig-ul" x="110" y="58" width="27" height="50" fill="none"></rect>
+        <rect class="sig-dl" x="714" y="58" width="34" height="50" fill="none"></rect>
+
+        
+        <path class="tick" d="M107 104 L107 114 M349 104 L349 114 M711 104 L711 114 M953 104 L953 114"></path>
+        <text class="t-tiny" x="107" y="126" text-anchor="middle">806</text>
+        <text class="t-tiny" x="349" y="126" text-anchor="middle">824</text>
+        <text class="t-tiny" x="711" y="126" text-anchor="middle">851</text>
+        <text class="t-tiny" x="953" y="126" text-anchor="middle">869</text>
+
+        
+        <path class="lead" d="M110 108 L60 212"></path>
+        <path class="lead" d="M137 108 L500 212"></path>
+        <path class="lead" d="M714 108 L540 212"></path>
+        <path class="lead" d="M748 108 L980 212"></path>
+
+        <text class="t-tiny" x="150" y="172">DETAIL A · ×13</text>
+        <text class="t-tiny" x="880" y="172" text-anchor="end">DETAIL B · ×11</text>
+
+        
+        <rect class="bx-ul" x="60" y="212" width="440" height="182"></rect>
+        <text class="t-head t-ul" x="280" y="236" text-anchor="middle">DETAIL A — UPLINK WINDOW</text>
+        <text class="t-note" x="280" y="252" text-anchor="middle">~806.2 – 808.2 MHz · about 2 MHz · uplink coherent group</text>
+
+        
+        <path class="tick" d="M90 330 L470 330"></path>
+        <path class="tick" d="M150 330 L150 336 M237 330 L237 336 M323 330 L323 336 M409 330 L409 336"></path>
+        <text class="t-tiny" x="150" y="348" text-anchor="middle">806.5</text>
+        <text class="t-tiny" x="237" y="348" text-anchor="middle">807.0</text>
+        <text class="t-tiny" x="323" y="348" text-anchor="middle">807.5</text>
+        <text class="t-tiny" x="409" y="348" text-anchor="middle">808.0</text>
+
+        
+        <path class="sig-ul" d="M101 330 L101 276"></path>
+        <text class="t-box t-ul" x="101" y="272">806.2125 — UPLINK CONTROL</text>
+        <text class="t-note" x="101" y="286">handset → tower · every channel request</text>
+
+        
+        <path class="sig-ul" d="M185 330 L185 306 M271 330 L271 306 M392 330 L392 306"></path>
+        <text class="t-note" x="280" y="302" text-anchor="middle">granted voice, uplink side</text>
+
+        <text class="t-note t-ul" x="280" y="378" text-anchor="middle">EVERYTHING A HANDSET TRANSMITS ON THE TRUNK</text>
+
+        
+        <rect class="bx-dl" x="540" y="212" width="440" height="182"></rect>
+        <text class="t-head t-dl" x="760" y="236" text-anchor="middle">DETAIL B — DOWNLINK WINDOW</text>
+        <text class="t-note" x="760" y="252" text-anchor="middle">~851.2 – 853.7 MHz · about 2.5 MHz · downlink coherent group</text>
+
+        
+        <path class="tick" d="M570 330 L950 330"></path>
+        <path class="tick" d="M694 330 L694 336 M767 330 L767 336 M840 330 L840 336 M913 330 L913 336"></path>
+        <text class="t-tiny" x="694" y="348" text-anchor="middle">852.0</text>
+        <text class="t-tiny" x="767" y="348" text-anchor="middle">852.5</text>
+        <text class="t-tiny" x="840" y="348" text-anchor="middle">853.0</text>
+        <text class="t-tiny" x="913" y="348" text-anchor="middle">853.5</text>
+
+        
+        <path class="sig-dl" d="M579 330 L579 272"></path>
+        <text class="t-box t-dl" x="572" y="268">851.2125 — CONTROL CHANNEL</text>
+        <text class="t-note" x="572" y="280">tower → handset · the entire event stream</text>
+
+        
+        <path class="sig-ul" d="M629 330 L629 300 L716 300"></path>
+        <text class="t-box t-ul" x="722" y="296">851.5500 — 8TAC95D</text>
+        <text class="t-note t-ul" x="722" y="310">SIMPLEX · handsets transmit HERE</text>
+
+        
+        <path class="dim" d="M579 344 L629 344" marker-start="url(#p2-dim)" marker-end="url(#p2-dim)"></path>
+        <text class="t-tiny" x="604" y="362" text-anchor="middle">337.5 kHz</text>
+
+        <path class="sig-dl" d="M761 330 L761 318 M855 330 L855 318"></path>
+        <text class="t-note" x="950" y="364" text-anchor="end">repeated voice, as the tower relays it</text>
+
+        <text class="t-note" x="760" y="378" text-anchor="middle">a geographic accident, not a design choice — and it is why</text>
+        <text class="t-note t-ul" x="760" y="390" text-anchor="middle">TALKAROUND HANDSETS ARE LOCATABLE BY THE DOWNLINK GROUP</text>
+
+        
+        <path class="frame" d="M30 424 L1010 424"></path>
+        <text class="t-head" x="30" y="450">WHY NOT ONE WIDE GROUP INSTEAD OF TWO NARROW ONES</text>
+
+        
+        <path class="dim" d="M110 480 L714 480" marker-start="url(#p2-dim)" marker-end="url(#p2-dim)"></path>
+        <text class="t-note" x="412" y="474" text-anchor="middle">45.000 MHz — the duplex split. Every trunk channel is a PAIR.</text>
+
+        
+        <path class="dim" d="M110 510 L629 510" marker-start="url(#p2-dim)" marker-end="url(#p2-dim)"></path>
+        <text class="t-note" x="370" y="504" text-anchor="middle">45.34 MHz — uplink control to talkaround: the full handset span</text>
+
+        
+        <text class="t-tiny" x="30" y="540">ONE COHERENT GROUP WOULD HAVE TO COVER THAT SPAN:</text>
+
+        <path class="sig" d="M110 560 L862 560" marker-end="url(#p2-ink)"></path>
+        <path class="tick" d="M110 554 L110 566 M862 554 L862 566"></path>
+        <text class="t-note" x="872" y="564">AD9361 · 56 MHz — reaches it (the §5.5 fallback)</text>
+
+        <path class="sig" d="M110 590 L647 590"></path>
+        <path class="tick" d="M110 584 L110 596 M647 584 L647 596"></path>
+        <path class="sig-cal" d="M647 590 L629 590"></path>
+        <text class="t-note t-ul" x="657" y="586">ADRV9002 · 40 MHz — falls 5.34 MHz short.</text>
+        <text class="t-note t-ul" x="657" y="600">No allocation trick closes it: a group’s three</text>
+
+        <text class="t-note t-ul" x="657" y="614">elements must be CO-TUNED to be coherent.</text>
+
+        
+        <g>
+          <rect class="frame" x="30" y="620" width="440" height="46"></rect>
+          <path class="frame" d="M170 620 L170 666 M310 620 L310 666 M30 643 L470 643"></path>
+          <text class="t-tiny" x="40" y="634">PLATE</text>
+          <text class="t-port" x="40" y="660">2</text>
+          <text class="t-tiny" x="180" y="634">SOURCE</text>
+          <text class="t-port" x="180" y="660">§3.3, §3.3.1</text>
+          <text class="t-tiny" x="320" y="634">REVISED</text>
+          <text class="t-port" x="320" y="660">2026-07-31</text>
+        </g>
+      </svg>

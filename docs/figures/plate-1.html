@@ -1,0 +1,420 @@
+<title>P25 Orb — Technical Plate 1</title>
+
+<style>
+  :root {
+    --paper: #F2F4F1; --surface: #FBFCFA; --ink: #14201C; --rule: #C3CCC5;
+    --muted: #6B7A73; --uplink: #B4571A; --downlink: #16746B;
+    --grid: rgba(20, 32, 28, .055);
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0D1412; --surface: #131C19; --ink: #DFE7E2; --rule: #2A3833;
+      --muted: #8B9A93; --uplink: #E8934A; --downlink: #4FBFAF;
+      --grid: rgba(223, 231, 226, .05);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0D1412; --surface: #131C19; --ink: #DFE7E2; --rule: #2A3833;
+    --muted: #8B9A93; --uplink: #E8934A; --downlink: #4FBFAF;
+    --grid: rgba(223, 231, 226, .05);
+  }
+  :root[data-theme="light"] {
+    --paper: #F2F4F1; --surface: #FBFCFA; --ink: #14201C; --rule: #C3CCC5;
+    --muted: #6B7A73; --uplink: #B4571A; --downlink: #16746B;
+    --grid: rgba(20, 32, 28, .055);
+  }
+
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--serif); font-size: 17px; line-height: 1.62;
+    margin: 0; padding: 0 24px 96px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .prose { max-width: 65ch; }
+
+  header.masthead {
+    padding: 72px 0 40px; border-bottom: 1px solid var(--rule); margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--sans); font-size: 11px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--sans); font-size: clamp(30px, 4.4vw, 46px); font-weight: 640;
+    letter-spacing: -.02em; line-height: 1.08; text-wrap: balance; margin: 0 0 20px;
+  }
+  .standfirst { font-size: 19px; color: var(--muted); margin: 0; max-width: 62ch; }
+  h2 {
+    font-family: var(--sans); font-size: 22px; font-weight: 620;
+    letter-spacing: -.01em; text-wrap: balance; margin: 0 0 6px;
+  }
+  p { margin: 0 0 18px; }
+  p:last-child { margin-bottom: 0; }
+  section { margin-bottom: 64px; }
+  .section-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .section-head p { margin: 0; color: var(--muted); font-size: 16px; max-width: 62ch; }
+  strong { font-weight: 600; }
+  code { font-family: var(--mono); font-size: .88em; }
+
+  .plate {
+    background: var(--surface);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--rule); padding: 18px; overflow-x: auto;
+  }
+  .plate svg { display: block; width: 100%; min-width: 720px; height: auto; }
+
+  .frame  { fill: none; stroke: var(--rule); stroke-width: 1.3; }
+  .bx     { fill: var(--surface); stroke: var(--ink); stroke-width: 1.3; }
+  .bx-ul  { fill: none; stroke: var(--uplink); stroke-width: 1.6; }
+  .bx-dl  { fill: none; stroke: var(--downlink); stroke-width: 1.6; }
+  .bx-q   { fill: var(--surface); stroke: var(--muted); stroke-width: 1.2; }
+
+  .sig     { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+  .sig-ul  { fill: none; stroke: var(--uplink); stroke-width: 2.2; }
+  .sig-dl  { fill: none; stroke: var(--downlink); stroke-width: 2.2; }
+  .sig-cal { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 3.5; }
+  .sig-dig { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  .dock    { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 12 5; opacity: .55; }
+  .pill    { fill: var(--surface); stroke: none; }
+
+  .a-ink { fill: var(--ink); }
+  .a-ul  { fill: var(--uplink); }
+  .a-dl  { fill: var(--downlink); }
+  .a-mut { fill: var(--muted); }
+
+  text { font-family: var(--mono); fill: var(--ink); }
+  .t-box   { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
+  .t-head  { font-size: 12px;   font-weight: 700; letter-spacing: .09em; }
+  .t-note  { font-size: 10px;   fill: var(--muted); }
+  .t-port  { font-size: 11px; }
+  .t-tiny  { font-size: 9px;    fill: var(--muted); letter-spacing: .06em; }
+  .t-ul    { fill: var(--uplink); }
+  .t-dl    { fill: var(--downlink); }
+  .t-mut   { fill: var(--muted); }
+
+  .notes { display: grid; gap: 0; margin-top: 32px; border-top: 1px solid var(--rule); }
+  .note {
+    display: grid; grid-template-columns: 116px 1fr; gap: 24px;
+    padding: 18px 0; border-bottom: 1px solid var(--rule); align-items: start;
+  }
+  .note dt {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .04em; color: var(--muted); padding-top: 3px;
+  }
+  .note dd { margin: 0; font-size: 16px; }
+  @media (max-width: 620px) { .note { grid-template-columns: 1fr; gap: 6px; } }
+
+  .verdict { border-left: 3px solid var(--uplink); padding: 2px 0 2px 22px; margin: 0 0 18px; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">ARC Edge · P25 Orb · Drawing set, plate 1</p>
+    <h1>Receive architecture</h1>
+    <p class="standfirst">
+      The whole signal path, from three antenna elements to the ARC Edge base
+      unit. Colour is semantic: amber is the uplink group, teal the downlink
+      group, dashed grey calibration, plain grey digital.
+    </p>
+  </header>
+
+  <section>
+    <div class="plate">
+      <svg viewBox="0 0 1040 1070" role="img" aria-label="Block diagram of the P25 Orb receive architecture: three antenna elements pass through couplers and bandpass filters in the band module, cross the dock, are amplified and split, and feed an uplink coherent group and a downlink coherent group, which merge into an FPGA bridge and application compute.">
+
+        <defs>
+          <marker id="p1-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ink"></path>
+          </marker>
+          <marker id="p1-ul" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-ul"></path>
+          </marker>
+          <marker id="p1-dl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-dl"></path>
+          </marker>
+          <marker id="p1-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="a-mut"></path>
+          </marker>
+        </defs>
+
+        <!-- ================= BAND MODULE ================= -->
+        <rect class="frame" x="15" y="20" width="1005" height="270"></rect>
+        <text class="t-head" x="30" y="42">BAND MODULE — HOUSING + ARRAY</text>
+        <text class="t-note" x="30" y="58">band-specific, passive on RF</text>
+        <text class="t-note" x="580" y="42">700/800: case lid · UHF: larger case · VHF: mast or vehicle</text>
+
+        <!-- antenna elements -->
+        <path class="sig" d="M250 100 L250 72 M238 72 L250 56 L262 72"></path>
+        <path class="sig" d="M380 100 L380 72 M368 72 L380 56 L392 72"></path>
+        <path class="sig" d="M510 100 L510 72 M498 72 L510 56 L522 72"></path>
+        <text class="t-port" x="270" y="70">EL 1</text>
+        <text class="t-port" x="400" y="70">EL 2</text>
+        <text class="t-port" x="530" y="70">EL 3</text>
+
+        <!-- Cal spine: up from the source in the body, across the dock, then into
+             the coupled port of each coupler in turn. Routed through the couplers
+             rather than over the element lines so there are no false crossings. -->
+        <text class="t-note" x="30" y="124">CAL TONES f_UL + f_DL</text>
+        <text class="t-note" x="30" y="138">injected ARRAY-side (§3.1a)</text>
+        <path class="sig-cal" d="M62 344 L62 151 L206 151" marker-end="url(#p1-mut)"></path>
+        <path class="sig-cal" d="M290 151 L336 151" marker-end="url(#p1-mut)"></path>
+        <path class="sig-cal" d="M420 151 L466 151" marker-end="url(#p1-mut)"></path>
+
+        <!-- element chain: coupler then bandpass -->
+        <rect class="bx" x="210" y="136" width="80" height="32"></rect>
+        <rect class="bx" x="340" y="136" width="80" height="32"></rect>
+        <rect class="bx" x="470" y="136" width="80" height="32"></rect>
+        <text class="t-box" x="250" y="156" text-anchor="middle">COUPLR</text>
+        <text class="t-box" x="380" y="156" text-anchor="middle">COUPLR</text>
+        <text class="t-box" x="510" y="156" text-anchor="middle">COUPLR</text>
+
+        <path class="sig" d="M250 100 L250 136"></path>
+        <path class="sig" d="M380 100 L380 136"></path>
+        <path class="sig" d="M510 100 L510 136"></path>
+
+        <rect class="bx" x="210" y="182" width="80" height="32"></rect>
+        <rect class="bx" x="340" y="182" width="80" height="32"></rect>
+        <rect class="bx" x="470" y="182" width="80" height="32"></rect>
+        <text class="t-box" x="250" y="202" text-anchor="middle">BPF</text>
+        <text class="t-box" x="380" y="202" text-anchor="middle">BPF</text>
+        <text class="t-box" x="510" y="202" text-anchor="middle">BPF</text>
+
+        <path class="sig" d="M250 168 L250 182"></path>
+        <path class="sig" d="M380 168 L380 182"></path>
+        <path class="sig" d="M510 168 L510 182"></path>
+
+        <!-- three RF paths crossing the dock -->
+        <path class="sig" d="M250 214 L250 344" marker-end="url(#p1-ink)"></path>
+        <path class="sig" d="M380 214 L380 344" marker-end="url(#p1-ink)"></path>
+        <path class="sig" d="M510 214 L510 344" marker-end="url(#p1-ink)"></path>
+
+        <!-- transmit side -->
+        <rect class="bx" x="640" y="124" width="260" height="70"></rect>
+        <text class="t-box" x="770" y="150" text-anchor="middle">PA + DUPLEXER</text>
+        <text class="t-note" x="770" y="168" text-anchor="middle">band-specific, ALWAYS populated,</text>
+        <text class="t-note" x="770" y="182" text-anchor="middle">licence-gated</text>
+
+        <!-- sensors and identity -->
+        <text class="t-note" x="580" y="242">IMU + 2× MAGNETOMETER (§5.8)</text>
+        <text class="t-note" x="580" y="258">MODULE ID + ARRAY-MANIFOLD EEPROM (§3.1a)</text>
+
+        <!-- ================= DOCK ================= -->
+        <path class="dock" d="M15 300 L1020 300"></path>
+        <rect class="pill" x="480" y="290" width="80" height="20"></rect>
+        <text class="t-head" x="520" y="305" text-anchor="middle">DOCK</text>
+
+        <!-- ================= PROCESSING BODY ================= -->
+        <rect class="frame" x="15" y="312" width="1005" height="675"></rect>
+        <text class="t-head" x="30" y="332">PROCESSING BODY — BAND-AGNOSTIC</text>
+
+        <rect class="bx-q" x="15" y="344" width="95" height="52"></rect>
+        <text class="t-box" x="62" y="364" text-anchor="middle">CAL SRC</text>
+        <text class="t-note" x="62" y="380" text-anchor="middle">f_UL + f_DL</text>
+
+        <!-- low-noise amplifiers -->
+        <rect class="bx" x="210" y="344" width="80" height="32"></rect>
+        <rect class="bx" x="340" y="344" width="80" height="32"></rect>
+        <rect class="bx" x="470" y="344" width="80" height="32"></rect>
+        <text class="t-box" x="250" y="364" text-anchor="middle">LNA</text>
+        <text class="t-box" x="380" y="364" text-anchor="middle">LNA</text>
+        <text class="t-box" x="510" y="364" text-anchor="middle">LNA</text>
+        <text class="t-note" x="580" y="358">all three on one board, one thermal environment —</text>
+        <text class="t-note" x="580" y="372">drift is correlated and calibrates out (§3.1a)</text>
+
+        <!-- splitters -->
+        <path class="sig" d="M250 376 L250 396"></path>
+        <path class="sig" d="M380 376 L380 396"></path>
+        <path class="sig" d="M510 376 L510 396"></path>
+
+        <rect class="bx" x="210" y="396" width="80" height="32"></rect>
+        <rect class="bx" x="340" y="396" width="80" height="32"></rect>
+        <rect class="bx" x="470" y="396" width="80" height="32"></rect>
+        <text class="t-box" x="250" y="416" text-anchor="middle">SPLIT</text>
+        <text class="t-box" x="380" y="416" text-anchor="middle">SPLIT</text>
+        <text class="t-box" x="510" y="416" text-anchor="middle">SPLIT</text>
+        <text class="t-note" x="580" y="410">2-way Wilkinson AFTER the LNA: the 3.2 dB split</text>
+        <text class="t-note" x="580" y="424">costs 0.04 dB of noise figure, not 3.2 (§3.3)</text>
+
+        <!-- L legs to the uplink group -->
+        <path class="sig-ul" d="M228 428 L228 444"></path>
+        <path class="sig-ul" d="M358 428 L358 444"></path>
+        <path class="sig-ul" d="M488 428 L488 444"></path>
+        <path class="sig-ul" d="M228 444 L488 444"></path>
+        <path class="sig-ul" d="M340 444 L340 490" marker-end="url(#p1-ul)"></path>
+
+        <!-- R legs to the downlink group, hopping the uplink drop where they cross -->
+        <path class="sig-dl" d="M272 428 L272 462"></path>
+        <path class="sig-dl" d="M402 428 L402 462"></path>
+        <path class="sig-dl" d="M532 428 L532 462"></path>
+        <path class="sig-dl" d="M272 462 L331 462 A 9 9 0 0 1 349 462 L745 462"></path>
+        <path class="sig-dl" d="M745 462 L745 490" marker-end="url(#p1-dl)"></path>
+
+        <text class="t-tiny t-ul" x="222" y="440" text-anchor="end">L legs</text>
+        <text class="t-tiny t-dl" x="545" y="458">R legs</text>
+
+        <path class="sig-ul" d="M333 474 L347 466"></path>
+        <text class="t-tiny t-ul" x="352" y="476">3</text>
+        <path class="sig-dl" d="M738 474 L752 466"></path>
+        <text class="t-tiny t-dl" x="757" y="476">3</text>
+
+        <!-- ---- uplink coherent group ---- -->
+        <rect class="bx-ul" x="140" y="490" width="400" height="180"></rect>
+        <text class="t-head t-ul" x="340" y="514" text-anchor="middle">UPLINK COHERENT GROUP</text>
+        <text class="t-note" x="340" y="532" text-anchor="middle">chips A + B · tuned ~806–808 MHz</text>
+        <text class="t-port" x="188" y="558">A.RX1  ◄ EL 1</text>
+        <text class="t-port" x="188" y="576">A.RX2  ◄ EL 2</text>
+        <text class="t-port" x="188" y="594">B.RX1  ◄ EL 3</text>
+        <text class="t-port t-mut" x="188" y="612">B.RX2  ◄ f_UL reference</text>
+        <text class="t-note" x="340" y="638" text-anchor="middle">handset requests and granted voice —</text>
+        <text class="t-note t-ul" x="340" y="654" text-anchor="middle">THE BEARINGS THAT MATTER</text>
+
+        <!-- ---- downlink coherent group ---- -->
+        <rect class="bx-dl" x="570" y="490" width="350" height="180"></rect>
+        <text class="t-head t-dl" x="745" y="514" text-anchor="middle">DOWNLINK COHERENT GROUP</text>
+        <text class="t-note" x="745" y="532" text-anchor="middle">chips C + D · tuned ~851–853 MHz</text>
+        <text class="t-port" x="606" y="558">C.RX1  ◄ EL 1</text>
+        <text class="t-port" x="606" y="576">C.RX2  ◄ EL 2</text>
+        <text class="t-port" x="606" y="594">D.RX1  ◄ EL 3</text>
+        <text class="t-port t-mut" x="606" y="612">D.RX2  ◄ f_DL reference</text>
+        <text class="t-note" x="745" y="638" text-anchor="middle">tower signalling + 8TAC95D talkaround,</text>
+        <text class="t-note t-dl" x="745" y="654" text-anchor="middle">AND A KNOWN-POSITION REFERENCE (§5.7)</text>
+
+        <!-- transmit chains, drawn once, feeding the PA above -->
+        <rect class="bx-q" x="930" y="500" width="80" height="76"></rect>
+        <text class="t-box" x="970" y="522" text-anchor="middle">TX ×4</text>
+        <text class="t-tiny" x="970" y="540" text-anchor="middle">licence-</text>
+        <text class="t-tiny" x="970" y="552" text-anchor="middle">gated in</text>
+        <text class="t-tiny" x="970" y="564" text-anchor="middle">software</text>
+        <path class="sig" d="M920 538 L930 538"></path>
+        <path class="sig" d="M970 500 L970 159 L903 159" marker-end="url(#p1-ink)"></path>
+
+        <!-- merge into the digital domain -->
+        <path class="sig-ul" d="M340 670 L340 692"></path>
+        <path class="sig-dl" d="M745 670 L745 692"></path>
+        <path class="sig-dig" d="M340 692 L745 692"></path>
+        <path class="sig-dig" d="M530 692 L530 760" marker-end="url(#p1-mut)"></path>
+
+        <!-- Device caption sits left of the merge drop, not under it. -->
+        <text class="t-note" x="140" y="714">4 × ADRV9002 · 30 MHz–6 GHz · on-chip MCS</text>
+        <text class="t-note" x="140" y="728">150 dBc/Hz DR, held across the gain-control range (§3.3)</text>
+        <text class="t-tiny" x="140" y="744">FALLBACK: 2 × AD9361, ONE UNIFIED 47 MHz WINDOW (§5.5)</text>
+
+        <rect class="bx" x="200" y="760" width="680" height="60"></rect>
+        <text class="t-box" x="540" y="782" text-anchor="middle">FPGA / SoC BRIDGE — Zynq-class (§3.5.1)</text>
+        <text class="t-note" x="540" y="800" text-anchor="middle">terminates the LVDS / CMOS SSI IQ interface · hosts the CHANNELISER (§3.3.1) and timing</text>
+        <text class="t-note" x="540" y="814" text-anchor="middle">no gigabit serial transceivers required · ADI supply the HDL</text>
+
+        <text class="t-tiny" x="546" y="836">digital IQ — LVDS or CMOS SSI</text>
+        <path class="sig-dig" d="M530 820 L530 846" marker-end="url(#p1-mut)"></path>
+
+        <rect class="bx" x="200" y="846" width="680" height="58"></rect>
+        <text class="t-box" x="540" y="868" text-anchor="middle">BASEBAND / APPLICATION COMPUTE — Jetson-class</text>
+        <text class="t-note" x="540" y="886" text-anchor="middle">P25 CAI demod · TSBK parsing · analog FM demod · control-channel follower</text>
+        <text class="t-note" x="540" y="899" text-anchor="middle">decryption, agency-held keys · local AI classifier (fallback path)</text>
+
+        <!-- peripherals -->
+        <path class="sig-dig" d="M530 904 L530 914"></path>
+        <path class="sig-dig" d="M170 914 L890 914"></path>
+        <path class="sig-dig" d="M170 914 L170 926" marker-end="url(#p1-mut)"></path>
+        <path class="sig-dig" d="M410 914 L410 926" marker-end="url(#p1-mut)"></path>
+        <path class="sig-dig" d="M650 914 L650 926" marker-end="url(#p1-mut)"></path>
+        <path class="sig-dig" d="M890 914 L890 926" marker-end="url(#p1-mut)"></path>
+
+        <rect class="bx" x="60" y="928" width="220" height="46"></rect>
+        <rect class="bx" x="300" y="928" width="220" height="46"></rect>
+        <rect class="bx" x="540" y="928" width="220" height="46"></rect>
+        <rect class="bx" x="780" y="928" width="220" height="46"></rect>
+        <text class="t-box" x="170" y="948" text-anchor="middle">SECURE ELEMENT</text>
+        <text class="t-note" x="170" y="964" text-anchor="middle">key store</text>
+        <text class="t-box" x="410" y="948" text-anchor="middle">GNSS +</text>
+        <text class="t-note" x="410" y="964" text-anchor="middle">DISCIPLINED OSCILLATOR</text>
+        <text class="t-box" x="650" y="948" text-anchor="middle">ETHERNET PHY</text>
+        <text class="t-note" x="650" y="964" text-anchor="middle">to the base unit</text>
+        <text class="t-box" x="890" y="948" text-anchor="middle">POWER SUPPLY</text>
+        <text class="t-note" x="890" y="964" text-anchor="middle">separate from ARC Edge's</text>
+
+        <!-- base unit, outside the module -->
+        <path class="sig-dig" d="M650 974 L650 1008" marker-end="url(#p1-mut)"></path>
+        <rect class="bx" x="540" y="1008" width="220" height="46"></rect>
+        <text class="t-box" x="650" y="1028" text-anchor="middle">ARC EDGE</text>
+        <text class="t-note" x="650" y="1044" text-anchor="middle">BASE UNIT</text>
+
+        <!-- drawing title block -->
+        <g>
+          <rect class="frame" x="60" y="1006" width="440" height="50"></rect>
+          <path class="frame" d="M200 1006 L200 1056 M340 1006 L340 1056 M60 1031 L500 1031"></path>
+          <text class="t-tiny" x="70" y="1020">PLATE</text>
+          <text class="t-port" x="70" y="1048">1</text>
+          <text class="t-tiny" x="210" y="1020">SOURCE</text>
+          <text class="t-port" x="210" y="1048">§2</text>
+          <text class="t-tiny" x="350" y="1020">REVISED</text>
+          <text class="t-port" x="350" y="1048">2026-08-01</text>
+        </g>
+      </svg>
+    </div>
+
+    <dl class="notes">
+      <div class="note">
+        <dt>§3.3</dt>
+        <dd>
+          The two coloured paths are the reason this drawing exists. Every element is
+          split after its amplifier and fed to <em>both</em> groups, so one antenna array
+          serves two independently tuned windows. Two windows means two gain controls — a
+          strong handset transmission on the uplink can no longer desensitise the downlink
+          control channel, which is where every alarm comes from.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>§3.1a</dt>
+        <dd>
+          The calibration spine crosses the dock. That placement is deliberate and easy to
+          miss in prose: injecting the tones on the array side puts the connector, the
+          cable and the dock itself inside the calibration loop rather than outside it.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>§5.7</dt>
+        <dd>
+          The downlink group always has a surveyed, continuously radiating transmitter in
+          view. Its bearing is known, so the system holds a live end-to-end check on the
+          array manifold, feed phase, connectors, splitters, chip synchronisation and
+          magnetometer heading — and a half-completed sync becomes a detected fault
+          instead of a silently wrong bearing.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>§3.5.1</dt>
+        <dd>
+          The link out of the transceivers is LVDS or CMOS SSI, not JESD204B/C. No gigabit
+          serial transceivers are needed, which is what keeps the bridge in Zynq-class
+          territory.
+        </dd>
+      </div>
+      <div class="note">
+        <dt>§5.5</dt>
+        <dd>
+          The fallback line under the device caption is not decoration. It records the
+          architecture this one replaced, so the drawing carries its own history rather
+          than losing it to a commit message.
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <div class="prose">
+      <p class="verdict">
+        Conceptual and pitch-quality, not procurement-ready. Redrawn as a source file on
+        2026-08-01 after the original was lost with a cleared scratchpad.
+      </p>
+    </div>
+  </section>
+
+</div>

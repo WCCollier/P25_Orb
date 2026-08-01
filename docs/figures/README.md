@@ -9,16 +9,16 @@ whenever the source section changes.
 
 | File | Contains | Source sections |
 |---|---|---|
+| `plate-1.html` | **Plate 1** — the full receive architecture: three elements through the dock to two coherent groups, the FPGA bridge and application compute. | §2 |
 | `plates-5-6.html` | **Plate 5** — two-unit bearing fix: good crossing geometry, shallow crossing geometry, and the three-station residual triangle. **Plate 6** — the deployed configuration as an isometric line illustration: case open, lid flat, array upright. | §5.1, §5.6, §5.9, §7.2 |
 | `plates-2-4.html` | **Plate 2** — the 800 MHz duplex band at true scale, with the two captured windows as magnified detail views. **Plate 3** — array geometry: plan, elevation, and the rejected vertical-plane arrangement. **Plate 4** — splitter placement and the Friis noise-figure case. | §3.3, §3.3.1, §5.1 |
 
-**Plate 1 (the §2 receive-architecture block diagram) has no source file here.**
-It was drawn in a session scratchpad that was cleared before it could be
-committed, and survives only as a published page:
-<https://claude.ai/code/artifact/9975a0ab-958d-4675-8214-4e57513db5bb>. That page
-also still carries an early Mermaid figure that was rejected for poor glyph
-spacing. If Plate 1 is ever needed as an editable file it must be redrawn — the
-conventions below are enough to make a redraw consistent with the rest.
+Plate 1 was originally drawn in a session scratchpad that was cleared before it
+could be committed. It was **redrawn as a source file on 2026-08-01** and is now
+editable like the rest. An early published copy at
+<https://claude.ai/code/artifact/9975a0ab-958d-4675-8214-4e57513db5bb> still
+carries a Mermaid figure that was rejected for poor glyph spacing; that page is
+superseded by `plate-1.html`.
 
 Plates 2–4 are published at
 <https://claude.ai/code/artifact/5d96a39a-e6ed-4a4a-9a22-836a46507688>.
@@ -37,6 +37,29 @@ These are shared across every plate and should be kept if more are added.
 - **A drawing title block** carries plate number, source section and revision date.
 - Monospace for all drawing text; the page prose is serif. Both themes are
   supported through CSS custom properties.
+
+## Getting a plate into PowerPoint
+
+Run the exporter, then insert the `.svg` with **Insert → Pictures → This Device**.
+PowerPoint 2016 and later render SVG natively, so the drawing stays vector and
+the 9 px annotations survive any projector.
+
+```sh
+python3 docs/figures/export-svg.py
+```
+
+Each plate becomes `plate-N.svg`, self-contained: the theme tokens are resolved
+to literal light-mode hex, the stylesheet is folded in as a child `<style>`, and
+a paper-coloured background rect sits underneath so the drawing reads on a dark
+slide master. Delete that rect if the deck's own background suits it better.
+
+Once placed, **Graphic Format → Convert to Shape** breaks the SVG into native
+PowerPoint shapes, after which individual elements can be recoloured, animated,
+or revealed in sequence. Do that on a copy — it is not reversible.
+
+Note the aspect ratios before laying out slides: plate 1 is nearly square
+(1040 × 1070) and wants a full slide, while plate 4 is a wide strip
+(1040 × 440) that sits comfortably beside body text.
 
 ## Editing and checking
 
