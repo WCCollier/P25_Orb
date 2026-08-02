@@ -31,6 +31,35 @@ body.feed { display: flex; flex-direction: column; overflow: hidden; }
    during a demo — cap it and let it scroll inside itself. */
 .col-right .panel.roadmap { max-height: 24vh; }
 
+/* The first child of a scrollable .body, stuck to the top of its own
+   scrollport — it floats over the list rather than displacing it, and stays
+   pinned there as the list scrolls underneath. Hidden until the viewer has
+   scrolled away from the top and new content has arrived above what they're
+   currently looking at; clicking it jumps back to the top. */
+.unread-bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  background: var(--alarm);
+  color: #240404;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+}
+.unread-bar:hover { filter: brightness(1.08); }
+.unread-bar.show { display: flex; }
+
 .legend { display: inline-flex; align-items: center; gap: 8px; font-size: 10px; }
 .legend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 3px; }
 .legend .dot.high { background: var(--alarm); }

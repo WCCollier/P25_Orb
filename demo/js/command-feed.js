@@ -19,6 +19,60 @@
   let renderQueued = false;
   let seenDigest = 0;
 
+  /*
+   * Both the digest and the alarm panel stack newest-on-top so a commander
+   * glancing at the screen always sees current state at a fixed spot, and
+   * scrolling down is how you look back through history. That means a panel
+   * the viewer has scrolled away from must never auto-jump back to the top
+   * out from under them — instead this bar appears above the scrollable body
+   * and reports what's new, and clicking it is the only thing that scrolls.
+   */
+  function createUnreadBar(containerEl, barEl, onReachTop) {
+    let atTop = true;
+    containerEl.addEventListener('scroll', () => {
+      const now = containerEl.scrollTop <= 4;
+      if (now && !atTop) {
+        atTop = true;
+        barEl.classList.remove('show');
+        onReachTop();
+      } else {
+        atTop = now;
+      }
+    });
+    barEl.addEventListener('click', () => {
+      containerEl.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    return {
+      isAtTop: () => atTop,
+      show(count) {
+        if (count <= 0) {
+          barEl.classList.remove('show');
+          return;
+        }
+        barEl.textContent =
+          (count === 1 ? '1 new update' : count + ' new updates') + ' — click to jump to latest';
+        barEl.classList.add('show');
+      },
+    };
+  }
+
+  let digestUnreadBaseline = 0;
+  let alarmsSeenSignatures = {};
+
+  // Both bars live as the permanent first child of their scrollable body, so
+  // a full rebuild has to reinsert this same node rather than recreate it —
+  // recreating it would drop the click/scroll listeners set up below.
+  const alarmsBarEl = el('alarms-unread');
+  const digestBarEl = el('digest-unread');
+
+  const alarmsScroller = createUnreadBar(el('alarms'), alarmsBarEl, () => {
+    alarmsSeenSignatures = {};
+    for (const alert of engine.getState().alerts) alarmsSeenSignatures[alert.unit] = alertSignature(alert);
+  });
+  const digestScroller = createUnreadBar(el('digest'), digestBarEl, () => {
+    digestUnreadBaseline = seenDigest;
+  });
+
   el('attrib').textContent =
     'classified by ' + CLASSIFICATION_MODEL + ' · cached ' + CLASSIFICATION_GENERATED_AT;
 
@@ -87,11 +141,12 @@
    * actually change.
    */
   let lastAlarmsSignature = null;
+  function alertSignature(a) {
+    return [a.tier, a.acknowledged, a.updatedAt, a.blockedAttemptsSince,
+            a.subjectHeardFrom, a.relatedTraffic.length, a.signals.length].join(':');
+  }
   function alarmsSignature(alerts) {
-    return alerts.map((a) =>
-      [a.unit, a.tier, a.acknowledged, a.updatedAt, a.blockedAttemptsSince,
-       a.subjectHeardFrom, a.relatedTraffic.length, a.signals.length].join(':')
-    ).join('|');
+    return alerts.map((a) => a.unit + ':' + alertSignature(a)).join('|');
   }
 
   function renderAlarms(state) {
@@ -100,11 +155,21 @@
     lastAlarmsSignature = signature;
 
     const container = el('alarms');
+    const wasAtTop = alarmsScroller.isAtTop();
+    const scrollTopBefore = container.scrollTop;
+
     if (state.alerts.length === 0) {
       container.innerHTML = '<div class="empty">No alarms. Routine traffic only.</div>';
+      container.insertBefore(alarmsBarEl, container.firstChild);
+      alarmsSeenSignatures = {};
+      alarmsScroller.show(0);
       return;
     }
 
+    // Unacknowledged first, then by danger tier, then by whichever of those
+    // was most recently updated — a card bubbles toward the top exactly when
+    // there's something new about it, the same rule the digest applies to
+    // whole events.
     const rank = { HIGH_CONFIDENCE: 0, SUSPECTED: 1 };
     const ordered = state.alerts.slice().sort((a, b) => {
       if (a.acknowledged !== b.acknowledged) return a.acknowledged ? 1 : -1;
@@ -112,6 +177,7 @@
     });
 
     container.innerHTML = '';
+    container.appendChild(alarmsBarEl);
     for (const alert of ordered) {
       const card = document.createElement('div');
       card.className =
@@ -183,6 +249,23 @@
 
       container.appendChild(card);
     }
+
+    // A full rebuild always resets scrollTop to 0. If the viewer had scrolled
+    // down to look at history, put them back where they were instead of
+    // yanking them to the top, and count whichever alerts changed under them
+    // as unread. At the top, there's nothing to preserve — just re-baseline.
+    if (wasAtTop) {
+      alarmsSeenSignatures = {};
+      for (const alert of state.alerts) alarmsSeenSignatures[alert.unit] = alertSignature(alert);
+      alarmsScroller.show(0);
+    } else {
+      container.scrollTop = Math.min(scrollTopBefore, container.scrollHeight - container.clientHeight);
+      let unread = 0;
+      for (const alert of state.alerts) {
+        if (alarmsSeenSignatures[alert.unit] !== alertSignature(alert)) unread++;
+      }
+      alarmsScroller.show(unread);
+    }
   }
 
   function renderCommandView(state) {
@@ -206,15 +289,46 @@
     'itself has no way to enforce it.</p>';
   }
 
+  /*
+   * Estimating "how much taller did the content above the viewport get" and
+   * nudging scrollTop by that delta drifts over a long-running demo — every
+   * insertion's rounding error compounds, and it crept steadily toward the
+   * bottom over the course of a playback. Anchoring to the actual row that's
+   * sitting at the top edge and re-measuring its real offset after each
+   * insert has no delta to accumulate error in, so it can't drift.
+   */
+  function topAnchor(container) {
+    const top = container.scrollTop;
+    for (const child of container.children) {
+      if (child === digestBarEl) continue;
+      if (child.offsetTop + child.offsetHeight > top) return child;
+    }
+    return null;
+  }
+
   function renderDigest(state) {
     const container = el('digest');
     if (state.digest.length === 0) {
       container.innerHTML = '<div class="empty">Waiting for the RF Environment tab. Press Play there.</div>';
+      container.insertBefore(digestBarEl, container.firstChild);
       seenDigest = 0;
+      digestUnreadBaseline = 0;
+      digestScroller.show(0);
       return;
     }
-    if (seenDigest === 0) container.innerHTML = '';
+    if (state.digest.length === seenDigest) return;
+    if (seenDigest === 0) {
+      container.innerHTML = '';
+      container.appendChild(digestBarEl);
+    }
 
+    const wasAtTop = digestScroller.isAtTop();
+    const anchor = wasAtTop ? null : topAnchor(container);
+    const anchorGap = anchor ? anchor.offsetTop - container.scrollTop : 0;
+
+    // New entries stack on top of the previous newest, oldest-of-the-batch
+    // first, so the final order reads newest-at-top after every insert —
+    // right below the unread bar, which always stays the first child.
     for (let i = seenDigest; i < state.digest.length; i++) {
       const entry = state.digest[i];
       const row = document.createElement('div');
@@ -263,13 +377,19 @@
         what.appendChild(wrap);
       }
 
-      container.appendChild(row);
+      container.insertBefore(row, digestBarEl.nextSibling);
     }
     seenDigest = state.digest.length;
 
-    const nearBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight < 160;
-    if (nearBottom) container.scrollTop = container.scrollHeight;
+    if (wasAtTop) {
+      container.scrollTop = 0;
+      digestUnreadBaseline = seenDigest;
+    } else if (anchor) {
+      // Put the same row back at the same distance from the top edge, using
+      // its real post-insert offset rather than a guessed height delta.
+      container.scrollTop = anchor.offsetTop - anchorGap;
+    }
+    digestScroller.show(wasAtTop ? 0 : seenDigest - digestUnreadBaseline);
   }
 
   function renderScene(state) {
@@ -358,14 +478,28 @@
       case MSG.RESET:
         engine.reset();
         seenDigest = 0;
+        digestUnreadBaseline = 0;
+        alarmsSeenSignatures = {};
+        lastAlarmsSignature = null;
         el('digest').innerHTML = '';
+        el('digest').scrollTop = 0;
+        el('alarms').scrollTop = 0;
+        digestScroller.show(0);
+        alarmsScroller.show(0);
         render();
         break;
 
       case MSG.SYNC:
         engine.reset();
         seenDigest = 0;
+        digestUnreadBaseline = 0;
+        alarmsSeenSignatures = {};
+        lastAlarmsSignature = null;
         el('digest').innerHTML = '';
+        el('digest').scrollTop = 0;
+        el('alarms').scrollTop = 0;
+        digestScroller.show(0);
+        alarmsScroller.show(0);
         for (const event of data.events) feed(event);
         engine.tick(data.t);
         render();

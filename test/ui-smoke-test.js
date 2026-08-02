@@ -67,17 +67,25 @@ function makeNode(name) {
     get outerHTML() { return `<${this.nodeName}>${this._html}</${this.nodeName}>`; },
 
     get firstElementChild() { return this.children[0] || null; },
+    get firstChild() { return this.children[0] || null; },
     get lastChild() { return this.children[this.children.length - 1] || null; },
     get childElementCount() { return this.children.length; },
 
     appendChild(child) { this.children.push(child); return child; },
     append(...kids) { this.children.push(...kids); },
+    insertBefore(child, reference) {
+      const i = reference ? this.children.indexOf(reference) : -1;
+      if (i === -1) this.children.push(child);
+      else this.children.splice(i, 0, child);
+      return child;
+    },
     removeChild(child) {
       const i = this.children.indexOf(child);
       if (i >= 0) this.children.splice(i, 1);
       return child;
     },
     remove() {},
+    scrollTo() {},
     addEventListener(type, fn) { (this.listeners[type] ||= []).push(fn); },
     // Rendering code reads back elements it just wrote via innerHTML; the shim
     // hands out fresh nodes so those writes are exercised rather than skipped.

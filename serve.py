@@ -59,6 +59,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def end_headers(self):
+        # This server only ever runs against files that are actively being
+        # edited during rehearsal, or reloaded mid-demo to recover from a
+        # dropped tab. A stale cached copy of demo/js or demo/css served
+        # without a network round trip has already caused one confusing bug
+        # here — better that every load costs a request than that.
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
     def do_GET(self):
         # Lets the live page tell the presenter up front whether a live call can
         # succeed, instead of finding out mid-demo.
@@ -113,8 +122,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             "usage": raw.get("usage", {}),
         })
 
+    def log_error(self, fmt, *args):
+        # Errors always get through. A silently swallowed 404 is how a missing
+        # asset becomes twenty minutes of confusion mid-rehearsal.
+        super().log_message(fmt, *args)
+
     def log_message(self, fmt, *args):
-        if "/api/" in (args[0] if args else ""):
+        # Routine static hits are noise while presenting; the live API call is
+        # not. str() rather than a bare `in` because this is also the sink for
+        # log_error, which passes an HTTPStatus where a request line would be.
+        if any("/api/" in str(arg) for arg in args):
             super().log_message(fmt, *args)
 
 
