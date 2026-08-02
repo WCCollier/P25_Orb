@@ -57,7 +57,10 @@
     grid-template-columns: 1fr 2fr;
     gap: 0;
     min-height: 0;
+    transition: grid-template-columns .2s ease;
   }
+
+  .panes.rf-collapsed { grid-template-columns: 34px 1fr; }
 
   .pane {
     display: grid;
@@ -85,6 +88,93 @@
   }
 
   /*
+   * min-width: 0 on the header below lets the h2 shrink, but shrinking isn't
+   * clipping — collapsed to 34px, its text is still too wide to fit and was
+   * painting straight past this pane's own edge into the Command Feed pane
+   * next door, where the rail (scoped to this pane's box) can't reach it.
+   *
+   * The distinct background, accent edge and shadow are deliberate: the
+   * Command Feed is the argument, the RF Environment is a drawer of evidence
+   * beside it. Reading as a panel rather than an equal column is the visual
+   * cue that it slides away, before anyone's touched the collapse button.
+   */
+  .pane-rf {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-sunken);
+    border-right: 2px solid var(--accent);
+    box-shadow: 6px 0 18px -8px rgba(0, 0, 0, 0.6);
+  }
+
+  .pane-head {
+    display: flex;
+    align-items: center;
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .pane-head h2 { flex: 1; min-width: 0; }
+
+  .collapse-btn {
+    flex: 0 0 auto;
+    margin-right: 8px;
+    font: 600 11px ui-monospace, monospace;
+    padding: 2px 6px;
+    cursor: pointer;
+    color: inherit;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    opacity: .6;
+  }
+
+  .collapse-btn:hover, .collapse-btn:focus-visible { opacity: 1; }
+
+  /*
+   * Collapsing does not shrink the iframe itself down to the 34px rail — an
+   * earlier version did, and squeezing rf-environment.html's own layout into
+   * a sliver produced visible rendering bleed rather than a clean crop.
+   * Instead the iframe is pulled out of grid flow and moved off-canvas at a
+   * comfortable, ordinary width, so its own CSS never has to cope with a
+   * pathological viewport. It still keeps a real, painted box the whole
+   * time — position, not display — which is what actually matters for
+   * requestAnimationFrame: Chrome's out-of-viewport throttling is documented
+   * as applying only to cross-origin iframes, and this one is same-origin.
+   */
+  .panes.rf-collapsed .pane-rf iframe {
+    position: absolute;
+    top: 0;
+    left: -2000px;
+    width: 1100px;
+  }
+
+  .rf-rail {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-raised);
+    border: 0;
+    cursor: pointer;
+    color: inherit;
+    padding: 0;
+  }
+
+  .panes.rf-collapsed .rf-rail { display: flex; }
+
+  .rf-rail span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font: 600 10px/1 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    opacity: .7;
+  }
+
+  .rf-rail:hover span, .rf-rail:focus-visible span { opacity: 1; }
+
+  /*
    * Screen-share codecs punish fine detail far harder than a local display
    * does. Zooming the framed pages trades visible area for stroke weight,
    * which is the right trade when the audience is watching 1080p video of a
@@ -110,6 +200,10 @@
   @media (max-width: 1100px) {
     .panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
     .pane + .pane { border-left: 0; border-top: 1px solid var(--rule, #2a3630); }
+    /* Stacked layout collapses to a thin horizontal strip instead of a
+       vertical one, so the rail's label has to lie back down flat too. */
+    .panes.rf-collapsed { grid-template-columns: 1fr; grid-template-rows: 34px 1fr; }
+    .rf-rail span { writing-mode: horizontal-tb; transform: none; }
   }
 </style>
 </head>
@@ -127,10 +221,18 @@
     <a href="index.html">All pages</a>
   </div>
 
-  <div class="panes">
-    <section class="pane">
-      <h2>RF Environment — the radio traffic</h2>
+  <div class="panes" id="panes">
+    <section class="pane pane-rf">
+      <div class="pane-head">
+        <h2>RF Environment — the radio traffic</h2>
+        <button type="button" class="collapse-btn" id="rf-collapse"
+                aria-label="Collapse RF Environment" title="Collapse RF Environment">&#9668;</button>
+      </div>
       <iframe id="left" src="rf-environment.html" title="RF Environment"></iframe>
+      <button type="button" class="rf-rail" id="rf-expand" hidden
+              aria-label="Expand RF Environment" title="Expand RF Environment">
+        <span>RF Environment</span>
+      </button>
     </section>
     <section class="pane">
       <h2>Command Feed — what the operator sees</h2>
@@ -163,6 +265,22 @@
     zoom = Math.max(70, zoom - 10);
     apply();
   });
+
+  // Collapsing never touches the RF Environment iframe itself — see the
+  // .rf-rail comment in the stylesheet for why. This just narrows its column
+  // and shows the rail on top of it.
+  const panes = document.getElementById('panes');
+  const rfCollapse = document.getElementById('rf-collapse');
+  const rfExpand = document.getElementById('rf-expand');
+
+  function setRfCollapsed(collapsed) {
+    panes.classList.toggle('rf-collapsed', collapsed);
+    rfCollapse.hidden = collapsed;
+    rfExpand.hidden = !collapsed;
+  }
+
+  rfCollapse.addEventListener('click', () => setRfCollapsed(true));
+  rfExpand.addEventListener('click', () => setRfCollapsed(false));
 </script>
 
 </body>
