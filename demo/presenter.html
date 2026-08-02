@@ -51,7 +51,10 @@
 
   .panes {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* The RF Environment is evidence, not the argument: it needs to be visibly
+       present and readable, but the Command Feed is what the audience should be
+       reading. Two thirds to the side that carries the pitch. */
+    grid-template-columns: 1fr 2fr;
     gap: 0;
     min-height: 0;
   }
@@ -137,8 +140,8 @@
 </div>
 
 <script>
-  // Zoom is applied inside each frame rather than to this page, so the split
-  // stays exactly 50/50 and only the content scales.
+  // Zoom is applied inside each frame rather than to this page, so the column
+  // split holds and only the content scales.
   const frames = [document.getElementById('left'), document.getElementById('right')];
   const label = document.getElementById('zoom-level');
   let zoom = 110;
