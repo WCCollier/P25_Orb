@@ -18,8 +18,8 @@
     color: inherit;
   }
   .card:hover { border-color: var(--accent); }
-  /* The presenter view is an alternative to opening the two tabs above, not a
-     fifth destination, so it spans them rather than sitting in the grid. */
+  /* Presenter View is the sole entry point into the live demo, so it spans
+     the grid rather than sitting beside the secondary pages below it. */
   .card.wide { grid-column: 1 / -1; }
   .card h3 { font-size: 16px; margin-bottom: 5px; }
   .card p { margin: 0; font-size: 13.5px; color: var(--text-dim); line-height: 1.55; }
@@ -64,27 +64,17 @@
   </p>
 
   <div class="cards">
-    <a class="card" href="rf-environment.html">
-      <span class="step">Tab 1 &mdash; open first</span>
-      <h3>RF Environment</h3>
-      <p>What the receiver hears: raw P25 control-channel signalling, no
-         interpretation. This tab owns the clock and drives the other one.</p>
-    </a>
-    <a class="card" href="command-feed.html">
-      <span class="step">Tab 2 &mdash; open second</span>
-      <h3>Command Feed</h3>
-      <p>The same events as the commander is shown them: running digest, two-tier
-         alarms, and a ranked view of what needs attention now.</p>
-    </a>
     <a class="card wide" href="presenter.html">
-      <span class="step">Instead of the two above &mdash; for a video call</span>
+      <span class="step">Start here</span>
       <h3>Presenter View</h3>
-      <p>Both live tabs framed side by side in one window, so a screen share
-         shows the Command Feed reacting the moment the traffic happens rather
-         than making the audience take that on trust. Same pages, same clock
-         &mdash; they still talk to each other through the frames. The zoom
-         control trades visible area for stroke weight, which is the right
-         trade when the far end is watching compressed video.</p>
+      <p>The RF Environment and the Command Feed, framed side by side in one
+         tab, so the audience sees the Command Feed reacting the moment the
+         traffic happens rather than taking that on trust. The RF Environment
+         pane collapses to a thin rail when you want their full attention on
+         the Command Feed alone &mdash; it keeps running underneath, just out
+         of the way. The zoom control trades visible area for stroke weight,
+         which is the right trade when the far end is watching compressed
+         video.</p>
     </a>
     <a class="card secondary" href="control-panel.html">
       <span class="step">Supporting</span>
@@ -112,9 +102,9 @@
 
   <h3 style="margin-top:26px">Running the demo</h3>
   <ol class="howto">
-    <li>Open <strong>RF Environment</strong> in one tab and <strong>Command Feed</strong> in a second. Put them side by side. Presenting over a video call instead? Open <strong>Presenter View</strong> and skip this step.</li>
-    <li>Press <strong>Play</strong> on the RF Environment tab. It drives both tabs; the Command Feed has no timer of its own.</li>
-    <li><kbd>Space</kbd> plays and pauses, <kbd>R</kbd> resets. The numbered buttons jump to any of the seven beats for rehearsal.</li>
+    <li>Open <strong>Presenter View</strong>. Both panes load and start talking to each other automatically.</li>
+    <li>Click into the RF Environment pane and press <strong>Play</strong>. It drives the Command Feed pane; the Command Feed has no timer of its own.</li>
+    <li><kbd>Space</kbd> plays and pauses, <kbd>R</kbd> resets &mdash; both with focus in the RF Environment pane. The numbered buttons jump to any of the seven beats for rehearsal.</li>
     <li>The whole sequence runs 2 minutes 52 seconds at 1&times;. There is a 2&times; option for rehearsal.</li>
   </ol>
 
